@@ -1,0 +1,42 @@
+# Complements Detekt's default configuration (buildUponDefaultConfig = true).
+# The deviations below are due to Compose (@Composable functions in PascalCase, long screens,
+# many callbacks, layout constants).
+
+complexity:
+  LongMethod:
+    allowedLines: 150
+  LongParameterList:
+    allowedFunctionParameters: 8
+    allowedConstructorParameters: 12
+    ignoreDefaultParameters: true
+    ignoreDataClasses: true
+  CyclomaticComplexMethod:
+    allowedComplexity: 20
+  NestedBlockDepth:
+    allowedDepth: 6
+  TooManyFunctions:
+    allowedFunctionsPerFile: 25
+    allowedFunctionsPerClass: 25
+    allowedFunctionsPerInterface: 40
+    allowedFunctionsPerObject: 25
+    ignorePrivate: true
+
+naming:
+  FunctionNaming:
+    # @Composable functions are written in PascalCase.
+    functionPattern: '[a-zA-Z][a-zA-Z0-9]*'
+  MatchingDeclarationName:
+    # A screen file groups its ViewModel and its state.
+    active: false
+
+style:
+  MagicNumber:
+    excludes: ['**/test/**', '**/presentation/**', '**/domain/model/Models.kt']
+  MaxLineLength:
+    maxLineLength: 120
+  ReturnCount:
+    max: 4
+  ThrowsCount:
+    max: 3
+  LoopWithTooManyJumpStatements:
+    maxJumpCount: 2

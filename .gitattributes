@@ -1,0 +1,9 @@
+# Text files are stored with LF line endings (gradlew must run on Linux CI runners).
+* text=auto eol=lf
+*.bat text eol=crlf
+
+# Binary files.
+*.jar binary
+*.ogg binary
+*.png binary
+*.jks binary

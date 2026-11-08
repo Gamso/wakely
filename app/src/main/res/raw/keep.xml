@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The alarm sounds are played through "android.resource://<package>/raw/<name>" URIs built at
+  runtime, which the resource shrinker cannot see: keep them all in release builds.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/aosp_*" />

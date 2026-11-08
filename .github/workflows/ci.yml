@@ -1,0 +1,128 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least privilege by default; the job that publishes test reports asks for `checks: write` itself.
+permissions:
+  contents: read
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false
+  # The Kotlin compiler embedded in Ktlint prints sun.misc.Unsafe deprecation warnings on recent JDKs:
+  # they come from that tool, not from this project, and only clutter the logs.
+  NOISE: '^WARNING: .*(sun\.misc\.Unsafe|org\.jetbrains\.kotlin\.com\.intellij)'
+
+# Actions are pinned to a commit SHA (the tag is kept as a comment, Dependabot updates both).
+jobs:
+  ktlint:
+    name: Ktlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+      - name: Ktlint
+        run: |
+          set -o pipefail
+          sh ./gradlew ktlintCheck 2>&1 | grep -v -E "$NOISE"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure()
+        with:
+          name: ktlint-reports
+          path: "**/build/reports/ktlint/**"
+
+  detekt:
+    name: Detekt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+      - name: Detekt
+        run: |
+          set -o pipefail
+          sh ./gradlew detekt 2>&1 | grep -v -E "$NOISE"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: detekt-reports
+          path: "**/build/reports/detekt/**"
+
+  android-lint:
+    name: Android Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+      - run: sh ./gradlew :app:lintDebug
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: android-lint-reports
+          path: app/build/reports/lint-results-debug.*
+
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+      - run: sh ./gradlew :app:testDebugUnitTest
+      # Shows each failing test as a check in the pull request. The token of a Dependabot or fork pull request is
+      # read-only, in which case the report cannot be published: that must not fail the job.
+      - name: Test report
+        uses: dorny/test-reporter@d1b5dff021aa968b288b02285a8bf47471c5928a # v3.2.0
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        with:
+          name: Unit test results
+          path: "app/build/test-results/testDebugUnitTest/*.xml"
+          reporter: java-junit
+          fail-on-error: false
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: test-reports
+          path: "**/build/reports/tests/**"
+
+  build-apk:
+    name: Debug APK
+    runs-on: ubuntu-latest
+    needs: [ktlint, detekt, android-lint, test]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+      - run: sh ./gradlew :app:assembleDebug
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: wakely-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error

@@ -1,0 +1,96 @@
+name: Release
+
+# Publishes a GitHub release (signed APK + AAB) for every version tag.
+# Example: git tag v1.0.0 && git push origin v1.0.0
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to build, without publishing (e.g. 1.0.0)"
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+
+      - name: Determine the version
+        id: version
+        env:
+          RAW: ${{ github.event.inputs.version || github.ref_name }}
+        run: |
+          VERSION="${RAW#v}"
+          IFS=. read -r MAJOR MINOR PATCH <<< "${VERSION%%-*}"
+          echo "name=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "code=$((MAJOR * 10000 + MINOR * 100 + PATCH))" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare the signing keystore
+        id: signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+            echo "keystore=$RUNNER_TEMP/release.jks" >> "$GITHUB_OUTPUT"
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Secret SIGNING_KEYSTORE_BASE64 is missing: the artifacts will not be signed."
+          fi
+
+      - name: Checks
+        run: sh ./gradlew ktlintCheck detekt :app:testDebugUnitTest :app:lintDebug
+
+      - name: Build the release APK and AAB
+        env:
+          SIGNING_KEYSTORE_FILE: ${{ steps.signing.outputs.keystore }}
+          SIGNING_KEYSTORE_PASSWORD: ${{ secrets.SIGNING_KEYSTORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: >
+          sh ./gradlew :app:assembleRelease :app:bundleRelease
+          -PversionName=${{ steps.version.outputs.name }}
+          -PversionCode=${{ steps.version.outputs.code }}
+
+      - name: Name the artifacts
+        env:
+          VERSION: ${{ steps.version.outputs.name }}
+          SIGNED: ${{ steps.signing.outputs.signed }}
+        run: |
+          mkdir -p dist
+          SUFFIX=""
+          if [ "$SIGNED" != "true" ]; then SUFFIX="-unsigned"; fi
+          cp app/build/outputs/apk/release/*.apk "dist/wakely-${VERSION}${SUFFIX}.apk"
+          cp app/build/outputs/bundle/release/app-release.aab "dist/wakely-${VERSION}.aab"
+          ls -la dist
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: wakely-${{ steps.version.outputs.name }}
+          path: dist/*
+          if-no-files-found: error
+
+      - name: Publish the GitHub release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          files: dist/*
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
