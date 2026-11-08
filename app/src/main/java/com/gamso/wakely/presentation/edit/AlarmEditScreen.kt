@@ -36,8 +36,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.Alarm
 import com.gamso.wakely.domain.model.DayOffMode
 import com.gamso.wakely.presentation.common.Format
@@ -58,10 +60,12 @@ fun AlarmEditScreen(viewModel: AlarmEditViewModel, state: AlarmEditUiState, onCl
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (state.isNew) "Nouveau réveil" else "Modifier le réveil") },
-                navigationIcon = { TextButton(onClick = onClose) { Text("Annuler") } },
+                title = { Text(stringResource(if (state.isNew) R.string.new_alarm else R.string.edit_alarm)) },
+                navigationIcon = { TextButton(onClick = onClose) { Text(stringResource(R.string.action_cancel)) } },
                 actions = {
-                    TextButton(onClick = { viewModel.save() }, enabled = state.loaded) { Text("Enregistrer") }
+                    TextButton(onClick = {
+                        viewModel.save()
+                    }, enabled = state.loaded) { Text(stringResource(R.string.action_save)) }
                 },
             )
         },
@@ -81,51 +85,55 @@ fun AlarmEditScreen(viewModel: AlarmEditViewModel, state: AlarmEditUiState, onCl
             OutlinedTextField(
                 value = alarm.label,
                 onValueChange = viewModel::setLabel,
-                label = { Text("Libellé") },
+                label = { Text(stringResource(R.string.label)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Text("Répétition", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.repeat), style = MaterialTheme.typography.titleMedium)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Format.WEEK.forEach { day ->
                     DayToggle(Format.dayLetter(day), day in alarm.days) { viewModel.toggleDay(day) }
                 }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                AssistChip(onClick = { viewModel.setDays(Alarm.WORKDAYS) }, label = { Text("Semaine") })
+                AssistChip(onClick = {
+                    viewModel.setDays(Alarm.WORKDAYS)
+                }, label = { Text(stringResource(R.string.chip_weekdays)) })
                 AssistChip(onClick = {
                     viewModel.setDays(DayOfWeek.entries.toSet())
-                }, label = { Text("Tous les jours") })
-                AssistChip(onClick = { viewModel.setDays(emptySet()) }, label = { Text("Une fois") })
+                }, label = { Text(stringResource(R.string.chip_every_day)) })
+                AssistChip(onClick = {
+                    viewModel.setDays(emptySet())
+                }, label = { Text(stringResource(R.string.chip_once)) })
             }
             Text(Format.daysSummary(alarm.days), style = MaterialTheme.typography.bodySmall)
 
             HorizontalDivider()
-            Text("Jours fériés et congés (selon l'agenda)", style = MaterialTheme.typography.titleMedium)
-            ModeOption("Ne pas sonner", alarm.dayOffMode == DayOffMode.SKIP) {
+            Text(stringResource(R.string.days_off_section), style = MaterialTheme.typography.titleMedium)
+            ModeOption(stringResource(R.string.mode_skip), alarm.dayOffMode == DayOffMode.SKIP) {
                 viewModel.setDayOffMode(DayOffMode.SKIP)
             }
-            ModeOption("Sonner à une autre heure", alarm.dayOffMode == DayOffMode.OTHER_TIME) {
+            ModeOption(stringResource(R.string.mode_other_time), alarm.dayOffMode == DayOffMode.OTHER_TIME) {
                 viewModel.setDayOffMode(DayOffMode.OTHER_TIME)
             }
             if (alarm.dayOffMode == DayOffMode.OTHER_TIME) {
                 OutlinedButton(onClick = { pickOff = true }, modifier = Modifier.padding(start = 48.dp)) {
-                    Text("Heure les jours non travaillés : ${Format.time(alarm.dayOffTime)}")
+                    Text(stringResource(R.string.mode_other_time_button, Format.time(alarm.dayOffTime)))
                 }
             }
-            ModeOption("Sonner normalement (ignorer l'agenda)", alarm.dayOffMode == DayOffMode.IGNORE) {
+            ModeOption(stringResource(R.string.mode_ignore), alarm.dayOffMode == DayOffMode.IGNORE) {
                 viewModel.setDayOffMode(DayOffMode.IGNORE)
             }
 
             HorizontalDivider()
-            Text("Sonnerie", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.ringtone), style = MaterialTheme.typography.titleMedium)
             OutlinedButton(onClick = { pickSound = true }, modifier = Modifier.fillMaxWidth()) {
                 Text((alarm.sound ?: viewModel.defaultSound).name)
             }
 
             HorizontalDivider()
-            Text("Répéter (snooze)", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.snooze_title), style = MaterialTheme.typography.titleMedium)
             SnoozeChips(alarm.snoozeMinutes, viewModel::setSnoozeMinutes)
 
             if (!state.isNew) {
@@ -133,7 +141,7 @@ fun AlarmEditScreen(viewModel: AlarmEditViewModel, state: AlarmEditUiState, onCl
                 TextButton(
                     onClick = { viewModel.delete() },
                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                ) { Text("Supprimer ce réveil") }
+                ) { Text(stringResource(R.string.delete_alarm)) }
             }
         }
     }

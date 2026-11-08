@@ -1,5 +1,6 @@
 package com.gamso.wakely.presentation.settings
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,7 +33,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.DeviceCalendar
 import com.gamso.wakely.presentation.common.BackButton
@@ -40,23 +43,27 @@ import com.gamso.wakely.presentation.common.ColorDot
 import com.gamso.wakely.presentation.common.Format
 import com.gamso.wakely.presentation.common.TimePickerDialog
 
-private data class CategoryText(val title: String, val description: String, val keywordHint: String)
+private data class CategoryText(
+    @StringRes val title: Int,
+    @StringRes val description: Int,
+    @StringRes val keywordHint: Int,
+)
 
 private val CATEGORY_TEXTS = mapOf(
     CalendarCategory.HOLIDAYS to CategoryText(
-        "Jours fériés",
-        "Les événements « journée entière » de ces agendas sont des jours non travaillés.",
-        "ex. férié (exclut les simples fêtes)",
+        R.string.cat_holidays_title,
+        R.string.cat_holidays_desc,
+        R.string.cat_holidays_hint,
     ),
     CalendarCategory.LEAVE to CategoryText(
-        "Congés et vacances",
-        "Vos jours de congé, vacances, RTT… : jours non travaillés.",
-        "ex. congé, vacances, RTT",
+        R.string.cat_leave_title,
+        R.string.cat_leave_desc,
+        R.string.cat_leave_hint,
     ),
     CalendarCategory.EVENTS to CategoryText(
-        "Événements",
-        "Agendas utilisés par les réveils « avant un événement ».",
-        "ex. réunion, client",
+        R.string.cat_events_title,
+        R.string.cat_events_desc,
+        R.string.cat_events_hint,
     ),
 )
 
@@ -75,7 +82,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Réglages") },
+                title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = { BackButton(onBack) },
             )
         },
@@ -90,9 +97,12 @@ fun SettingsScreen(
                     Column(Modifier.padding(16.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Column(Modifier.weight(1f)) {
-                                Text("Notification de la veille", style = MaterialTheme.typography.titleMedium)
                                 Text(
-                                    "Chaque soir, un résumé des réveils du lendemain (commun à tous les réveils).",
+                                    stringResource(R.string.summary_title),
+                                    style = MaterialTheme.typography.titleMedium,
+                                )
+                                Text(
+                                    stringResource(R.string.summary_description),
                                     style = MaterialTheme.typography.bodySmall,
                                 )
                             }
@@ -102,7 +112,7 @@ fun SettingsScreen(
                             OutlinedButton(onClick = {
                                 pickSummaryTime = true
                             }, modifier = Modifier.padding(top = 8.dp)) {
-                                Text("Heure de la notification : ${Format.time(state.summary.time)}")
+                                Text(stringResource(R.string.summary_time, Format.time(state.summary.time)))
                             }
                         }
                     }
@@ -111,15 +121,18 @@ fun SettingsScreen(
 
             if (!state.loading && !state.hasPermission) {
                 item(key = "permission") {
-                    Button(onClick = onRequestPermission) { Text("Autoriser l'accès à l'agenda") }
+                    Button(onClick = onRequestPermission) { Text(stringResource(R.string.allow_calendar_access)) }
                 }
             }
 
             item(key = "calendars-title") {
-                Text("Agendas", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(top = 8.dp))
                 Text(
-                    "Agendas synchronisés sur ce téléphone (Google, Outlook, Samsung…). " +
-                        "Un même agenda peut être utilisé dans plusieurs catégories.",
+                    stringResource(R.string.calendars_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+                Text(
+                    stringResource(R.string.calendars_description),
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
@@ -138,7 +151,7 @@ fun SettingsScreen(
 
             item(key = "about") {
                 HorizontalDivider(Modifier.padding(vertical = 8.dp))
-                TextButton(onClick = onOpenAbout) { Text("À propos de Wakely") }
+                TextButton(onClick = onOpenAbout) { Text(stringResource(R.string.about_link)) }
             }
         }
     }
@@ -148,7 +161,7 @@ fun SettingsScreen(
     }
     addTo?.let { category ->
         AddCalendarDialog(
-            title = "Ajouter à « ${CATEGORY_TEXTS.getValue(category).title} »",
+            title = stringResource(R.string.add_to_category, stringResource(CATEGORY_TEXTS.getValue(category).title)),
             calendars = state.available(category),
             onDismiss = { addTo = null },
             onPick = {
@@ -170,11 +183,11 @@ private fun CategoryCard(
     val text = CATEGORY_TEXTS.getValue(category)
     Card(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(text.title, style = MaterialTheme.typography.titleMedium)
-            Text(text.description, style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(text.title), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(text.description), style = MaterialTheme.typography.bodySmall)
             if (assigned.isEmpty()) {
                 Text(
-                    "Aucun agenda.",
+                    stringResource(R.string.no_calendar_assigned),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -186,19 +199,19 @@ private fun CategoryCard(
                         Text(item.calendar.name)
                         Text(item.calendar.account, style = MaterialTheme.typography.bodySmall)
                     }
-                    TextButton(onClick = { onRemove(item.calendar) }) { Text("Retirer") }
+                    TextButton(onClick = { onRemove(item.calendar) }) { Text(stringResource(R.string.action_remove)) }
                 }
                 OutlinedTextField(
                     value = item.keywords,
                     onValueChange = { onKeywords(item.calendar, it) },
-                    label = { Text("Mots-clés (facultatif)") },
-                    placeholder = { Text(text.keywordHint) },
-                    supportingText = { Text("Séparés par des virgules. Vide = tous les événements.") },
+                    label = { Text(stringResource(R.string.keywords_optional)) },
+                    placeholder = { Text(stringResource(text.keywordHint)) },
+                    supportingText = { Text(stringResource(R.string.keywords_help)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
-            OutlinedButton(onClick = onAdd) { Text("+  Ajouter un agenda") }
+            OutlinedButton(onClick = onAdd) { Text(stringResource(R.string.add_calendar)) }
         }
     }
 }
@@ -213,13 +226,12 @@ private fun AddCalendarDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {},
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Fermer") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) } },
         title = { Text(title) },
         text = {
             if (calendars.isEmpty()) {
                 Text(
-                    "Aucun autre agenda disponible. Ajoutez un compte (Google, Outlook…) dans les " +
-                        "paramètres Android, et activez la synchronisation de son agenda.",
+                    stringResource(R.string.no_other_calendar),
                 )
             } else {
                 Column(Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState())) {

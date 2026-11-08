@@ -39,10 +39,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.CalendarEvent
 import com.gamso.wakely.domain.model.EventAlarm
 import com.gamso.wakely.presentation.common.ColorDot
@@ -61,10 +63,12 @@ fun EventAlarmEditScreen(viewModel: EventAlarmEditViewModel, state: EventAlarmEd
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (state.isNew) "Réveil avant un événement" else "Modifier la règle") },
-                navigationIcon = { TextButton(onClick = onClose) { Text("Annuler") } },
+                title = { Text(stringResource(if (state.isNew) R.string.new_event_alarm else R.string.edit_rule)) },
+                navigationIcon = { TextButton(onClick = onClose) { Text(stringResource(R.string.action_cancel)) } },
                 actions = {
-                    TextButton(onClick = { viewModel.save() }, enabled = state.loaded) { Text("Enregistrer") }
+                    TextButton(onClick = {
+                        viewModel.save()
+                    }, enabled = state.loaded) { Text(stringResource(R.string.action_save)) }
                 },
             )
         },
@@ -77,13 +81,13 @@ fun EventAlarmEditScreen(viewModel: EventAlarmEditViewModel, state: EventAlarmEd
             OutlinedTextField(
                 value = rule.label,
                 onValueChange = viewModel::setLabel,
-                label = { Text("Libellé (facultatif)") },
-                placeholder = { Text("Titre de l'événement par défaut") },
+                label = { Text(stringResource(R.string.label_optional)) },
+                placeholder = { Text(stringResource(R.string.label_placeholder)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Text("Sonner combien de temps avant ?", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.how_long_before), style = MaterialTheme.typography.titleMedium)
             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 EventAlarm.MINUTES_CHOICES.forEach { minutes ->
                     FilterChip(
@@ -96,18 +100,18 @@ fun EventAlarmEditScreen(viewModel: EventAlarmEditViewModel, state: EventAlarmEd
             MinutesField(rule.minutesBefore, viewModel::setMinutesBefore)
 
             HorizontalDivider()
-            Text("Quels événements ?", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.which_events), style = MaterialTheme.typography.titleMedium)
             EventSelection(state, viewModel, onPickEvent = { pickEvent = true })
 
             HorizontalDivider()
             UpcomingRings(state)
 
             HorizontalDivider()
-            Text("Sonnerie", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.ringtone), style = MaterialTheme.typography.titleMedium)
             OutlinedButton(onClick = { pickSound = true }, modifier = Modifier.fillMaxWidth()) {
                 Text((rule.sound ?: viewModel.defaultSound).name)
             }
-            Text("Répéter (snooze)", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.snooze_title), style = MaterialTheme.typography.titleMedium)
             SnoozeChips(rule.snoozeMinutes, viewModel::setSnoozeMinutes)
 
             if (!state.isNew) {
@@ -115,7 +119,7 @@ fun EventAlarmEditScreen(viewModel: EventAlarmEditViewModel, state: EventAlarmEd
                 TextButton(
                     onClick = { viewModel.delete() },
                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                ) { Text("Supprimer cette règle") }
+                ) { Text(stringResource(R.string.delete_rule)) }
             }
         }
     }
@@ -148,15 +152,16 @@ private fun MinutesField(minutes: Int, onChange: (Int) -> Unit) {
             text = value.filter { it.isDigit() }.take(4)
             text.toIntOrNull()?.let(onChange)
         },
-        label = { Text("Ou un nombre de minutes") },
+        label = { Text(stringResource(R.string.minutes_field)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
         modifier = Modifier.width(220.dp),
     )
 }
 
+@Composable
 private fun dateTime(at: java.time.LocalDateTime) =
-    "${Format.dayDate(at.toLocalDate())} à ${Format.time(at.toLocalTime())}"
+    stringResource(R.string.at_time, Format.dayDate(at.toLocalDate()), Format.time(at.toLocalTime()))
 
 /** Either the single bound event, or the calendar / keyword filters. */
 @Composable
@@ -167,19 +172,23 @@ private fun EventSelection(state: EventAlarmEditUiState, viewModel: EventAlarmEd
         Card(Modifier.fillMaxWidth()) {
             Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text("Événement précis", style = MaterialTheme.typography.labelMedium)
+                    Text(stringResource(R.string.specific_event), style = MaterialTheme.typography.labelMedium)
                     Text(single.title, fontWeight = FontWeight.SemiBold)
                     Text(dateTime(single.start))
                 }
-                TextButton(onClick = { viewModel.setSingleEvent(null) }) { Text("Retirer") }
+                TextButton(onClick = {
+                    viewModel.setSingleEvent(null)
+                }) { Text(stringResource(R.string.action_remove)) }
             }
         }
         return
     }
-    Text("Agendas", style = MaterialTheme.typography.labelLarge)
-    val fallback = state.eventCategoryKeys.joinToString { state.calendarName(it) }.ifBlank { "aucun" }
+    Text(stringResource(R.string.calendars), style = MaterialTheme.typography.labelLarge)
+    val fallback = state.eventCategoryKeys.joinToString {
+        state.calendarName(it)
+    }.ifBlank { stringResource(R.string.none_lower) }
     Text(
-        "Aucun coché = agendas de la catégorie « Événements » ($fallback).",
+        stringResource(R.string.calendars_hint, fallback),
         style = MaterialTheme.typography.bodySmall,
     )
     state.calendars.forEach { cal ->
@@ -200,32 +209,36 @@ private fun EventSelection(state: EventAlarmEditUiState, viewModel: EventAlarmEd
     OutlinedTextField(
         value = rule.keywords,
         onValueChange = viewModel::setKeywords,
-        label = { Text("Mots-clés (facultatif)") },
-        supportingText = { Text("Séparés par des virgules. Vide = tous les événements.") },
+        label = { Text(stringResource(R.string.keywords_optional)) },
+        supportingText = { Text(stringResource(R.string.keywords_help)) },
         singleLine = true,
         modifier = Modifier.fillMaxWidth(),
     )
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text("Seulement le premier événement de la journée", modifier = Modifier.weight(1f))
+        Text(stringResource(R.string.first_event_only), modifier = Modifier.weight(1f))
         Switch(checked = rule.firstEventOfDayOnly, onCheckedChange = viewModel::setFirstEventOfDayOnly)
     }
-    OutlinedButton(onClick = onPickEvent) { Text("Choisir un événement précis…") }
+    OutlinedButton(onClick = onPickEvent) { Text(stringResource(R.string.pick_specific_event)) }
 }
 
 @Composable
 private fun UpcomingRings(state: EventAlarmEditUiState) {
-    Text("Prochaines sonneries", style = MaterialTheme.typography.titleMedium)
+    Text(stringResource(R.string.upcoming_rings), style = MaterialTheme.typography.titleMedium)
     if (state.upcoming.isEmpty()) {
-        Text("Aucun événement correspondant dans les 60 prochains jours.", style = MaterialTheme.typography.bodyMedium)
+        Text(stringResource(R.string.no_matching_events), style = MaterialTheme.typography.bodyMedium)
     }
     state.upcoming.forEach { ring ->
         Row {
             Text(
-                "${Format.dayDate(ring.at.toLocalDate())} ${Format.time(ring.at.toLocalTime())}",
+                stringResource(
+                    R.string.fmt_space,
+                    Format.dayDate(ring.at.toLocalDate()),
+                    Format.time(ring.at.toLocalTime()),
+                ),
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.width(150.dp),
             )
-            Text("${ring.event.title} (${Format.time(ring.event.start.toLocalTime())})")
+            Text(stringResource(R.string.fmt_paren, ring.event.title, Format.time(ring.event.start.toLocalTime())))
         }
     }
 }
@@ -235,18 +248,27 @@ private fun EventPickerDialog(state: EventAlarmEditUiState, onPick: (CalendarEve
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {},
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Fermer") } },
-        title = { Text("Choisir un événement") },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) } },
+        title = { Text(stringResource(R.string.pick_event_title)) },
         text = {
             if (state.candidates.isEmpty()) {
-                Text("Aucun événement à venir dans les agendas sélectionnés.")
+                Text(stringResource(R.string.no_events_in_calendars))
             } else {
                 Column(Modifier.heightIn(max = 440.dp).verticalScroll(rememberScrollState())) {
                     state.candidates.forEach { event ->
                         Column(Modifier.fillMaxWidth().clickable { onPick(event) }.padding(vertical = 10.dp)) {
-                            Text(event.title.ifBlank { "(sans titre)" }, fontWeight = FontWeight.SemiBold)
                             Text(
-                                "${dateTime(event.start)} · ${state.calendarName(event.sourceKey)}",
+                                event.title.ifBlank {
+                                    stringResource(R.string.untitled)
+                                },
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            Text(
+                                stringResource(
+                                    R.string.fmt_dot,
+                                    dateTime(event.start),
+                                    state.calendarName(event.sourceKey),
+                                ),
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         }

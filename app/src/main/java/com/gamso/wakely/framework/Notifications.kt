@@ -3,6 +3,7 @@ package com.gamso.wakely.framework
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import com.gamso.wakely.R
 
 object Notifications {
     const val CHANNEL_ALARM = "alarm"
@@ -11,19 +12,19 @@ object Notifications {
     fun createChannels(context: Context) {
         val alarm = NotificationChannel(
             CHANNEL_ALARM,
-            "Réveils en cours",
+            context.getString(R.string.notif_channel_alarm),
             NotificationManager.IMPORTANCE_HIGH,
         ).apply {
-            description = "Affiche le réveil qui sonne"
+            description = context.getString(R.string.notif_channel_alarm_desc)
             setSound(null, null) // sound is played by AlarmService
             enableVibration(false)
         }
         val summary = NotificationChannel(
             CHANNEL_SUMMARY,
-            "Réveils du lendemain",
+            context.getString(R.string.notif_channel_summary),
             NotificationManager.IMPORTANCE_DEFAULT,
         ).apply {
-            description = "Rappel, la veille au soir, des réveils prévus le lendemain"
+            description = context.getString(R.string.notif_channel_summary_desc)
         }
         context.getSystemService(NotificationManager::class.java).createNotificationChannels(listOf(alarm, summary))
     }

@@ -34,11 +34,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.DayOffMode
 import com.gamso.wakely.presentation.common.Format
+import com.gamso.wakely.presentation.common.dayOffReasonText
+
+private const val MAX_SKIPPED_SHOWN = 3
 
 /** System warnings computed by the activity (Android permissions). */
 data class SystemWarnings(val notificationsDenied: Boolean = false, val fullScreenDenied: Boolean = false)
@@ -63,10 +67,13 @@ fun AlarmListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Réveils") },
+                title = { Text(stringResource(R.string.alarms_title)) },
                 actions = {
                     IconButton(onClick = onOpenCalendars) {
-                        Icon(painterResource(R.drawable.ic_settings), contentDescription = "Réglages")
+                        Icon(
+                            painterResource(R.drawable.ic_settings),
+                            contentDescription = stringResource(R.string.settings_title),
+                        )
                     }
                 },
             )
@@ -74,13 +81,13 @@ fun AlarmListScreen(
         floatingActionButton = {
             var menu by remember { mutableStateOf(false) }
             Box {
-                ExtendedFloatingActionButton(onClick = { menu = true }) { Text("+  Nouveau") }
+                ExtendedFloatingActionButton(onClick = { menu = true }) { Text(stringResource(R.string.new_button)) }
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
-                    DropdownMenuItem(text = { Text("Réveil") }, onClick = {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.menu_alarm)) }, onClick = {
                         menu = false
                         onAdd()
                     })
-                    DropdownMenuItem(text = { Text("Réveil avant un événement") }, onClick = {
+                    DropdownMenuItem(text = { Text(stringResource(R.string.menu_event_alarm)) }, onClick = {
                         menu = false
                         onAddEventAlarm()
                     })
@@ -97,16 +104,16 @@ fun AlarmListScreen(
                 if (!state.hasCalendarPermission) {
                     item {
                         Banner(
-                            "Autorisez l'accès à l'agenda pour adapter vos réveils aux jours fériés et congés.",
-                            "Autoriser",
+                            stringResource(R.string.banner_calendar_permission),
+                            stringResource(R.string.action_allow),
                             onRequestCalendarPermission,
                         )
                     }
                 } else if (!state.hasCalendarSelected) {
                     item {
                         Banner(
-                            "Choisissez le ou les agendas contenant vos jours non travaillés.",
-                            "Choisir",
+                            stringResource(R.string.banner_choose_calendars),
+                            stringResource(R.string.action_choose),
                             onOpenCalendars,
                         )
                     }
@@ -114,8 +121,8 @@ fun AlarmListScreen(
                 if (!state.canScheduleExactAlarms) {
                     item {
                         Banner(
-                            "Les alarmes exactes sont désactivées : les réveils pourraient être en retard.",
-                            "Activer",
+                            stringResource(R.string.banner_exact_alarms),
+                            stringResource(R.string.action_enable),
                             onOpenExactAlarmSettings,
                         )
                     }
@@ -123,8 +130,8 @@ fun AlarmListScreen(
                 if (warnings.notificationsDenied) {
                     item {
                         Banner(
-                            "Les notifications sont nécessaires pour afficher le réveil qui sonne.",
-                            "Autoriser",
+                            stringResource(R.string.banner_notifications),
+                            stringResource(R.string.action_allow),
                             onRequestNotifications,
                         )
                     }
@@ -132,8 +139,8 @@ fun AlarmListScreen(
                 if (warnings.fullScreenDenied) {
                     item {
                         Banner(
-                            "Autorisez l'affichage plein écran pour voir le réveil sur l'écran verrouillé.",
-                            "Autoriser",
+                            stringResource(R.string.banner_full_screen),
+                            stringResource(R.string.action_allow),
                             onOpenFullScreenSettings,
                         )
                     }
@@ -141,7 +148,7 @@ fun AlarmListScreen(
                 if (state.items.isEmpty() && state.eventItems.isEmpty()) {
                     item {
                         Text(
-                            "Aucun réveil. Appuyez sur « Nouveau » pour commencer.",
+                            stringResource(R.string.empty_alarms),
                             modifier = Modifier.padding(top = 32.dp),
                             style = MaterialTheme.typography.bodyLarge,
                         )
@@ -154,7 +161,7 @@ fun AlarmListScreen(
             if (state.eventItems.isNotEmpty()) {
                 item(key = "events-header") {
                     Text(
-                        "Avant un événement",
+                        stringResource(R.string.events_header),
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(top = 8.dp),
                     )
@@ -203,17 +210,27 @@ private fun AlarmCard(item: AlarmItemUi, onClick: () -> Unit, onToggle: (Boolean
                     color = MaterialTheme.colorScheme.primary,
                 )
                 next.dayOffReason?.let {
-                    Text("Heure adaptée : $it", style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        stringResource(R.string.adapted_time, dayOffReasonText(it)),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
                 }
                 if (next.skipped.isNotEmpty() && alarm.dayOffMode == DayOffMode.SKIP) {
-                    val shown = next.skipped.take(3).joinToString(", ") {
-                        "${Format.dayDate(it.date)} (${it.reason})"
+                    val shown = next.skipped.take(MAX_SKIPPED_SHOWN).map {
+                        stringResource(R.string.fmt_paren, Format.dayDate(it.date), dayOffReasonText(it.reason))
+                    }.joinToString(", ")
+                    val more = if (next.skipped.size > MAX_SKIPPED_SHOWN) {
+                        " +${next.skipped.size - MAX_SKIPPED_SHOWN}"
+                    } else {
+                        ""
                     }
-                    val more = if (next.skipped.size > 3) " +${next.skipped.size - 3}" else ""
-                    Text("Ignoré : $shown$more", style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        stringResource(R.string.skipped_days, shown + more),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
                 }
             } else if (alarm.enabled) {
-                Text("Aucune sonnerie prévue", style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.no_next_ring), style = MaterialTheme.typography.bodySmall)
             }
         }
     }
@@ -227,23 +244,29 @@ private fun EventAlarmCard(item: EventAlarmItemUi, onClick: () -> Unit, onToggle
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(
-                        "${Format.duration(rule.minutesBefore)} avant",
+                        stringResource(R.string.minutes_before, Format.duration(rule.minutesBefore)),
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (rule.enabled) 1f else 0.5f),
                     )
                     val single = rule.singleEvent
                     val what = when {
-                        single != null -> "« ${single.title} » du ${Format.dayDate(single.start.toLocalDate())}"
-                        rule.firstEventOfDayOnly -> "le premier événement de la journée"
-                        else -> "chaque événement"
+                        single != null -> stringResource(
+                            R.string.event_what_single,
+                            single.title,
+                            Format.dayDate(single.start.toLocalDate()),
+                        )
+
+                        rule.firstEventOfDayOnly -> stringResource(R.string.event_what_first)
+
+                        else -> stringResource(R.string.event_what_each)
                     }
                     Text(listOf(rule.label, what).filter { it.isNotBlank() }.joinToString(" · "))
                 }
                 Switch(checked = rule.enabled, onCheckedChange = onToggle)
             }
             val filters = buildList {
-                add(item.calendarNames.joinToString().ifBlank { "aucun agenda" })
-                if (rule.keywords.isNotBlank()) add("mots-clés : ${rule.keywords}")
+                add(item.calendarNames.joinToString().ifBlank { stringResource(R.string.no_calendar) })
+                if (rule.keywords.isNotBlank()) add(stringResource(R.string.keywords_summary, rule.keywords))
             }.joinToString(" · ")
             Text(
                 filters,
@@ -254,15 +277,18 @@ private fun EventAlarmCard(item: EventAlarmItemUi, onClick: () -> Unit, onToggle
             if (rule.enabled && next != null) {
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    Format.nextRing(
-                        next.at,
-                    ) + " — ${next.event.title} (${Format.time(next.event.start.toLocalTime())})",
+                    stringResource(
+                        R.string.fmt_next_ring_event,
+                        Format.nextRing(next.at),
+                        next.event.title,
+                        Format.time(next.event.start.toLocalTime()),
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.primary,
                 )
             } else if (rule.enabled) {
-                Text("Aucun événement correspondant à venir", style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.no_upcoming_event), style = MaterialTheme.typography.bodySmall)
             }
         }
     }

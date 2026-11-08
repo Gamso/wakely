@@ -48,6 +48,7 @@ class AlarmService : Service() {
                     ),
                     label = intent.getStringExtra(EXTRA_LABEL).orEmpty(),
                     snoozeMinutes = intent.getIntExtra(EXTRA_SNOOZE_MINUTES, 0),
+                    eventTime = intent.getStringExtra(EXTRA_EVENT_TIME)?.let(LocalTime::parse),
                 ),
                 soundUri = intent.getStringExtra(EXTRA_SOUND_URI),
             )
@@ -127,11 +128,11 @@ class AlarmService : Service() {
             Intent(this, RingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
-        val time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+        val time = LocalTime.now().format(timeFormat)
         val builder = NotificationCompat.Builder(this, Notifications.CHANNEL_ALARM)
             .setSmallIcon(R.drawable.ic_alarm)
-            .setContentTitle("Réveil · $time")
-            .setContentText(ringing.label.ifBlank { "C'est l'heure !" })
+            .setContentTitle(getString(R.string.notif_ring_title, time))
+            .setContentText(contentText(ringing))
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -139,11 +140,21 @@ class AlarmService : Service() {
             .setContentIntent(fullScreen)
             .setFullScreenIntent(fullScreen, true)
         if (ringing.snoozeMinutes > 0) {
-            builder.addAction(0, "Répéter (${ringing.snoozeMinutes} min)", servicePendingIntent(ACTION_SNOOZE, 1))
+            builder.addAction(
+                0,
+                getString(R.string.notif_snooze, ringing.snoozeMinutes),
+                servicePendingIntent(ACTION_SNOOZE, 1),
+            )
         }
         return builder
-            .addAction(0, "Arrêter", servicePendingIntent(ACTION_STOP, 2))
+            .addAction(0, getString(R.string.action_stop), servicePendingIntent(ACTION_STOP, 2))
             .build()
+    }
+
+    private fun contentText(ringing: RingingAlarm): String {
+        val name = ringing.label.ifBlank { getString(R.string.notif_ring_text_default) }
+        val eventTime = ringing.eventTime ?: return name
+        return getString(R.string.at_time, name, eventTime.format(timeFormat))
     }
 
     private fun servicePendingIntent(action: String, requestCode: Int): PendingIntent = PendingIntent.getService(
@@ -168,6 +179,8 @@ class AlarmService : Service() {
         private const val EXTRA_ALARM_ID = "alarm_id"
         private const val EXTRA_LABEL = "label"
         private const val EXTRA_SOUND_URI = "sound_uri"
+        private const val EXTRA_EVENT_TIME = "event_time"
+        private val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
         private const val EXTRA_SNOOZE_MINUTES = "snooze_minutes"
         private const val NOTIFICATION_ID = 1
         private const val AUTO_STOP_MS = 10 * 60 * 1000L
@@ -183,6 +196,7 @@ class AlarmService : Service() {
                     .putExtra(EXTRA_KIND, info.key.kind.name)
                     .putExtra(EXTRA_ALARM_ID, info.key.id)
                     .putExtra(EXTRA_LABEL, info.label)
+                    .putExtra(EXTRA_EVENT_TIME, info.eventTime?.toString())
                     .putExtra(EXTRA_SOUND_URI, info.sound?.uri)
                     .putExtra(EXTRA_SNOOZE_MINUTES, info.snoozeMinutes),
             )

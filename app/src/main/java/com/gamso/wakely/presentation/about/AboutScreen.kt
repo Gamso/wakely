@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,10 +36,13 @@ import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.LicenseId
 import com.gamso.wakely.presentation.common.BackButton
 
-private fun LicenseId.label() = when (this) {
-    LicenseId.MIT -> "Licence MIT"
-    LicenseId.APACHE_2 -> "Licence Apache 2.0"
-}
+@Composable
+private fun LicenseId.label() = stringResource(
+    when (this) {
+        LicenseId.MIT -> R.string.license_mit
+        LicenseId.APACHE_2 -> R.string.license_apache
+    },
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +55,7 @@ fun AboutScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("À propos") },
+                title = { Text(stringResource(R.string.about_title)) },
                 navigationIcon = { BackButton(onBack) },
             )
         },
@@ -80,41 +84,52 @@ fun AboutScreen(
                         modifier = Modifier.padding(top = 12.dp),
                     )
                     state.appInfo?.let {
-                        Text("Version ${it.versionName}", style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            stringResource(R.string.app_version, it.versionName),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                     }
                     Text(
-                        "Le réveil qui s'adapte à votre agenda : jours fériés, congés et événements.",
+                        stringResource(R.string.about_tagline),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(top = 8.dp),
                     )
                     Text(
-                        "Développé par gamso",
+                        stringResource(R.string.developed_by),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(top = 4.dp),
                     )
-                    Text("© 2026 gamso · ${LicenseId.MIT.label()}", style = MaterialTheme.typography.bodySmall)
-                    TextButton(onClick = { onShowLicense(LicenseId.MIT) }) { Text("Voir la licence de Wakely") }
+                    Text(
+                        stringResource(R.string.fmt_copyright, LicenseId.MIT.label()),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    TextButton(onClick = {
+                        onShowLicense(LicenseId.MIT)
+                    }) { Text(stringResource(R.string.view_license)) }
                 }
             }
 
             item(key = "credits-title") {
                 Text(
-                    "Composants tiers",
+                    stringResource(R.string.third_party),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(top = 8.dp),
                 )
                 Text(
-                    "Wakely intègre les éléments suivants, utilisés conformément à leur licence.",
+                    stringResource(R.string.third_party_desc),
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
             items(state.credits, key = { it.name }) { credit ->
                 Card(Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(credit.name, style = MaterialTheme.typography.titleSmall)
-                        Text("© ${credit.author}", style = MaterialTheme.typography.bodySmall)
-                        Text(credit.usage, style = MaterialTheme.typography.bodyMedium)
-                        Text("Source : ${credit.source}", style = MaterialTheme.typography.bodySmall)
+                        Text(stringResource(credit.name), style = MaterialTheme.typography.titleSmall)
+                        Text("© ${stringResource(credit.author)}", style = MaterialTheme.typography.bodySmall)
+                        Text(stringResource(credit.usage), style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            stringResource(R.string.source_label, credit.source),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
                         TextButton(onClick = { onShowLicense(credit.license) }, contentPadding = PaddingValues(0.dp)) {
                             Text(credit.license.label())
                         }
@@ -127,7 +142,7 @@ fun AboutScreen(
     state.openLicense?.let { (id, text) ->
         AlertDialog(
             onDismissRequest = onCloseLicense,
-            confirmButton = { TextButton(onClick = onCloseLicense) { Text("Fermer") } },
+            confirmButton = { TextButton(onClick = onCloseLicense) { Text(stringResource(R.string.action_close)) } },
             title = { Text(id.label()) },
             text = {
                 Column(Modifier.heightIn(max = 480.dp).verticalScroll(rememberScrollState())) {

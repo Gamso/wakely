@@ -61,9 +61,8 @@ object CalendarLogic {
                         date,
                         DayOff(
                             date,
-                            event.title.ifBlank {
-                                "Jour non travaillé"
-                            },
+                            // May be blank: the UI shows a localized default.
+                            event.title,
                             filter.category,
                         ),
                     )

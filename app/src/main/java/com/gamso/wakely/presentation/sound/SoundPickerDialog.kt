@@ -23,12 +23,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.AlarmSound
 import com.gamso.wakely.domain.model.SoundSource
 import com.gamso.wakely.presentation.common.appViewModelFactory
@@ -51,13 +53,18 @@ fun SoundPickerDialog(initialUri: String?, onDismiss: () -> Unit, onConfirm: (Al
         vm.stopPreview()
         onDismiss()
     }
+    val groupTitles = listOf(
+        SoundSource.BUNDLED to stringResource(R.string.sounds_android),
+        SoundSource.CUSTOM to stringResource(R.string.sounds_custom),
+        SoundSource.SYSTEM to stringResource(R.string.sounds_device),
+    )
 
     Dialog(onDismissRequest = close, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("Sonnerie") },
-                    navigationIcon = { TextButton(onClick = close) { Text("Annuler") } },
+                    title = { Text(stringResource(R.string.sound_picker_title)) },
+                    navigationIcon = { TextButton(onClick = close) { Text(stringResource(R.string.action_cancel)) } },
                     actions = {
                         TextButton(
                             enabled = state.selected != null,
@@ -66,7 +73,7 @@ fun SoundPickerDialog(initialUri: String?, onDismiss: () -> Unit, onConfirm: (Al
                                 state.selected?.let(onConfirm)
                                 onDismiss()
                             },
-                        ) { Text("OK") }
+                        ) { Text(stringResource(R.string.action_ok)) }
                     },
                 )
             },
@@ -75,13 +82,9 @@ fun SoundPickerDialog(initialUri: String?, onDismiss: () -> Unit, onConfirm: (Al
                 Modifier.fillMaxSize().padding(padding),
                 contentPadding = PaddingValues(bottom = 24.dp),
             ) {
-                if (state.loading) item { Text("Chargement…", Modifier.padding(16.dp)) }
+                if (state.loading) item { Text(stringResource(R.string.loading), Modifier.padding(16.dp)) }
                 val groups = state.sounds.groupBy { it.source }
-                listOf(
-                    SoundSource.BUNDLED to "Sonneries Android (AOSP)",
-                    SoundSource.CUSTOM to "Mes sons",
-                    SoundSource.SYSTEM to "Sons du téléphone",
-                ).forEach { (source, title) ->
+                groupTitles.forEach { (source, title) ->
                     val sounds = groups[source].orEmpty()
                     if (sounds.isEmpty() && source != SoundSource.CUSTOM) return@forEach
                     item(key = "header-$source") { SectionHeader(title) }
@@ -103,10 +106,10 @@ fun SoundPickerDialog(initialUri: String?, onDismiss: () -> Unit, onConfirm: (Al
                             OutlinedButton(
                                 onClick = { pickFile.launch(arrayOf("audio/*")) },
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            ) { Text("+  Ajouter un son") }
+                            ) { Text(stringResource(R.string.add_sound)) }
                             if (state.addFailed) {
                                 Text(
-                                    "Impossible de lire ce fichier.",
+                                    stringResource(R.string.cannot_read_file),
                                     color = MaterialTheme.colorScheme.error,
                                     modifier = Modifier.padding(horizontal = 16.dp),
                                 )
@@ -116,7 +119,7 @@ fun SoundPickerDialog(initialUri: String?, onDismiss: () -> Unit, onConfirm: (Al
                 }
                 item(key = "credits") {
                     Text(
-                        "Sonneries Android : © The Android Open Source Project, licence Apache 2.0.",
+                        stringResource(R.string.sound_credit),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(16.dp),
@@ -156,8 +159,12 @@ private fun SoundRow(
             fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
         )
         if (playing) {
-            Text("♪ lecture", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+            Text(
+                stringResource(R.string.playing),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
         }
-        if (onRemove != null) TextButton(onClick = onRemove) { Text("Retirer") }
+        if (onRemove != null) TextButton(onClick = onRemove) { Text(stringResource(R.string.action_remove)) }
     }
 }

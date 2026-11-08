@@ -3,7 +3,7 @@
 The Android alarm clock that adapts to your calendar: it skips (or rings later on) public holidays and days off,
 and can wake you a set time before your appointments.
 
-> The app's interface is currently in French.
+> Available in English and French: Wakely follows the language of your phone (screenshots below are in French).
 
 <p align="center">
   <img src="docs/screenshots/alarms.png" alt="Alarm list" width="24%">

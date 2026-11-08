@@ -6,6 +6,7 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.net.Uri
 import android.provider.OpenableColumns
+import com.gamso.wakely.R
 import com.gamso.wakely.data.local.toAlarmSound
 import com.gamso.wakely.data.local.toJson
 import com.gamso.wakely.domain.model.AlarmSound
@@ -27,7 +28,7 @@ class SoundRepositoryImpl(private val context: Context) : SoundRepository {
      * Alarm sounds from the Android Open Source Project (frameworks/base/data/sounds),
      * licensed under Apache 2.0. Keys are res/raw file names.
      */
-    private val bundled: List<AlarmSound> = listOf(
+    private fun bundled(): List<AlarmSound> = listOf(
         "aosp_argon" to "Argon",
         "aosp_analysis" to "Analysis",
         "aosp_barium" to "Barium",
@@ -51,19 +52,18 @@ class SoundRepositoryImpl(private val context: Context) : SoundRepository {
         "aosp_promethium" to "Promethium",
         "aosp_scandium" to "Scandium",
         "aosp_timing" to "Timing",
-        "aosp_alarm_classic" to "Classique",
-        "aosp_alarm_beep_01" to "Bip 1",
-        "aosp_alarm_beep_02" to "Bip 2",
-        "aosp_alarm_beep_03" to "Bip 3",
-        "aosp_alarm_buzzer" to "Buzzer",
-        "aosp_alarm_rooster_01" to "Coq 1",
-        "aosp_alarm_rooster_02" to "Coq 2",
+        "aosp_alarm_classic" to context.getString(R.string.sound_classic),
+        *(1..BEEP_COUNT).map { "aosp_alarm_beep_0$it" to context.getString(R.string.sound_beep, it) }.toTypedArray(),
+        "aosp_alarm_buzzer" to context.getString(R.string.sound_buzzer),
+        "aosp_alarm_rooster_01" to context.getString(R.string.sound_rooster, 1),
+        "aosp_alarm_rooster_02" to context.getString(R.string.sound_rooster, 2),
     ).map { (res, name) -> AlarmSound(rawUri(res), name, SoundSource.BUNDLED) }
 
-    override fun defaultSound(): AlarmSound = bundled.first()
+    override fun defaultSound(): AlarmSound = bundled().first()
 
     override suspend fun getSounds(): List<AlarmSound> = withContext(Dispatchers.IO) {
         // Device sounds that duplicate a bundled one (same AOSP title) are hidden.
+        val bundled = bundled()
         val bundledNames = bundled.map { it.name.lowercase() }.toSet()
         bundled + systemSounds().filterNot { it.name.lowercase() in bundledNames } + customSounds()
     }
@@ -125,6 +125,7 @@ class SoundRepositoryImpl(private val context: Context) : SoundRepository {
         "${ContentResolver.SCHEME_ANDROID_RESOURCE}://${context.packageName}/raw/$name"
 
     private companion object {
+        const val BEEP_COUNT = 3
         const val PREFS = "sounds"
         const val KEY_CUSTOM = "custom_sounds"
     }

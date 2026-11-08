@@ -150,19 +150,34 @@ enum class RingKind { ALARM, EVENT }
 data class RingKey(val kind: RingKind, val id: Long)
 
 /** Everything the ringing screen needs. */
-data class RingInfo(val key: RingKey, val label: String, val sound: AlarmSound?, val snoozeMinutes: Int)
+data class RingInfo(
+    val key: RingKey,
+    /** Alarm label, or the event title for an event rule; may be blank. */
+    val label: String,
+    val sound: AlarmSound?,
+    val snoozeMinutes: Int,
+    /** Start time of the event an event rule rings for. */
+    val eventTime: LocalTime? = null,
+)
 
 /** Evening reminder of the next day's rings, shared by every alarm. */
 data class SummarySettings(val enabled: Boolean = true, val time: LocalTime = LocalTime.of(21, 0))
 
-data class PlannedRing(val at: LocalDateTime, val title: String, val detail: String? = null)
-
-data class DayPlan(
-    val date: LocalDate,
-    val rings: List<PlannedRing>,
-    /** Human-readable notes on alarms that will not ring that day. */
-    val skipped: List<String>,
+/**
+ * A ring planned for a day. [label] may be blank (the UI shows a default).
+ * An alarm may carry the [dayOffReason] that moved it; an event rule carries its [event].
+ */
+data class PlannedRing(
+    val at: LocalDateTime,
+    val label: String,
+    val dayOffReason: String? = null,
+    val event: CalendarEvent? = null,
 )
+
+/** An alarm that will not ring on a day off. */
+data class SkippedRing(val label: String, val time: LocalTime, val reason: String)
+
+data class DayPlan(val date: LocalDate, val rings: List<PlannedRing>, val skipped: List<SkippedRing>)
 
 data class AppInfo(val versionName: String)
 

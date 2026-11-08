@@ -1,3 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Wakely</string>
+    <string name="app_name" translatable="false">Wakely</string>
+
+    <!-- Language-neutral formats -->
+    <string name="action_ok" translatable="false">OK</string>
+    <string name="fmt_dot" translatable="false">%1$s · %2$s</string>
+    <string name="fmt_paren" translatable="false">%1$s (%2$s)</string>
+    <string name="fmt_space" translatable="false">%1$s %2$s</string>
+    <string name="fmt_next_ring_event" translatable="false">%1$s — %2$s (%3$s)</string>
+    <string name="fmt_copyright" translatable="false">© 2026 gamso · %1$s</string>
+    <string name="app_version" translatable="false">Version %1$s</string>
+    <string name="sound_buzzer" translatable="false">Buzzer</string>
+    <string name="author_aosp" translatable="false">The Android Open Source Project</string>
+    <string name="author_google" translatable="false">Google</string>
+
+    <!-- Common actions -->
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_close">Close</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_back">Back</string>
+    <string name="action_stop">Stop</string>
+    <string name="action_allow">Allow</string>
+    <string name="action_choose">Choose</string>
+    <string name="action_enable">Enable</string>
+    <string name="loading">Loading…</string>
+    <string name="at_time">%1$s at %2$s</string>
+
+    <!-- Alarm list -->
+    <string name="alarms_title">Alarms</string>
+    <string name="settings_title">Settings</string>
+    <string name="new_button">+  New</string>
+    <string name="menu_alarm">Alarm</string>
+    <string name="menu_event_alarm">Alarm before an event</string>
+    <string name="banner_calendar_permission">Allow calendar access to adapt your alarms to public holidays and days off.</string>
+    <string name="banner_choose_calendars">Choose the calendars that contain your days off.</string>
+    <string name="banner_exact_alarms">Exact alarms are disabled: your alarms may be late.</string>
+    <string name="banner_notifications">Notifications are needed to show the alarm that is ringing.</string>
+    <string name="banner_full_screen">Allow full-screen display to see the alarm on the lock screen.</string>
+    <string name="empty_alarms">No alarms yet. Tap “New” to get started.</string>
+    <string name="events_header">Before an event</string>
+    <string name="days_off_skip">Days off: does not ring</string>
+    <string name="days_off_other_time">Days off: rings at %1$s</string>
+    <string name="days_off_ignore">Calendar ignored</string>
+    <string name="next_ring">Next ring: %1$s at %2$s</string>
+    <string name="today">today</string>
+    <string name="tomorrow">tomorrow</string>
+    <string name="adapted_time">Adapted time: %1$s</string>
+    <string name="skipped_days">Skipped: %1$s</string>
+    <string name="no_next_ring">No ring scheduled</string>
+    <string name="day_off_default">Day off</string>
+    <string name="minutes_before">%1$s before</string>
+    <string name="event_what_single">“%1$s” on %2$s</string>
+    <string name="event_what_first">the first event of the day</string>
+    <string name="event_what_each">every event</string>
+    <string name="no_calendar">no calendar</string>
+    <string name="keywords_summary">keywords: %1$s</string>
+    <string name="no_upcoming_event">No matching upcoming event</string>
+
+    <!-- Days -->
+    <string name="summary_once">Once</string>
+    <string name="summary_every_day">Every day</string>
+    <string name="summary_weekdays">Monday to Friday</string>
+    <string name="summary_weekend">Weekends</string>
+
+    <!-- Alarm editor -->
+    <string name="new_alarm">New alarm</string>
+    <string name="edit_alarm">Edit alarm</string>
+    <string name="label">Label</string>
+    <string name="repeat">Repeat</string>
+    <string name="chip_weekdays">Weekdays</string>
+    <string name="chip_every_day">Every day</string>
+    <string name="chip_once">Once</string>
+    <string name="days_off_section">Public holidays and days off (from your calendar)</string>
+    <string name="mode_skip">Don\'t ring</string>
+    <string name="mode_other_time">Ring at another time</string>
+    <string name="mode_other_time_button">Time on days off: %1$s</string>
+    <string name="mode_ignore">Ring normally (ignore the calendar)</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="snooze_title">Snooze</string>
+    <string name="snooze_off">Off</string>
+    <string name="snooze_minutes">%1$d min</string>
+    <string name="delete_alarm">Delete this alarm</string>
+
+    <!-- Event alarm editor -->
+    <string name="new_event_alarm">Alarm before an event</string>
+    <string name="edit_rule">Edit rule</string>
+    <string name="label_optional">Label (optional)</string>
+    <string name="label_placeholder">Event title by default</string>
+    <string name="how_long_before">How long before?</string>
+    <string name="minutes_field">Or a number of minutes</string>
+    <string name="which_events">Which events?</string>
+    <string name="specific_event">Specific event</string>
+    <string name="calendars">Calendars</string>
+    <string name="calendars_hint">None checked = calendars of the “Events” category (%1$s).</string>
+    <string name="none_lower">none</string>
+    <string name="keywords_optional">Keywords (optional)</string>
+    <string name="keywords_help">Separated by commas. Empty = all events.</string>
+    <string name="first_event_only">Only the first event of the day</string>
+    <string name="pick_specific_event">Choose a specific event…</string>
+    <string name="upcoming_rings">Upcoming rings</string>
+    <string name="no_matching_events">No matching event in the next 60 days.</string>
+    <string name="delete_rule">Delete this rule</string>
+    <string name="pick_event_title">Choose an event</string>
+    <string name="no_events_in_calendars">No upcoming event in the selected calendars.</string>
+    <string name="untitled">(untitled)</string>
+
+    <!-- Settings -->
+    <string name="summary_title">Evening notification</string>
+    <string name="summary_description">Every evening, a summary of tomorrow\'s alarms (shared by all alarms).</string>
+    <string name="summary_time">Notification time: %1$s</string>
+    <string name="allow_calendar_access">Allow calendar access</string>
+    <string name="calendars_title">Calendars</string>
+    <string name="calendars_description">Calendars synced on this phone (Google, Outlook, Samsung…). The same calendar can be used in several categories.</string>
+    <string name="cat_holidays_title">Public holidays</string>
+    <string name="cat_holidays_desc">All-day events in these calendars are days off.</string>
+    <string name="cat_holidays_hint">e.g. public holiday (excludes plain observances)</string>
+    <string name="cat_leave_title">Leave and vacations</string>
+    <string name="cat_leave_desc">Your leave, vacations, time off…: days off.</string>
+    <string name="cat_leave_hint">e.g. leave, vacation, time off</string>
+    <string name="cat_events_title">Events</string>
+    <string name="cat_events_desc">Calendars used by “alarm before an event” rules.</string>
+    <string name="cat_events_hint">e.g. meeting, client</string>
+    <string name="no_calendar_assigned">No calendar.</string>
+    <string name="add_calendar">+  Add a calendar</string>
+    <string name="add_to_category">Add to “%1$s”</string>
+    <string name="no_other_calendar">No other calendar available. Add an account (Google, Outlook…) in Android settings, and turn on its calendar sync.</string>
+    <string name="about_link">About Wakely</string>
+    <!-- Keyword pre-filled for public-holiday calendars (matches the calendar's own wording) -->
+    <string name="holiday_keyword">public holiday</string>
+
+    <!-- Sound picker -->
+    <string name="sound_picker_title">Ringtone</string>
+    <string name="sounds_android">Android ringtones (AOSP)</string>
+    <string name="sounds_custom">My sounds</string>
+    <string name="sounds_device">Phone sounds</string>
+    <string name="add_sound">+  Add a sound</string>
+    <string name="cannot_read_file">Can\'t read this file.</string>
+    <string name="sound_credit">Android ringtones: © The Android Open Source Project, Apache 2.0 license.</string>
+    <string name="playing">♪ playing</string>
+    <string name="sound_classic">Classic</string>
+    <string name="sound_beep">Beep %1$d</string>
+    <string name="sound_rooster">Rooster %1$d</string>
+
+    <!-- About -->
+    <string name="about_title">About</string>
+    <string name="about_tagline">The alarm clock that adapts to your calendar: public holidays, days off and events.</string>
+    <string name="developed_by">Developed by gamso</string>
+    <string name="view_license">View Wakely\'s license</string>
+    <string name="third_party">Third-party components</string>
+    <string name="third_party_desc">Wakely includes the following components, used in accordance with their licenses.</string>
+    <string name="source_label">Source: %1$s</string>
+    <string name="license_mit">MIT License</string>
+    <string name="license_apache">Apache License 2.0</string>
+    <string name="credit_aosp_name">Android alarm sounds</string>
+    <string name="credit_aosp_usage">The 30 “Android ringtones (AOSP)”, included unmodified (files renamed).</string>
+    <string name="credit_icons_name">Material Design icons</string>
+    <string name="credit_icons_usage">“Settings” (gear) and “Back” (arrow) icons.</string>
+    <string name="credit_androidx_name">AndroidX and Jetpack Compose</string>
+    <string name="credit_androidx_usage">Interface (Compose, Material 3), activities, lifecycle and ViewModel.</string>
+    <string name="credit_kotlin_name">Kotlin and kotlinx.coroutines</string>
+    <string name="credit_kotlin_usage">Language and standard library, asynchronous programming.</string>
+    <string name="author_jetbrains">JetBrains s.r.o. and contributors</string>
+
+    <!-- Ringing screen and notifications -->
+    <string name="ring_default_label">Alarm</string>
+    <string name="snooze_for">Snooze for %1$d min</string>
+    <string name="notif_channel_alarm">Ringing alarms</string>
+    <string name="notif_channel_alarm_desc">Shows the alarm that is ringing</string>
+    <string name="notif_channel_summary">Tomorrow\'s alarms</string>
+    <string name="notif_channel_summary_desc">Evening reminder of the alarms planned for the next day</string>
+    <string name="notif_ring_title">Alarm · %1$s</string>
+    <string name="notif_ring_text_default">It\'s time!</string>
+    <string name="notif_snooze">Snooze (%1$d min)</string>
+    <string name="summary_notif_title">Tomorrow, %1$s</string>
+    <string name="summary_none">No alarm planned</string>
+    <string name="summary_none_ring">No alarm will ring</string>
+    <string name="summary_one">Alarm at %1$s</string>
+    <string name="summary_many">%1$d alarms, the first at %2$s</string>
+    <string name="summary_detail_adapted">adapted time: %1$s</string>
+    <string name="summary_detail_event">event at %1$s</string>
+    <string name="summary_detail_before">before “%1$s” at %2$s</string>
+    <string name="summary_skipped">%1$s %2$s skipped: %3$s</string>
 </resources>

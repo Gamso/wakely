@@ -1,7 +1,9 @@
 package com.gamso.wakely.presentation.about
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.AppInfo
 import com.gamso.wakely.domain.model.LicenseId
 import com.gamso.wakely.domain.repository.AppInfoRepository
@@ -12,7 +14,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /** A third-party component shipped in the app. */
-data class Credit(val name: String, val author: String, val usage: String, val license: LicenseId, val source: String)
+data class Credit(
+    @StringRes val name: Int,
+    @StringRes val author: Int,
+    @StringRes val usage: Int,
+    val license: LicenseId,
+    val source: String,
+)
 
 data class AboutUiState(
     val appInfo: AppInfo? = null,
@@ -36,30 +44,30 @@ class AboutViewModel(private val repository: AppInfoRepository) : ViewModel() {
 
 private val CREDITS = listOf(
     Credit(
-        name = "Sonneries d'alarme Android",
-        author = "The Android Open Source Project",
-        usage = "Les 30 sonneries « Sonneries Android (AOSP) », intégrées sans modification (fichiers renommés).",
+        name = R.string.credit_aosp_name,
+        author = R.string.author_aosp,
+        usage = R.string.credit_aosp_usage,
         license = LicenseId.APACHE_2,
         source = "android.googlesource.com/platform/frameworks/base/+/main/data/sounds",
     ),
     Credit(
-        name = "Icônes Material Design",
-        author = "Google",
-        usage = "Icônes « Réglages » (roue dentée) et « Retour » (flèche).",
+        name = R.string.credit_icons_name,
+        author = R.string.author_google,
+        usage = R.string.credit_icons_usage,
         license = LicenseId.APACHE_2,
         source = "github.com/google/material-design-icons",
     ),
     Credit(
-        name = "AndroidX et Jetpack Compose",
-        author = "The Android Open Source Project",
-        usage = "Interface (Compose, Material 3), activités, cycle de vie et ViewModel.",
+        name = R.string.credit_androidx_name,
+        author = R.string.author_aosp,
+        usage = R.string.credit_androidx_usage,
         license = LicenseId.APACHE_2,
         source = "developer.android.com/jetpack/androidx",
     ),
     Credit(
-        name = "Kotlin et kotlinx.coroutines",
-        author = "JetBrains s.r.o. et contributeurs",
-        usage = "Langage et bibliothèque standard, programmation asynchrone.",
+        name = R.string.credit_kotlin_name,
+        author = R.string.author_jetbrains,
+        usage = R.string.credit_kotlin_usage,
         license = LicenseId.APACHE_2,
         source = "kotlinlang.org",
     ),

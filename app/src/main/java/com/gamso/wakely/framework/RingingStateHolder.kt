@@ -1,6 +1,7 @@
 package com.gamso.wakely.framework
 
 import com.gamso.wakely.domain.model.RingKey
+import java.time.LocalTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,6 +11,8 @@ data class RingingAlarm(
     val label: String,
     /** 0 = snooze disabled. */
     val snoozeMinutes: Int,
+    /** Start time of the event an event rule rings for. */
+    val eventTime: LocalTime? = null,
 )
 
 /** State shared between the ringing service and the ringing screen. */

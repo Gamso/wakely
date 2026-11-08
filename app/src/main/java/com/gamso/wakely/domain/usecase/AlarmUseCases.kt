@@ -9,6 +9,7 @@ import com.gamso.wakely.domain.model.PlannedRing
 import com.gamso.wakely.domain.model.RingInfo
 import com.gamso.wakely.domain.model.RingKey
 import com.gamso.wakely.domain.model.RingKind
+import com.gamso.wakely.domain.model.SkippedRing
 import com.gamso.wakely.domain.model.SummarySettings
 import com.gamso.wakely.domain.repository.AlarmRepository
 import com.gamso.wakely.domain.repository.AlarmScheduler
@@ -216,7 +217,13 @@ class HandleRingFiredUseCase(
                     expectedAt = expected.at
                     if (rule.singleEvent != null) eventAlarmRepository.save(rule.copy(enabled = false))
                     val title = rule.label.ifBlank { expected.event.title }
-                    RingInfo(key, "$title à ${expected.event.start.toLocalTime()}", rule.sound, rule.snoozeMinutes)
+                    RingInfo(
+                        key,
+                        title,
+                        rule.sound,
+                        rule.snoozeMinutes,
+                        eventTime = expected.event.start.toLocalTime(),
+                    )
                 } else {
                     null
                 }
@@ -247,19 +254,18 @@ class GetDayPlanUseCase(
         val dayStart = date.atStartOfDay().minusNanos(1)
         val daysOff = getDaysOff(now.toLocalDate())
         val rings = mutableListOf<PlannedRing>()
-        val skipped = mutableListOf<String>()
+        val skipped = mutableListOf<SkippedRing>()
 
         alarmRepository.getAlarms().filter { it.enabled }.forEach { alarm ->
             val after = if (alarm.isRepeating) maxOf(dayStart, now) else now
             val next = computeNextRing(alarm, after, daysOff)
-            val title = alarm.label.ifBlank { "Réveil" }
             if (next != null && next.at.toLocalDate() == date) {
-                rings += PlannedRing(next.at, title, next.dayOffReason?.let { "heure adaptée : $it" })
+                rings += PlannedRing(next.at, alarm.label, dayOffReason = next.dayOffReason)
             } else {
                 val off = daysOff[date]
                 val normallyRings = !alarm.isRepeating || date.dayOfWeek in alarm.days
                 if (off != null && normallyRings && alarm.dayOffMode == DayOffMode.SKIP) {
-                    skipped += "$title ${alarm.time} ignoré : ${off.reason}"
+                    skipped += SkippedRing(alarm.label, alarm.time, off.reason)
                 }
             }
         }
@@ -270,14 +276,7 @@ class GetDayPlanUseCase(
             rules.forEach { rule ->
                 CalendarLogic.upcomingEventRings(rule, maxOf(dayStart, now), data.events, data.eventFilters)
                     .filter { it.at.toLocalDate() == date }
-                    .forEach { ring ->
-                        val eventTime = ring.event.start.toLocalTime()
-                        rings += if (rule.label.isBlank()) {
-                            PlannedRing(ring.at, ring.event.title, "événement à $eventTime")
-                        } else {
-                            PlannedRing(ring.at, rule.label, "avant « ${ring.event.title} » à $eventTime")
-                        }
-                    }
+                    .forEach { ring -> rings += PlannedRing(ring.at, rule.label, event = ring.event) }
             }
         }
         return DayPlan(date, rings.sortedBy { it.at }, skipped)

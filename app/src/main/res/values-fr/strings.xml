@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Common actions -->
+    <string name="action_cancel">Annuler</string>
+    <string name="action_save">Enregistrer</string>
+    <string name="action_close">Fermer</string>
+    <string name="action_remove">Retirer</string>
+    <string name="action_back">Retour</string>
+    <string name="action_stop">Arrêter</string>
+    <string name="action_allow">Autoriser</string>
+    <string name="action_choose">Choisir</string>
+    <string name="action_enable">Activer</string>
+    <string name="loading">Chargement…</string>
+    <string name="at_time">%1$s à %2$s</string>
+
+    <!-- Alarm list -->
+    <string name="alarms_title">Réveils</string>
+    <string name="settings_title">Réglages</string>
+    <string name="new_button">+  Nouveau</string>
+    <string name="menu_alarm">Réveil</string>
+    <string name="menu_event_alarm">Réveil avant un événement</string>
+    <string name="banner_calendar_permission">Autorisez l\'accès à l\'agenda pour adapter vos réveils aux jours fériés et congés.</string>
+    <string name="banner_choose_calendars">Choisissez le ou les agendas contenant vos jours non travaillés.</string>
+    <string name="banner_exact_alarms">Les alarmes exactes sont désactivées : les réveils pourraient être en retard.</string>
+    <string name="banner_notifications">Les notifications sont nécessaires pour afficher le réveil qui sonne.</string>
+    <string name="banner_full_screen">Autorisez l\'affichage plein écran pour voir le réveil sur l\'écran verrouillé.</string>
+    <string name="empty_alarms">Aucun réveil. Appuyez sur « Nouveau » pour commencer.</string>
+    <string name="events_header">Avant un événement</string>
+    <string name="days_off_skip">Jours non travaillés : ne sonne pas</string>
+    <string name="days_off_other_time">Jours non travaillés : sonne à %1$s</string>
+    <string name="days_off_ignore">Agenda ignoré</string>
+    <string name="next_ring">Prochaine sonnerie : %1$s à %2$s</string>
+    <string name="today">aujourd\'hui</string>
+    <string name="tomorrow">demain</string>
+    <string name="adapted_time">Heure adaptée : %1$s</string>
+    <string name="skipped_days">Ignoré : %1$s</string>
+    <string name="no_next_ring">Aucune sonnerie prévue</string>
+    <string name="day_off_default">Jour non travaillé</string>
+    <string name="minutes_before">%1$s avant</string>
+    <string name="event_what_single">« %1$s » du %2$s</string>
+    <string name="event_what_first">le premier événement de la journée</string>
+    <string name="event_what_each">chaque événement</string>
+    <string name="no_calendar">aucun agenda</string>
+    <string name="keywords_summary">mots-clés : %1$s</string>
+    <string name="no_upcoming_event">Aucun événement correspondant à venir</string>
+
+    <!-- Days -->
+    <string name="summary_once">Une seule fois</string>
+    <string name="summary_every_day">Tous les jours</string>
+    <string name="summary_weekdays">Du lundi au vendredi</string>
+    <string name="summary_weekend">Le week-end</string>
+
+    <!-- Alarm editor -->
+    <string name="new_alarm">Nouveau réveil</string>
+    <string name="edit_alarm">Modifier le réveil</string>
+    <string name="label">Libellé</string>
+    <string name="repeat">Répétition</string>
+    <string name="chip_weekdays">Semaine</string>
+    <string name="chip_every_day">Tous les jours</string>
+    <string name="chip_once">Une fois</string>
+    <string name="days_off_section">Jours fériés et congés (selon l\'agenda)</string>
+    <string name="mode_skip">Ne pas sonner</string>
+    <string name="mode_other_time">Sonner à une autre heure</string>
+    <string name="mode_other_time_button">Heure les jours non travaillés : %1$s</string>
+    <string name="mode_ignore">Sonner normalement (ignorer l\'agenda)</string>
+    <string name="ringtone">Sonnerie</string>
+    <string name="snooze_title">Répéter (snooze)</string>
+    <string name="snooze_off">Désactivé</string>
+    <string name="snooze_minutes">%1$d min</string>
+    <string name="delete_alarm">Supprimer ce réveil</string>
+
+    <!-- Event alarm editor -->
+    <string name="new_event_alarm">Réveil avant un événement</string>
+    <string name="edit_rule">Modifier la règle</string>
+    <string name="label_optional">Libellé (facultatif)</string>
+    <string name="label_placeholder">Titre de l\'événement par défaut</string>
+    <string name="how_long_before">Sonner combien de temps avant ?</string>
+    <string name="minutes_field">Ou un nombre de minutes</string>
+    <string name="which_events">Quels événements ?</string>
+    <string name="specific_event">Événement précis</string>
+    <string name="calendars">Agendas</string>
+    <string name="calendars_hint">Aucun coché = agendas de la catégorie « Événements » (%1$s).</string>
+    <string name="none_lower">aucun</string>
+    <string name="keywords_optional">Mots-clés (facultatif)</string>
+    <string name="keywords_help">Séparés par des virgules. Vide = tous les événements.</string>
+    <string name="first_event_only">Seulement le premier événement de la journée</string>
+    <string name="pick_specific_event">Choisir un événement précis…</string>
+    <string name="upcoming_rings">Prochaines sonneries</string>
+    <string name="no_matching_events">Aucun événement correspondant dans les 60 prochains jours.</string>
+    <string name="delete_rule">Supprimer cette règle</string>
+    <string name="pick_event_title">Choisir un événement</string>
+    <string name="no_events_in_calendars">Aucun événement à venir dans les agendas sélectionnés.</string>
+    <string name="untitled">(sans titre)</string>
+
+    <!-- Settings -->
+    <string name="summary_title">Notification de la veille</string>
+    <string name="summary_description">Chaque soir, un résumé des réveils du lendemain (commun à tous les réveils).</string>
+    <string name="summary_time">Heure de la notification : %1$s</string>
+    <string name="allow_calendar_access">Autoriser l\'accès à l\'agenda</string>
+    <string name="calendars_title">Agendas</string>
+    <string name="calendars_description">Agendas synchronisés sur ce téléphone (Google, Outlook, Samsung…). Un même agenda peut être utilisé dans plusieurs catégories.</string>
+    <string name="cat_holidays_title">Jours fériés</string>
+    <string name="cat_holidays_desc">Les événements « journée entière » de ces agendas sont des jours non travaillés.</string>
+    <string name="cat_holidays_hint">ex. férié (exclut les simples fêtes)</string>
+    <string name="cat_leave_title">Congés et vacances</string>
+    <string name="cat_leave_desc">Vos jours de congé, vacances, RTT… : jours non travaillés.</string>
+    <string name="cat_leave_hint">ex. congé, vacances, RTT</string>
+    <string name="cat_events_title">Événements</string>
+    <string name="cat_events_desc">Agendas utilisés par les réveils « avant un événement ».</string>
+    <string name="cat_events_hint">ex. réunion, client</string>
+    <string name="no_calendar_assigned">Aucun agenda.</string>
+    <string name="add_calendar">+  Ajouter un agenda</string>
+    <string name="add_to_category">Ajouter à « %1$s »</string>
+    <string name="no_other_calendar">Aucun autre agenda disponible. Ajoutez un compte (Google, Outlook…) dans les paramètres Android, et activez la synchronisation de son agenda.</string>
+    <string name="about_link">À propos de Wakely</string>
+    <string name="holiday_keyword">férié</string>
+
+    <!-- Sound picker -->
+    <string name="sound_picker_title">Sonnerie</string>
+    <string name="sounds_android">Sonneries Android (AOSP)</string>
+    <string name="sounds_custom">Mes sons</string>
+    <string name="sounds_device">Sons du téléphone</string>
+    <string name="add_sound">+  Ajouter un son</string>
+    <string name="cannot_read_file">Impossible de lire ce fichier.</string>
+    <string name="sound_credit">Sonneries Android : © The Android Open Source Project, licence Apache 2.0.</string>
+    <string name="playing">♪ lecture</string>
+    <string name="sound_classic">Classique</string>
+    <string name="sound_beep">Bip %1$d</string>
+    <string name="sound_rooster">Coq %1$d</string>
+
+    <!-- About -->
+    <string name="about_title">À propos</string>
+    <string name="about_tagline">Le réveil qui s\'adapte à votre agenda : jours fériés, congés et événements.</string>
+    <string name="developed_by">Développé par gamso</string>
+    <string name="view_license">Voir la licence de Wakely</string>
+    <string name="third_party">Composants tiers</string>
+    <string name="third_party_desc">Wakely intègre les éléments suivants, utilisés conformément à leur licence.</string>
+    <string name="source_label">Source : %1$s</string>
+    <string name="license_mit">Licence MIT</string>
+    <string name="license_apache">Licence Apache 2.0</string>
+    <string name="credit_aosp_name">Sonneries d\'alarme Android</string>
+    <string name="credit_aosp_usage">Les 30 sonneries « Sonneries Android (AOSP) », intégrées sans modification (fichiers renommés).</string>
+    <string name="credit_icons_name">Icônes Material Design</string>
+    <string name="credit_icons_usage">Icônes « Réglages » (roue dentée) et « Retour » (flèche).</string>
+    <string name="credit_androidx_name">AndroidX et Jetpack Compose</string>
+    <string name="credit_androidx_usage">Interface (Compose, Material 3), activités, cycle de vie et ViewModel.</string>
+    <string name="credit_kotlin_name">Kotlin et kotlinx.coroutines</string>
+    <string name="credit_kotlin_usage">Langage et bibliothèque standard, programmation asynchrone.</string>
+    <string name="author_jetbrains">JetBrains s.r.o. et contributeurs</string>
+
+    <!-- Ringing screen and notifications -->
+    <string name="ring_default_label">Réveil</string>
+    <string name="snooze_for">Répéter dans %1$d min</string>
+    <string name="notif_channel_alarm">Réveils en cours</string>
+    <string name="notif_channel_alarm_desc">Affiche le réveil qui sonne</string>
+    <string name="notif_channel_summary">Réveils du lendemain</string>
+    <string name="notif_channel_summary_desc">Rappel, la veille au soir, des réveils prévus le lendemain</string>
+    <string name="notif_ring_title">Réveil · %1$s</string>
+    <string name="notif_ring_text_default">C\'est l\'heure !</string>
+    <string name="notif_snooze">Répéter (%1$d min)</string>
+    <string name="summary_notif_title">Demain, %1$s</string>
+    <string name="summary_none">Aucun réveil prévu</string>
+    <string name="summary_none_ring">Aucun réveil ne sonnera</string>
+    <string name="summary_one">Réveil à %1$s</string>
+    <string name="summary_many">%1$d réveils, le premier à %2$s</string>
+    <string name="summary_detail_adapted">heure adaptée : %1$s</string>
+    <string name="summary_detail_event">événement à %1$s</string>
+    <string name="summary_detail_before">avant « %1$s » à %2$s</string>
+    <string name="summary_skipped">%1$s %2$s ignoré : %3$s</string>
+</resources>

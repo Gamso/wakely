@@ -19,14 +19,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.gamso.wakely.R
 import com.gamso.wakely.presentation.about.AboutScreen
 import com.gamso.wakely.presentation.about.AboutViewModel
 import com.gamso.wakely.presentation.alarms.AlarmListScreen
@@ -69,6 +72,8 @@ private fun WakelyNavigation() {
         route = if (route == Routes.ABOUT) Routes.SETTINGS else Routes.LIST
     }
 
+    // Read through a State so the pre-filled keyword follows the language of the phone.
+    val holidayKeyword = rememberUpdatedState(stringResource(R.string.holiday_keyword))
     val listVm: AlarmListViewModel = viewModel(
         factory = appViewModelFactory {
             AlarmListViewModel(
@@ -161,6 +166,7 @@ private fun WakelyNavigation() {
                         it.updateCalendarFilters,
                         it.updateSummarySettings,
                         it.applicationScope,
+                        holidayKeyword = { holidayKeyword.value },
                     )
                 },
             )

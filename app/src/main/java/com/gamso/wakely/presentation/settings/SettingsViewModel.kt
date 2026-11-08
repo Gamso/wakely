@@ -43,6 +43,8 @@ class SettingsViewModel(
     private val updateCalendarFilters: UpdateCalendarFiltersUseCase,
     private val updateSummarySettings: UpdateSummarySettingsUseCase,
     private val applicationScope: CoroutineScope,
+    /** Keyword pre-filled for public-holiday calendars, in the language of the phone. */
+    private val holidayKeyword: () -> String,
 ) : ViewModel() {
 
     private val calendars = MutableStateFlow<List<DeviceCalendar>?>(null)
@@ -91,13 +93,13 @@ class SettingsViewModel(
 
     /**
      * Google's "Holidays and observances" calendars also contain days that are not public
-     * holidays (Mother's Day, Valentine's Day...). Their public holidays say "Jour férié" in
-     * the description, so the keyword is pre-filled; the user can still edit it.
+     * holidays (Mother's Day, Valentine's Day...). Their public holidays say "Public holiday"
+     * (or "Jour férié"...) in the description, so the keyword is pre-filled; the user can still edit it.
      */
     private fun defaultKeywords(calendar: DeviceCalendar, category: CalendarCategory): String {
         if (category != CalendarCategory.HOLIDAYS) return ""
         val name = com.gamso.wakely.domain.usecase.CalendarLogic.normalize(calendar.name)
-        return if ("ferie" in name || "holiday" in name) "férié" else ""
+        return if ("ferie" in name || "holiday" in name) holidayKeyword() else ""
     }
 
     fun removeCalendar(calendar: DeviceCalendar, category: CalendarCategory) = editFilters { filters ->

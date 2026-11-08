@@ -25,10 +25,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.gamso.wakely.R
 import com.gamso.wakely.framework.AlarmService
 import com.gamso.wakely.framework.RingingAlarm
 import com.gamso.wakely.framework.RingingStateHolder
@@ -67,6 +69,7 @@ class RingActivity : ComponentActivity() {
                 LaunchedEffect(ringing) { if (ringing == null) finish() }
                 RingScreen(
                     label = ringing?.label.orEmpty(),
+                    eventTime = ringing?.eventTime,
                     snoozeMinutes = ringing?.snoozeMinutes ?: 0,
                     onStop = {
                         AlarmService.stop(this)
@@ -83,7 +86,13 @@ class RingActivity : ComponentActivity() {
 }
 
 @Composable
-private fun RingScreen(label: String, snoozeMinutes: Int, onStop: () -> Unit, onSnooze: () -> Unit) {
+private fun RingScreen(
+    label: String,
+    eventTime: LocalTime?,
+    snoozeMinutes: Int,
+    onStop: () -> Unit,
+    onSnooze: () -> Unit,
+) {
     var now by remember { mutableStateOf(LocalTime.now()) }
     LaunchedEffect(Unit) {
         while (true) {
@@ -98,15 +107,21 @@ private fun RingScreen(label: String, snoozeMinutes: Int, onStop: () -> Unit, on
             verticalArrangement = Arrangement.Center,
         ) {
             Text(Format.time(now), style = MaterialTheme.typography.displayLarge)
-            Text(label.ifBlank { "Réveil" }, style = MaterialTheme.typography.headlineSmall)
+            val name = label.ifBlank { stringResource(R.string.ring_default_label) }
+            val title = if (eventTime != null) {
+                stringResource(R.string.at_time, name, Format.time(eventTime))
+            } else {
+                name
+            }
+            Text(title, style = MaterialTheme.typography.headlineSmall)
             Spacer(Modifier.height(64.dp))
             Button(onClick = onStop, modifier = Modifier.fillMaxWidth().height(64.dp)) {
-                Text("Arrêter", style = MaterialTheme.typography.titleLarge)
+                Text(stringResource(R.string.action_stop), style = MaterialTheme.typography.titleLarge)
             }
             if (snoozeMinutes > 0) {
                 Spacer(Modifier.height(16.dp))
                 FilledTonalButton(onClick = onSnooze, modifier = Modifier.fillMaxWidth().height(56.dp)) {
-                    Text("Répéter dans $snoozeMinutes min")
+                    Text(stringResource(R.string.snooze_for, snoozeMinutes))
                 }
             }
         }

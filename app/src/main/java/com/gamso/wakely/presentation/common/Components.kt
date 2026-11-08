@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.Alarm
@@ -36,9 +37,9 @@ fun TimePickerDialog(initial: LocalTime, onDismiss: () -> Unit, onConfirm: (Loca
             TextButton(onClick = {
                 onConfirm(LocalTime.of(pickerState.hour, pickerState.minute))
                 onDismiss()
-            }) { Text("OK") }
+            }) { Text(stringResource(R.string.action_ok)) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Annuler") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
         text = { TimePicker(state = pickerState) },
     )
 }
@@ -51,7 +52,15 @@ fun SnoozeChips(selected: Int, onSelect: (Int) -> Unit) {
             FilterChip(
                 selected = selected == minutes,
                 onClick = { onSelect(minutes) },
-                label = { Text(if (minutes == 0) "Désactivé" else "$minutes min") },
+                label = {
+                    Text(
+                        if (minutes == 0) {
+                            stringResource(R.string.snooze_off)
+                        } else {
+                            stringResource(R.string.snooze_minutes, minutes)
+                        },
+                    )
+                },
             )
         }
     }
@@ -61,7 +70,7 @@ fun SnoozeChips(selected: Int, onSelect: (Int) -> Unit) {
 @Composable
 fun BackButton(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
-        Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = "Retour")
+        Icon(painterResource(R.drawable.ic_arrow_back), contentDescription = stringResource(R.string.action_back))
     }
 }
 
