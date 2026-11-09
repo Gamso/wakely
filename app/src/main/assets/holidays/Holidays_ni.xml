@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="ni" description="Nicaragua"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <!-- Ley 1272 was published on 20 January 2026, so 18 January applies from 2027 -->
+    <Fixed month="JANUARY" day="18" validFrom="2027" descriptionPropertiesKey="BIRTH_OF_RUBEN_DARIO"/>
+    <Fixed month="FEBRUARY" day="1" descriptionPropertiesKey="AIR_FORCE_DAY" localizedType="OBSERVANCE"/>
+    <Fixed month="FEBRUARY" day="2" validFrom="2026" descriptionPropertiesKey="PEACE_AND_RECONCILIATION"/>
+    <Fixed month="FEBRUARY" day="21" validFrom="2026" descriptionPropertiesKey="DEATH_OF_SANDINO"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="MAY" day="27" descriptionPropertiesKey="ARMY_DAY" localizedType="OBSERVANCE"/>
+    <Fixed month="MAY" day="30" validFrom="2022" descriptionPropertiesKey="MOTHERS_DAY"/>
+    <Fixed month="JULY" day="19" descriptionPropertiesKey="LIBERATION"/>
+    <Fixed month="SEPTEMBER" day="14" descriptionPropertiesKey="BATTLE_JACINTO"/>
+    <Fixed month="SEPTEMBER" day="15" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="OCTOBER" day="12" descriptionPropertiesKey="COLUMBUS_DAY" localizedType="OBSERVANCE"/>
+    <Fixed month="NOVEMBER" day="8" validFrom="2026" descriptionPropertiesKey="DEATH_OF_CARLOS_FONSECA"/>
+    <Fixed month="DECEMBER" day="8" descriptionPropertiesKey="IMMACULATE_CONCEPTION"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <Fixed month="DECEMBER" day="31" descriptionPropertiesKey="NEW_YEARS_EVE" localizedType="OBSERVANCE"/>
+    <ChristianHoliday type="EASTER" localizedType="OBSERVANCE"/>
+    <ChristianHoliday type="MAUNDY_THURSDAY"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Nicaragua</Source>
+    <Source>http://legislacion.asamblea.gob.ni/normaweb.nsf/b92aaea87dac762406257265005d21f7/fa251b3c54f5baef062571c40055736c?OpenDocument</Source>
+    <Source>http://legislacion.asamblea.gob.ni/normaweb.nsf/09cf45d6fc893868062572650059911e/3b28ec51abe2787706258848005adbb0?OpenDocument</Source>
+    <Source>http://legislacion.asamblea.gob.ni/SILEG/Gacetas.nsf/15a7e7ceb5efa9c6062576eb0060b321/4aa0914f0a235df506258d85005e1f35</Source>
+    <Source>https://www.lagaceta.gob.ni/ministerio-del-trabajo-21-de-febrero-feriado-nacional-en-nicaragua/</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:NI</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:NI</Source>
+  </Sources>
+
+
+  <SubConfigurations hierarchy="an" description="Costa Caribe Norte">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="as" description="Costa Caribe Sur">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="bo" description="Boaco">
+    <Holidays>
+      <Fixed month="JULY" day="25" descriptionPropertiesKey="SANTIAGO"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ca" description="Carazo">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ci" description="Chinandega">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="co" description="Chontales">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="es" description="Estelí">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="gr" description="Granada">
+    <Holidays/>
+
+    <SubConfigurations hierarchy="na" description="Nandaime">
+      <Holidays>
+        <Fixed month="JULY" day="26" descriptionPropertiesKey="SANTA_ANA"/>
+      </Holidays>
+    </SubConfigurations>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ji" description="Jinotega">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="le" description="León">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="md" description="Madriz">
+    <Holidays/>
+
+    <SubConfigurations hierarchy="so" description="Somoto">
+      <Holidays>
+        <Fixed month="JULY" day="25" descriptionPropertiesKey="SANTIAGO"/>
+      </Holidays>
+    </SubConfigurations>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="mn" description="Managua">
+    <Holidays>
+      <Fixed month="JULY" day="25" descriptionPropertiesKey="SANTIAGO"/>
+      <Fixed month="AUGUST" day="1" descriptionPropertiesKey="SANTO_DOMINGO"/>
+      <Fixed month="AUGUST" day="10" descriptionPropertiesKey="SANTO_DOMINGO"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ms" description="Masaya">
+    <Holidays/>
+
+    <SubConfigurations hierarchy="ni" description="Niquinohomo">
+      <Holidays>
+        <Fixed month="JULY" day="26" descriptionPropertiesKey="SANTA_ANA"/>
+      </Holidays>
+    </SubConfigurations>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="mt" description="Matagalpa">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ns" description="Nueva Segovia">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ri" description="Rivas">
+    <Holidays/>
+
+    <SubConfigurations hierarchy="mo" description="Moyogalpa">
+      <Holidays>
+        <Fixed month="JULY" day="26" descriptionPropertiesKey="SANTA_ANA"/>
+      </Holidays>
+    </SubConfigurations>
+
+    <SubConfigurations hierarchy="om" description="Ometepe">
+      <Holidays>
+        <Fixed month="JULY" day="26" descriptionPropertiesKey="SANTA_ANA"/>
+      </Holidays>
+    </SubConfigurations>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="sj" description="Río San Juan">
+    <Holidays/>
+  </SubConfigurations>
+</Configuration>

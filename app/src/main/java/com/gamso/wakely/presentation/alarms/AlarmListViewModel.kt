@@ -70,8 +70,10 @@ class AlarmListViewModel(
         alarmRepository.observeAlarms(),
         eventAlarmRepository.observeEventAlarms(),
         settingsRepository.observeCalendarFilters(),
+        // Changing the country or the holidays the user works on changes the next rings.
+        settingsRepository.observeHolidaySettings(),
         refreshTrigger,
-    ) { alarms, rules, filters, _ -> Triple(alarms, rules, filters) }
+    ) { alarms, rules, filters, _, _ -> Triple(alarms, rules, filters) }
         .mapLatest { (alarms, rules, filters) ->
             val now = time.now()
             val daysOff = getDaysOff(now.toLocalDate(), filters = filters)

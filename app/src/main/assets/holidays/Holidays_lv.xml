@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="lv" description="Latvia"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="MAY" day="4" validTo="2006" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="MAY" day="4" validFrom="2007" descriptionPropertiesKey="INDEPENDENCE_DAY">
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="MAY" day="29" validFrom="2023" validTo="2023" descriptionPropertiesKey="ICE_HOCKEY_BRONZE_MEDAL"/>
+    <Fixed month="JUNE" day="23" descriptionPropertiesKey="MIDSUMMER_EVE"/>
+    <Fixed month="JUNE" day="24" descriptionPropertiesKey="MIDSUMMER"/>
+    <!-- Final day of the Nationwide Latvian Song and Dance Celebration, a holiday since 2014; the
+         date is set per celebration, so each one is listed once it is known (next one in 2028). -->
+    <Fixed month="JULY" day="8" validFrom="2018" validTo="2018" descriptionPropertiesKey="SONG_AND_DANCE_CELEBRATION">
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="JULY" day="9" validFrom="2023" validTo="2023" descriptionPropertiesKey="SONG_AND_DANCE_CELEBRATION">
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="SEPTEMBER" day="24" validFrom="2018" validTo="2018" descriptionPropertiesKey="PAPAL_VISIT"/>
+    <Fixed month="NOVEMBER" day="18" validTo="2006" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="NOVEMBER" day="18" validFrom="2007" descriptionPropertiesKey="INDEPENDENCE_DAY">
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <Fixed month="DECEMBER" day="26" descriptionPropertiesKey="BOXING_DAY"/>
+    <Fixed month="DECEMBER" day="31" descriptionPropertiesKey="NEW_YEARS_EVE"/>
+    <FixedWeekday which="SECOND" weekday="SUNDAY" month="MAY" descriptionPropertiesKey="MOTHERS_DAY"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="EASTER_MONDAY"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+    <ChristianHoliday type="PENTECOST"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Latvia</Source>
+    <Source of="Par svētku, atceres un atzīmējamām dienām (English, consolidated as of 18 March 2025)">https://www.vvc.gov.lv/lv/media/21476/download</Source>
+    <Source of="Grozījumi likumā Par svētku, atceres un atzīmējamām dienām, 24 May 2007 (weekend substitute)">https://www.vestnesis.lv/ta/id/158621</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:LV</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:LV</Source>
+    <Source of="Par svētku, atceres un atzīmējamām dienām, 1. pants">https://likumi.lv/ta/id/72608-par-svetku-atceres-un-atzimejamam-dienam</Source>
+  </Sources>
+
+  <!-- Section 1 of Par svetku, atceres un atzimejamam dienam is national and carries no
+       delegation clause; even the one off free days were added by amending it. Pilsetas
+       svetki impose no obligation on employers, and the annual Cabinet order on
+       parceltas darba dienas only moves working days, it never creates a holiday. -->
+
+  <SubConfigurations hierarchy="002" description="Aizkraukle">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="007" description="Alūksne">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="011" description="Ādaži">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="015" description="Balvi">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="016" description="Bauska">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="022" description="Cēsis">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="026" description="Dobele">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="033" description="Gulbene">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="041" description="Jelgava Municipality">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="042" description="Jēkabpils">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="047" description="Krāslava">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="050" description="Kuldīga">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="052" description="Ķekava">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="054" description="Limbaži">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="056" description="Līvāni">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="058" description="Ludza">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="059" description="Madona">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="062" description="Mārupe">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="067" description="Ogre">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="068" description="Olaine">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="073" description="Preiļi">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="077" description="Rēzekne Municipality">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="080" description="Ropaži">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="087" description="Salaspils">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="088" description="Saldus">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="089" description="Saulkrasti">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="091" description="Sigulda">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="094" description="Smiltene">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="097" description="Talsi">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="099" description="Tukums">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="101" description="Valka">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="102" description="Varakļāni">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="106" description="Ventspils Municipality">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="111" description="Augšdaugava">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="112" description="Dienvidkurzeme">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="113" description="Valmiera">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="dgv" description="Daugavpils">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="jel" description="Jelgava City">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="jur" description="Jūrmala">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="lpx" description="Liepāja">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="rez" description="Rēzekne City">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="rix" description="Rīga">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ven" description="Ventspils City">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

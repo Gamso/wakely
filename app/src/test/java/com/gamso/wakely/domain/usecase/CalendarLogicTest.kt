@@ -25,36 +25,19 @@ class CalendarLogicTest {
     private val nov10 = LocalDate.of(2026, 11, 10)
 
     @Test
-    fun `days off per category with keyword filter`() {
+    fun `days off come from leave calendars, filtered by keyword`() {
         val events = listOf(
-            event(
-                "h",
-                "Armistice",
-                nov10.plusDays(1).atStartOfDay(),
-                nov10.plusDays(2).atStartOfDay(),
-                true,
-                "Jour férié",
-            ),
-            event(
-                "h",
-                "Fête des pères",
-                nov10.plusDays(8).atStartOfDay(),
-                nov10.plusDays(9).atStartOfDay(),
-                true,
-                "Fête",
-            ),
             event("l", "Vacances", nov10.plusDays(20).atStartOfDay(), nov10.plusDays(23).atStartOfDay(), true),
+            event("l", "Dentiste", nov10.plusDays(2).atStartOfDay(), nov10.plusDays(3).atStartOfDay(), true),
+            event("e", "Concert", nov10.plusDays(5).atStartOfDay(), nov10.plusDays(6).atStartOfDay(), true),
         )
         val filters = listOf(
-            CalendarFilter("h", CalendarCategory.HOLIDAYS, "ferie"),
-            CalendarFilter("l", CalendarCategory.LEAVE),
+            CalendarFilter("l", CalendarCategory.LEAVE, "vacances"),
+            CalendarFilter("e", CalendarCategory.EVENTS),
         )
         val off = CalendarLogic.daysOff(events, filters, nov10, nov10.plusDays(60))
-        assertEquals(
-            listOf(nov10.plusDays(1), nov10.plusDays(20), nov10.plusDays(21), nov10.plusDays(22)),
-            off.keys.toList(),
-        )
-        assertEquals(CalendarCategory.LEAVE, off[nov10.plusDays(20)]!!.category)
+        assertEquals(listOf(nov10.plusDays(20), nov10.plusDays(21), nov10.plusDays(22)), off.keys.toList())
+        assertEquals("Vacances", off.getValue(nov10.plusDays(20)).reason)
     }
 
     @Test

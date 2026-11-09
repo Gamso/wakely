@@ -71,4 +71,11 @@ private val CREDITS = listOf(
         license = LicenseId.APACHE_2,
         source = "kotlinlang.org",
     ),
+    Credit(
+        name = R.string.credit_jollyday_name,
+        author = R.string.author_jollyday,
+        usage = R.string.credit_jollyday_usage,
+        license = LicenseId.APACHE_2,
+        source = "github.com/focus-shift/jollyday",
+    ),
 )

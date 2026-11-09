@@ -73,7 +73,6 @@ private fun WakelyNavigation() {
     }
 
     // Read through a State so the pre-filled keyword follows the language of the phone.
-    val holidayKeyword = rememberUpdatedState(stringResource(R.string.holiday_keyword))
     val listVm: AlarmListViewModel = viewModel(
         factory = appViewModelFactory {
             AlarmListViewModel(
@@ -162,11 +161,14 @@ private fun WakelyNavigation() {
                 factory = appViewModelFactory {
                     SettingsViewModel(
                         it.calendarRepository,
+                        it.holidayRepository,
                         it.settingsRepository,
                         it.updateCalendarFilters,
                         it.updateSummarySettings,
+                        it.getUpcomingHolidays,
+                        it.updateHolidaySettings,
+                        it.deviceRegion,
                         it.applicationScope,
-                        holidayKeyword = { holidayKeyword.value },
                     )
                 },
             )

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="sv" description="El Salvador"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <!-- Código de Trabajo, Art. 190. No substitute day when a holiday falls on the weekly rest day (Art. 194). -->
+
+    <!-- New Year's Day -->
+    <Fixed day="1" month="JANUARY" descriptionPropertiesKey="NEW_YEAR"/>
+
+    <!-- Labour Day -->
+    <Fixed day="1" month="MAY" descriptionPropertiesKey="LABOUR_DAY"/>
+
+    <!-- Mother's Day -->
+    <Fixed day="10" month="MAY" descriptionPropertiesKey="MOTHERS_DAY"/>
+
+    <!-- Father's Day (Decreto Legislativo N° 208 of 2012) -->
+    <Fixed day="17" month="JUNE" validFrom="2013" descriptionPropertiesKey="FATHERS_DAY"/>
+
+    <!-- Feast of the Divine Saviour of the World (Fiesta del Divino Salvador del Mundo) -->
+    <Fixed day="6" month="AUGUST" descriptionPropertiesKey="DIVINE_SAVIOUR_OF_THE_WORLD"/>
+
+    <!-- Independence Day -->
+    <Fixed day="15" month="SEPTEMBER" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+
+    <!-- Day of the Dead -->
+    <Fixed day="2" month="NOVEMBER" descriptionPropertiesKey="DAY_OF_THE_DEAD"/>
+
+    <!-- Christmas Day -->
+    <Fixed day="25" month="DECEMBER" descriptionPropertiesKey="CHRISTMAS"/>
+
+    <!-- Thursday, Friday and Saturday of Holy Week -->
+    <ChristianHoliday type="MAUNDY_THURSDAY"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+    <ChristianHoliday type="EASTER_SATURDAY"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://www.jurisprudencia.ues.edu.sv/oajc/leyes/LegislacionLaboral/codigo%20de%20trabajo.pdf</Source>
+    <Source>https://www.mtps.gob.sv/2019/06/14/mtps-17-de-junio-asueto-remunerado-para-las-personas-trabajadoras/</Source>
+    <Source>https://www.transparenciafiscal.gob.sv/downloads/pdf/DC5091_9_Ley_de_Asuetos_Vacaciones_y_Licencias_de_los_Empleados_Publicos.pdf</Source>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_El_Salvador</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:SV</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:SV</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="ah" description="Ahuachapán">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ca" description="Cabañas">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ch" description="Chalatenango">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="cu" description="Cuscatlán">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="li" description="La Libertad">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="mo" description="Morazán">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="pa" description="La Paz">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="sa" description="Santa Ana">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="sm" description="San Miguel">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="so" description="Sonsonate">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ss" description="San Salvador">
+    <Holidays>
+      <!-- Art. 190 grants 3 and 5 August in the city of San Salvador only -->
+      <Fixed day="3" month="AUGUST" descriptionPropertiesKey="AUGUST_FESTIVALS"/>
+      <Fixed day="5" month="AUGUST" descriptionPropertiesKey="AUGUST_FESTIVALS"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="sv" description="San Vicente">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="un" description="La Unión">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="us" description="Usulután">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

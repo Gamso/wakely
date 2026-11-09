@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="lu" description="Luxembourg"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="MAY" day="9" validFrom="2019" descriptionPropertiesKey="EUROPE_DAY"/>
+    <Fixed month="JUNE" day="23" descriptionPropertiesKey="NATIONAL_DAY"/>
+    <Fixed month="AUGUST" day="15" descriptionPropertiesKey="ASSUMPTION_DAY"/>
+    <Fixed month="NOVEMBER" day="1" descriptionPropertiesKey="ALL_SAINTS"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <Fixed month="DECEMBER" day="26" descriptionPropertiesKey="STEPHENS"/>
+    <ChristianHoliday type="EASTER_MONDAY"/>
+    <ChristianHoliday type="ASCENSION_DAY"/>
+    <ChristianHoliday type="WHIT_MONDAY"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Luxembourg</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:LU</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:LU</Source>
+  </Sources>
+
+
+  <SubConfigurations hierarchy="lu" description="Luxembourg">
+    <Holidays/>
+
+    <SubConfigurations hierarchy="clu" description="City of Luxembourg">
+      <Holidays>
+        <Fixed month="FEBRUARY" day="15" descriptionPropertiesKey="CARNIVAL_DAY"/>
+      </Holidays>
+    </SubConfigurations>
+  </SubConfigurations>
+</Configuration>

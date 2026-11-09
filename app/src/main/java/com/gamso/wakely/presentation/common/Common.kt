@@ -44,6 +44,9 @@ object Format {
 
     fun dayDate(d: LocalDate): String = d.format(DatePatterns.formatter("EEEdMMM", "EEE d MMM"))
 
+    /** Weekday, day, month and year, e.g. "Mon 25 May 2026". */
+    fun fullDate(d: LocalDate): String = d.format(DatePatterns.formatter("EEEdMMMy", "EEE d MMM y"))
+
     fun dayLetter(d: DayOfWeek): String = d.getDisplayName(TextStyle.NARROW, Locale.getDefault())
         .uppercase(Locale.getDefault())
 

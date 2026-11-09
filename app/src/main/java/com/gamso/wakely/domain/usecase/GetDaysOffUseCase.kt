@@ -4,29 +4,43 @@ import com.gamso.wakely.domain.model.CalendarEvent
 import com.gamso.wakely.domain.model.CalendarFilter
 import com.gamso.wakely.domain.model.DayOff
 import com.gamso.wakely.domain.repository.CalendarRepository
+import com.gamso.wakely.domain.repository.HolidayRepository
 import com.gamso.wakely.domain.repository.SettingsRepository
 import java.time.LocalDate
 
 /**
- * Loads days off. On error or missing permission, returns an empty map:
- * an alarm that rings is better than a missed one.
+ * Loads days off: the public holidays of the country and region (minus the ones the user works on), and the leave
+ * calendars. On error or missing permission, a source gives nothing: an alarm that rings is better than a missed one.
  */
 class GetDaysOffUseCase(
     private val calendarRepository: CalendarRepository,
-    private val settingsRepository: SettingsRepository,
+    private val holidayRepository: HolidayRepository,
+    private val dayOffSources: DayOffSources,
 ) {
     suspend operator fun invoke(
         from: LocalDate,
         days: Int = ComputeNextRingUseCase.HORIZON_DAYS,
         filters: List<CalendarFilter>? = null,
     ): Map<LocalDate, DayOff> {
-        val f = (filters ?: settingsRepository.getCalendarFilters()).filter { it.category.isDayOff }
-        if (f.isEmpty()) return emptyMap()
+        val resolved = dayOffSources.resolve(filters)
         val to = from.plusDays(days.toLong())
-        val events = runCatching {
-            calendarRepository.getEvents(f.map { it.sourceKey }.toSet(), from, to)
-        }.getOrDefault(emptyList())
-        return CalendarLogic.daysOff(events, f, from, to)
+        val result = sortedMapOf<LocalDate, DayOff>()
+
+        resolved.country?.let { country ->
+            runCatching { holidayRepository.holidays(country, resolved.region, from, to) }
+                .getOrDefault(emptyList())
+                .filter { it.id !in resolved.excludedIds }
+                .forEach { result.putIfAbsent(it.date, DayOff(it.date, it.name)) }
+        }
+
+        val leave = resolved.filters.filter { it.category.isDayOff }
+        if (leave.isNotEmpty()) {
+            val events = runCatching {
+                calendarRepository.getEvents(leave.map { it.sourceKey }.toSet(), from, to)
+            }.getOrDefault(emptyList())
+            CalendarLogic.daysOff(events, leave, from, to).forEach { (date, off) -> result.putIfAbsent(date, off) }
+        }
+        return result
     }
 }
 

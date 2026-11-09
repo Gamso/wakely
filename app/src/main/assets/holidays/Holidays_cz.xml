@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="cz" description="Czech Republic"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="MAY" day="8" descriptionPropertiesKey="LIBERATION"/>
+    <Fixed month="JULY" day="5" descriptionPropertiesKey="CYRUS_METHODIUS"/>
+    <Fixed month="JULY" day="6" descriptionPropertiesKey="HUS"/>
+    <Fixed month="SEPTEMBER" day="28" descriptionPropertiesKey="WENCELAS"/>
+    <Fixed month="OCTOBER" day="28" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="NOVEMBER" day="17" descriptionPropertiesKey="FREEDOM_DEMOCRACY"/>
+    <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <Fixed month="DECEMBER" day="26" descriptionPropertiesKey="STEPHENS"/>
+    <ChristianHoliday type="GOOD_FRIDAY" validFrom="2016"/>
+    <ChristianHoliday type="EASTER_MONDAY"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_the_Czech_Republic</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:CZ</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:CZ</Source>
+    <Source of="Legal basis (no weekend-substitution rule exists)">https://ppropo.mpsv.cz/zakon_245_2000</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="10" description="Prague">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="20" description="Central Bohemia">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="31" description="South Bohemia">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="32" description="Plzeň">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="41" description="Karlovy Vary">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="42" description="Ústí nad Labem">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="51" description="Liberec">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="52" description="Hradec Králové">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="53" description="Pardubice">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="63" description="Vysočina">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="64" description="South Moravia">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="71" description="Olomouc">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="72" description="Zlín">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="80" description="Moravia-Silesia">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

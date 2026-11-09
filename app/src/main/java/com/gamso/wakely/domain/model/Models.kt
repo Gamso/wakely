@@ -88,9 +88,6 @@ data class AlarmSound(val uri: String, val name: String, val source: SoundSource
 
 /** What a calendar is used for. */
 enum class CalendarCategory {
-    /** Public holidays: days off. */
-    HOLIDAYS,
-
     /** Leave, vacations, days not worked: days off. */
     LEAVE,
 
@@ -131,7 +128,7 @@ data class CalendarEvent(
     val allDay: Boolean,
 )
 
-data class DayOff(val date: LocalDate, val reason: String, val category: CalendarCategory = CalendarCategory.HOLIDAYS)
+data class DayOff(val date: LocalDate, val reason: String)
 
 data class NextRing(
     val alarmId: Long,
@@ -182,3 +179,19 @@ data class DayPlan(val date: LocalDate, val rings: List<PlannedRing>, val skippe
 data class AppInfo(val versionName: String)
 
 enum class LicenseId { MIT, APACHE_2 }
+
+/**
+ * Public holidays, which come from the app itself (Jollyday data), not from calendars.
+ * [country] is an ISO 3166-1 alpha-2 code, or null for "no public holidays"; it only counts when [countryChosen] is
+ * true, otherwise the country of the device is used. [region] is a region of that country (e.g. "67" for Bas-Rhin).
+ * [excludedIds] are the holidays the user works on: they are not days off.
+ */
+data class HolidaySettings(
+    val country: String? = null,
+    val countryChosen: Boolean = false,
+    val region: String? = null,
+    val excludedIds: Set<String> = emptySet(),
+)
+
+/** An upcoming public holiday as listed in Settings; [excluded] means the user works that day. */
+data class HolidayItem(val date: LocalDate, val id: String, val name: String, val excluded: Boolean)

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="do" description="Dominican Republic"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+
+    <Fixed month="JANUARY" day="6" descriptionPropertiesKey="EPIPHANY">
+      <MovingCondition substitute="TUESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+
+    <Fixed month="JANUARY" day="21" descriptionPropertiesKey="OUR_LADY_OF_ALTAGRACIA"/>
+
+    <Fixed month="JANUARY" day="26" descriptionPropertiesKey="DUARTE">
+      <MovingCondition substitute="TUESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+
+    <Fixed month="FEBRUARY" day="27" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY">
+      <MovingCondition substitute="TUESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+
+    <Fixed month="AUGUST" day="16" descriptionPropertiesKey="RESTORATION_DAY"/>
+
+    <Fixed month="SEPTEMBER" day="24" descriptionPropertiesKey="OUR_LADY_OF_MERCEDES"/>
+
+    <Fixed month="NOVEMBER" day="6" descriptionPropertiesKey="CONSTITUTION_DAY">
+      <MovingCondition substitute="TUESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+    <ChristianHoliday type="CORPUS_CHRISTI"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_the_Dominican_Republic</Source>
+    <Source of="Ley No. 139-97 amendment (2013)">https://memoriahistorica.senadord.gob.do/bitstreams/e28f658d-8489-4510-bb7e-a5bc788f6d60/download</Source>
+    <Source of="Ministerio de Trabajo - Restoration Day is constitutionally fixed (2023)">https://presidencia.gob.do/noticias/ministerio-de-trabajo-reitera-16-de-agosto-dia-de-la-restauracion-no-se-cambia</Source>
+    <Source of="Presidencia - Epiphany moved to Monday (2026)">https://presidencia.gob.do/noticias/ministerio-de-trabajo-informa-feriado-del-dia-de-los-santos-reyes-se-cambia-para-el-lunes</Source>
+    <Source of="Presidencia - holidays for 2024">https://presidencia.gob.do/noticias/ministerio-de-trabajo-informa-dias-feriados-correspondientes-al-ano-2024</Source>
+    <Source of="Listin Diario - Constitution Day moved to Monday (2025)">https://listindiario.com/la-republica/20251103/ministerio-trabajo-recuerda-feriado-dia-constitucion-sera-10-noviembre_880804.html</Source>
+    <Source of="Diario Libre - Duarte's Day moved to Monday (2024)">https://www.diariolibre.com/economia/empleo/2024/01/25/feriado-por-natalicio-de-duarte-se-mueve-al-lunes-29-de-enero/2587530</Source>
+    <Source of="El Jaya - op-ed on inconsistent application of Ley 139-97 (2017)">https://www.eljaya.com/43101/la-vergonzante-aplicacion-de-la-ley-139-97/</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:DO</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:DO</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="01" description="Distrito Nacional">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="02" description="Azua">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="03" description="Baoruco">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="04" description="Barahona">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="05" description="Dajabón">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="06" description="Duarte">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="07" description="Elías Piña">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="08" description="El Seibo">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="09" description="Espaillat">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="10" description="Independencia">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="11" description="La Altagracia">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="12" description="La Romana">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="13" description="La Vega">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="14" description="María Trinidad Sánchez">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="15" description="Monte Cristi">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="16" description="Pedernales">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="17" description="Peravia">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="18" description="Puerto Plata">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="19" description="Hermanas Mirabal">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="20" description="Samaná">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="21" description="San Cristóbal">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="22" description="San Juan">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="23" description="San Pedro de Macorís">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="24" description="Sánchez Ramírez">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="25" description="Santiago">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="26" description="Santiago Rodríguez">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="27" description="Valverde">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="28" description="Monseñor Nouel">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="29" description="Monte Plata">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="30" description="Hato Mayor">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="31" description="San José de Ocoa">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="32" description="Santo Domingo">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

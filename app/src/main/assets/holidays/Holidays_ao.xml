@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="ao" description="Angola"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="FEBRUARY" day="4" descriptionPropertiesKey="LIBERATION"/>
+    <Fixed month="MARCH" day="8" descriptionPropertiesKey="INTERNATIONAL_WOMAN"/>
+    <Fixed month="MARCH" day="23" descriptionPropertiesKey="DAY_OF_THE_LIBERATION_OF_SOUTHERN_AFRICA"/>
+    <Fixed month="APRIL" day="4" descriptionPropertiesKey="PEACE"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="SEPTEMBER" day="17" descriptionPropertiesKey="NATIONAL_HEROES_DAY"/>
+    <Fixed month="NOVEMBER" day="2" descriptionPropertiesKey="ALL_SOULS"/>
+    <Fixed month="NOVEMBER" day="11" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+
+    <ChristianHoliday type="CARNIVAL"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Angola</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:AO</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:AO</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="bgo" description="Bengo">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="bgu" description="Benguela">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="bie" description="Bié">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cab" description="Cabinda">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ccu" description="Cuando Cubango">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cnn" description="Cunene">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cno" description="Cuanza-Norte">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cus" description="Cuanza-Sul">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="hua" description="Huambo">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="hui" description="Huíla">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="lno" description="Lunda-Norte">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="lsu" description="Lunda-Sul">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="lua" description="Luanda">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="mal" description="Malange">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="mox" description="Moxico">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="nam" description="Namibe">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="uig" description="Uíge">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="zai" description="Zaire">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

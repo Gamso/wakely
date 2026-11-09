@@ -1,5 +1,6 @@
 package com.gamso.wakely.domain.repository
 
+import com.gamso.wakely.domain.holiday.HolidayRegion
 import com.gamso.wakely.domain.model.Alarm
 import com.gamso.wakely.domain.model.AlarmSound
 import com.gamso.wakely.domain.model.AppInfo
@@ -7,6 +8,7 @@ import com.gamso.wakely.domain.model.CalendarEvent
 import com.gamso.wakely.domain.model.CalendarFilter
 import com.gamso.wakely.domain.model.DeviceCalendar
 import com.gamso.wakely.domain.model.EventAlarm
+import com.gamso.wakely.domain.model.HolidaySettings
 import com.gamso.wakely.domain.model.LicenseId
 import com.gamso.wakely.domain.model.RingKey
 import com.gamso.wakely.domain.model.SummarySettings
@@ -42,6 +44,30 @@ interface SettingsRepository {
     fun observeSummarySettings(): Flow<SummarySettings>
     suspend fun getSummarySettings(): SummarySettings
     suspend fun setSummarySettings(settings: SummarySettings)
+
+    fun observeHolidaySettings(): Flow<HolidaySettings>
+    suspend fun getHolidaySettings(): HolidaySettings
+    suspend fun setHolidaySettings(settings: HolidaySettings)
+}
+
+/** A public holiday with its name in the language of the phone. [id] is stable across years and languages. */
+data class PublicHoliday(val id: String, val name: String, val date: LocalDate)
+
+/** Public holidays by country and region, computed offline from the embedded Jollyday data. */
+interface HolidayRepository {
+    /** ISO 3166-1 alpha-2 codes of the supported countries. */
+    fun countries(): List<String>
+
+    /** Regions of [country] that have holidays of their own. */
+    fun regions(country: String): List<HolidayRegion>
+
+    fun holidays(country: String, region: String?, from: LocalDate, to: LocalDate): List<PublicHoliday>
+}
+
+/** Where the phone is, as far as holidays are concerned. No location permission is involved. */
+interface DeviceRegion {
+    /** ISO 3166-1 alpha-2 codes, most reliable first (e.g. the SIM country, then the locale's country). */
+    fun countryCandidates(): List<String>
 }
 
 interface CalendarRepository {

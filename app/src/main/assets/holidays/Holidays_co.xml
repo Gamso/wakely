@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="co" description="Colombia"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="JANUARY" day="6" descriptionPropertiesKey="EPIPHANY">
+      <MovingCondition substitute="TUESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="MARCH" day="19" descriptionPropertiesKey="ST_JOSEPH">
+      <MovingCondition substitute="TUESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="JUNE" day="29" descriptionPropertiesKey="ST_PETER_PAUL">
+      <MovingCondition substitute="TUESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="JULY" day="9" descriptionPropertiesKey="DAY_OF_OUR_LADY_OF_THE_ROSARY_OF_CHIQUINQUIRA" validFrom="2026">
+      <MovingCondition substitute="TUESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="JULY" day="20" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="AUGUST" day="7" descriptionPropertiesKey="BOYACA"/>
+    <Fixed month="AUGUST" day="15" descriptionPropertiesKey="ASSUMPTION_MARY">
+      <MovingCondition substitute="TUESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="OCTOBER" day="12" descriptionPropertiesKey="COLUMBUS_DAY">
+      <MovingCondition substitute="TUESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="NOVEMBER" day="1" descriptionPropertiesKey="ALL_SAINTS">
+      <MovingCondition substitute="TUESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="NOVEMBER" day="11" descriptionPropertiesKey="CARTAGENA">
+      <MovingCondition substitute="TUESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="DECEMBER" day="8" descriptionPropertiesKey="IMMACULATE_CONCEPTION"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="MAUNDY_THURSDAY"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+    <ChristianHoliday type="ASCENSION_DAY">
+      <MovingCondition substitute="TUESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </ChristianHoliday>
+    <ChristianHoliday type="CORPUS_CHRISTI">
+      <MovingCondition substitute="TUESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </ChristianHoliday>
+    <ChristianHoliday type="SACRED_HEART">
+      <MovingCondition substitute="TUESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="FRIDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="NEXT" weekday="MONDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </ChristianHoliday>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Colombia</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:CO</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:CO</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="ama" description="Amazonas">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ant" description="Antioquia">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ara" description="Arauca">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="atl" description="Atlántico">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="bol" description="Bolívar">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="boy" description="Boyacá">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cal" description="Caldas">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="caq" description="Caquetá">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cas" description="Casanare">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cau" description="Cauca">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ces" description="Cesar">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cho" description="Chocó">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cor" description="Córdoba">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cun" description="Cundinamarca">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="dc" description="Distrito Capital de Bogotá">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="gua" description="Guainía">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="guv" description="Guaviare">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="hui" description="Huila">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="lag" description="La Guajira">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="mag" description="Magdalena">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="met" description="Meta">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="nar" description="Nariño">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="nsa" description="Norte de Santander">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="put" description="Putumayo">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="qui" description="Quindío">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ris" description="Risaralda">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="san" description="Santander">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="sap" description="San Andrés, Providencia y Santa Catalina">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="suc" description="Sucre">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="tol" description="Tolima">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="vac" description="Valle del Cauca">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="vau" description="Vaupés">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="vid" description="Vichada">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

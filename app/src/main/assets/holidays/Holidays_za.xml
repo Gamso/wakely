@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="za" description="South Africa"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <!-- Once-off holidays including election days (see https://en.wikipedia.org/wiki/Public_holidays_in_South_Africa) -->
+    <Fixed month="JUNE" day="2" validFrom="1999" validTo="1999" descriptionPropertiesKey="ELECTION_DAY"/>
+    <Fixed month="APRIL" day="14" validFrom="2004" validTo="2004" descriptionPropertiesKey="ELECTION_DAY"/>
+    <Fixed month="MARCH" day="1" validFrom="2006" validTo="2006" descriptionPropertiesKey="ELECTION_DAY"/>
+    <Fixed month="APRIL" day="22" validFrom="2009" validTo="2009" descriptionPropertiesKey="ELECTION_DAY"/>
+    <Fixed month="MAY" day="18" validFrom="2011" validTo="2011" descriptionPropertiesKey="ELECTION_DAY"/>
+    <Fixed month="MAY" day="7" validFrom="2014" validTo="2014" descriptionPropertiesKey="ELECTION_DAY"/>
+    <Fixed month="MAY" day="29" validFrom="2024" validTo="2024" descriptionPropertiesKey="ELECTION_DAY"/>
+    <Fixed month="AUGUST" day="3" validFrom="2016" validTo="2016" descriptionPropertiesKey="ELECTION_DAY"/>
+    <Fixed month="MAY" day="8" validFrom="2019" validTo="2019" descriptionPropertiesKey="ELECTION_DAY"/>
+    <Fixed month="NOVEMBER" day="1" validFrom="2021" validTo="2021" descriptionPropertiesKey="ELECTION_DAY"/>
+    <Fixed month="NOVEMBER" day="4" validFrom="2026" validTo="2026" descriptionPropertiesKey="ELECTION_DAY"/>
+
+    <Fixed month="DECEMBER" day="31" validFrom="1999" validTo="1999" descriptionPropertiesKey="NEW_YEAR">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="JANUARY" day="2" validFrom="2000" validTo="2000" descriptionPropertiesKey="NEW_YEAR">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="MAY" day="2" validFrom="2008" validTo="2008" descriptionPropertiesKey="HUMAN_RIGHTS">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="DECEMBER" day="27" validFrom="2011" validTo="2011" descriptionPropertiesKey="NEW_YEAR">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="DECEMBER" day="27" validFrom="2016" validTo="2016" descriptionPropertiesKey="NEW_YEAR">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <!-- End of once-off holidays -->
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="MARCH" day="21" descriptionPropertiesKey="HUMAN_RIGHTS">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="APRIL" day="6" validFrom="1952" validTo="1974" descriptionPropertiesKey="RIEBEECK"/>
+    <Fixed month="APRIL" day="6" validFrom="1980" validTo="1994" descriptionPropertiesKey="FOUNDATION"/>
+    <Fixed month="APRIL" day="27" descriptionPropertiesKey="FREEDOM">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="MAY" day="1" validFrom="1990" descriptionPropertiesKey="LABOUR_DAY">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="MAY" day="24" validFrom="1910" validTo="1951" descriptionPropertiesKey="EMPIRE"/>
+    <Fixed month="MAY" day="31" validFrom="1910" validTo="1993" descriptionPropertiesKey="REPUBLIC_DAY"/>
+    <Fixed month="JUNE" day="16" descriptionPropertiesKey="YOUTH">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="AUGUST" day="9" descriptionPropertiesKey="INTERNATIONAL_WOMAN">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="SEPTEMBER" day="24" descriptionPropertiesKey="HERITAGE">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="OCTOBER" day="10" validFrom="1952" validTo="1993" descriptionPropertiesKey="KRUGER"/>
+    <Fixed month="DECEMBER" day="16" descriptionPropertiesKey="RECONCILIATION">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="DECEMBER" day="26" descriptionPropertiesKey="GOODWILL">
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <FixedWeekday which="FIRST" weekday="FRIDAY" month="MAY" validFrom="1987" validTo="1989"
+                      descriptionPropertiesKey="LABOUR_DAY"/>
+    <FixedWeekday which="SECOND" weekday="MONDAY" month="JULY" validFrom="1952" validTo="1960"
+                      descriptionPropertiesKey="QUEENS_BIRTHDAY"/>
+    <FixedWeekday which="SECOND" weekday="MONDAY" month="JULY" validFrom="1961" validTo="1972"
+                      descriptionPropertiesKey="FAMILY_DAY"/>
+    <FixedWeekday which="FIRST" weekday="MONDAY" month="AUGUST" validTo="1951"
+                      descriptionPropertiesKey="KINGS_DAY"/>
+    <FixedWeekday which="FIRST" weekday="MONDAY" month="SEPTEMBER" validFrom="1952" validTo="1979"
+                      descriptionPropertiesKey="SETTLER"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+    <ChristianHoliday type="EASTER_MONDAY"/>
+    <ChristianHoliday type="ASCENSION_DAY" validFrom="1910" validTo="1993"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_South_Africa</Source>
+    <Source of="FAMILY_DAY">https://dsae.co.za/entry/family-day/e02326</Source>
+    <Source of="ELECTION_DAY 2021">https://www.gov.za/news/media-statements/president-cyril-ramaphosa-declares-election-day-1-november-2021-public</Source>
+    <Source of="ELECTION_DAY 2026">https://www.elections.org.za/content/About-Us/News/Electoral-Commission-welcomes-announcement-of-4-November-2026-as-Local-Government-Elections-date/</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:ZA</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:ZA</Source>
+  </Sources>
+
+</Configuration>
