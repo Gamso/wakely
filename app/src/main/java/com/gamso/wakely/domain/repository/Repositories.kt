@@ -47,10 +47,19 @@ interface SettingsRepository {
     suspend fun getSummarySettings(): SummarySettings
     suspend fun setSummarySettings(settings: SummarySettings)
 
+    /** Whether the "Pause alarms" button is offered in the alarm list. On by default. */
+    fun observePauseButton(): Flow<Boolean>
+    suspend fun setPauseButton(enabled: Boolean)
+
     /** Whether the "Skip" buttons are offered on the alarms and in the evening notification. On by default. */
     fun observeSkipButtons(): Flow<Boolean>
     suspend fun getSkipButtons(): Boolean
     suspend fun setSkipButtons(enabled: Boolean)
+
+    /** Last day of the pause of every alarm (nothing rings up to and including it), or null. */
+    fun observePause(): Flow<LocalDate?>
+    suspend fun getPause(): LocalDate?
+    suspend fun setPause(until: LocalDate?)
 
     fun observeHolidaySettings(): Flow<HolidaySettings>
     suspend fun getHolidaySettings(): HolidaySettings

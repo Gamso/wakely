@@ -42,7 +42,9 @@ class RescheduleAlarmsUseCase(
      */
     suspend operator fun invoke(fired: RingKey? = null, firedAt: LocalDateTime? = null) {
         val now = time.now()
-        fun afterFor(key: RingKey) = if (key == fired && firedAt != null && firedAt > now) firedAt else now
+        val pause = settingsRepository.getPause()
+        fun afterFor(key: RingKey) =
+            Pause.clamp(if (key == fired && firedAt != null && firedAt > now) firedAt else now, pause)
 
         skips.prune(now.minusDays(1))
         val skipped = skips.get()
@@ -250,10 +252,12 @@ class HandleRingFiredUseCase(
     private val stepSensor: StepSensor,
     private val stepBaselines: StepBaselineStore,
     private val skips: SkippedOccurrences,
+    private val settingsRepository: SettingsRepository,
 ) {
     suspend operator fun invoke(key: RingKey): RingInfo? {
         val now = time.now()
-        val windowStart = now.minus(TOLERANCE)
+        // During a pause, the next ring is after it: a ring scheduled earlier does not sound.
+        val windowStart = Pause.clamp(now.minus(TOLERANCE), settingsRepository.getPause())
         // A ring the user skipped is passed over, even if the system still fires it.
         val skipped = skips.get().timesOf(key)
         var expectedAt: LocalDateTime? = null
@@ -344,17 +348,19 @@ class GetDayPlanUseCase(
     private val computeNextRing: ComputeNextRingUseCase,
     private val time: TimeProvider,
     private val skips: SkippedOccurrences,
+    private val settingsRepository: SettingsRepository,
 ) {
     suspend operator fun invoke(date: LocalDate): DayPlan {
         val now = time.now()
         val dayStart = date.atStartOfDay().minusNanos(1)
+        val pause = settingsRepository.getPause()
         val daysOff = getDaysOff(now.toLocalDate())
         val skippedByUser = skips.get()
         val rings = mutableListOf<PlannedRing>()
         val skipped = mutableListOf<SkippedRing>()
 
         alarmRepository.getAlarms().filter { it.enabled }.forEach { alarm ->
-            val after = if (alarm.isRepeating) maxOf(dayStart, now) else now
+            val after = Pause.clamp(if (alarm.isRepeating) maxOf(dayStart, now) else now, pause)
             val key = RingKey(RingKind.ALARM, alarm.id)
             val next = computeNextRing(alarm, after, daysOff, skipped = skippedByUser.timesOf(key))
             if (next != null && next.at.toLocalDate() == date) {
@@ -375,7 +381,7 @@ class GetDayPlanUseCase(
                 val key = RingKey(RingKind.EVENT, rule.id)
                 CalendarLogic.upcomingEventRings(
                     rule,
-                    maxOf(dayStart, now),
+                    Pause.clamp(maxOf(dayStart, now), pause),
                     data.events,
                     data.eventFilters,
                     skippedByUser.timesOf(key),
@@ -384,6 +390,6 @@ class GetDayPlanUseCase(
                     .forEach { ring -> rings += PlannedRing(ring.at, rule.label, event = ring.event, key = key) }
             }
         }
-        return DayPlan(date, rings.sortedBy { it.at }, skipped)
+        return DayPlan(date, rings.sortedBy { it.at }, skipped, pausedUntil = pause?.takeIf { date <= it })
     }
 }

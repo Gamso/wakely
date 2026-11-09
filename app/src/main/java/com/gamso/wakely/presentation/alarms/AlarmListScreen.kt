@@ -17,6 +17,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,11 +27,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +51,10 @@ import com.gamso.wakely.domain.model.RingKey
 import com.gamso.wakely.domain.model.RingKind
 import com.gamso.wakely.presentation.common.Format
 import com.gamso.wakely.presentation.common.dayOffReasonText
+import java.time.Instant
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 private const val MAX_SKIPPED_SHOWN = 3
 
@@ -67,6 +74,8 @@ fun AlarmListScreen(
     onToggleEventAlarm: (EventAlarmItemUi, Boolean) -> Unit,
     onSkip: (RingKey) -> Unit,
     onUndoSkip: (RingKey) -> Unit,
+    onPause: (LocalDate) -> Unit,
+    onResume: () -> Unit,
     onOpenCalendars: () -> Unit,
     onRequestCalendarPermission: () -> Unit,
     onRequestNotifications: () -> Unit,
@@ -153,6 +162,9 @@ fun AlarmListScreen(
                             onOpenFullScreenSettings,
                         )
                     }
+                }
+                if (state.pausedUntil != null || state.showPauseButton) {
+                    item(key = "pause") { PauseBar(state.pausedUntil, onPause, onResume) }
                 }
                 if (state.items.isEmpty() && state.eventItems.isEmpty()) {
                     item {
@@ -329,6 +341,62 @@ private fun EventAlarmCard(
                 Text(stringResource(R.string.no_upcoming_event), style = MaterialTheme.typography.bodySmall)
             }
             if (item.canSkip) SkipRow(next?.at.takeIf { showSkip }, item.skippedAt, onSkip, onUndoSkip)
+        }
+    }
+}
+
+/** Pause of every alarm: a button to pick the last paused day, or, while it runs, a strip with a way back. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PauseBar(pausedUntil: LocalDate?, onPause: (LocalDate) -> Unit, onResume: () -> Unit) {
+    var picking by remember { mutableStateOf(false) }
+    if (pausedUntil != null) {
+        Surface(color = MaterialTheme.colorScheme.tertiaryContainer, shape = RoundedCornerShape(12.dp)) {
+            Row(Modifier.padding(start = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(painterResource(R.drawable.ic_pause), contentDescription = null, Modifier.size(20.dp))
+                Text(
+                    stringResource(R.string.pause_banner, Format.dayDate(pausedUntil)),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f).padding(start = 12.dp, top = 12.dp, bottom = 12.dp),
+                )
+                TextButton(onClick = onResume) { Text(stringResource(R.string.pause_resume)) }
+            }
+        }
+    } else {
+        AssistChip(
+            onClick = { picking = true },
+            label = { Text(stringResource(R.string.pause_button)) },
+            leadingIcon = {
+                Icon(painterResource(R.drawable.ic_pause), contentDescription = null, Modifier.size(18.dp))
+            },
+        )
+    }
+    if (picking) {
+        val today = LocalDate.now()
+        val state = rememberDatePickerState(
+            selectableDates = object : SelectableDates {
+                override fun isSelectableDate(utcTimeMillis: Long) =
+                    !Instant.ofEpochMilli(utcTimeMillis).atZone(ZoneOffset.UTC).toLocalDate().isBefore(today)
+            },
+        )
+        DatePickerDialog(
+            onDismissRequest = { picking = false },
+            confirmButton = {
+                TextButton(
+                    enabled = state.selectedDateMillis != null,
+                    onClick = {
+                        state.selectedDateMillis?.let {
+                            onPause(Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate())
+                        }
+                        picking = false
+                    },
+                ) { Text(stringResource(R.string.action_ok)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { picking = false }) { Text(stringResource(R.string.action_cancel)) }
+            },
+        ) {
+            DatePicker(state, title = { Text(stringResource(R.string.pause_pick_title), Modifier.padding(16.dp)) })
         }
     }
 }

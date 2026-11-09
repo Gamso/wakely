@@ -135,21 +135,21 @@ fun SettingsScreen(
             }
 
             item(key = "skip-buttons") {
-                Card(Modifier.fillMaxWidth()) {
-                    Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Column(Modifier.weight(1f)) {
-                            Text(
-                                stringResource(R.string.skip_buttons_title),
-                                style = MaterialTheme.typography.titleMedium,
-                            )
-                            Text(
-                                stringResource(R.string.skip_buttons_description),
-                                style = MaterialTheme.typography.bodySmall,
-                            )
-                        }
-                        Switch(checked = state.skipButtons, onCheckedChange = viewModel::setSkipButtons)
-                    }
-                }
+                SwitchCard(
+                    stringResource(R.string.skip_buttons_title),
+                    stringResource(R.string.skip_buttons_description),
+                    state.skipButtons,
+                    viewModel::setSkipButtons,
+                )
+            }
+
+            item(key = "pause-button") {
+                SwitchCard(
+                    stringResource(R.string.pause_button_title),
+                    stringResource(R.string.pause_button_description),
+                    state.pauseButton,
+                    viewModel::setPauseButton,
+                )
             }
 
             if (!state.loading && !state.hasPermission) {
@@ -239,6 +239,20 @@ fun SettingsScreen(
                 addTo = null
             },
         )
+    }
+}
+
+/** A card with a title, a description and one switch. */
+@Composable
+private fun SwitchCard(title: String, description: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+    Card(Modifier.fillMaxWidth()) {
+        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
+                Text(title, style = MaterialTheme.typography.titleMedium)
+                Text(description, style = MaterialTheme.typography.bodySmall)
+            }
+            Switch(checked = checked, onCheckedChange = onChange)
+        }
     }
 }
 

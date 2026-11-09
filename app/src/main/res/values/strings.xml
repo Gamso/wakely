@@ -54,6 +54,13 @@
     <string name="skip_tag">Skipped: %1$s</string>
     <string name="skip_undo">Undo</string>
     <string name="skip_notif_action">Skip %1$s</string>
+    <string name="pause_button_title">“Pause” button</string>
+    <string name="pause_button_description">Show “Pause alarms” at the top of the alarm list, to silence every alarm until a date. A pause already running can always be ended.</string>
+    <string name="pause_button">Pause alarms</string>
+    <string name="pause_pick_title">Last day without alarms</string>
+    <string name="pause_banner">Alarms paused until %1$s</string>
+    <string name="pause_resume">Resume now</string>
+    <string name="summary_paused">Alarms are paused until %1$s</string>
     <string name="no_next_ring">No ring scheduled</string>
     <string name="day_off_default">Day off</string>
     <string name="minutes_before">%1$s before</string>

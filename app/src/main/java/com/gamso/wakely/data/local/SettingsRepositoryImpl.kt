@@ -6,6 +6,7 @@ import com.gamso.wakely.domain.model.CalendarFilter
 import com.gamso.wakely.domain.model.HolidaySettings
 import com.gamso.wakely.domain.model.SummarySettings
 import com.gamso.wakely.domain.repository.SettingsRepository
+import java.time.LocalDate
 import java.time.LocalTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +22,9 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
     private val filters = MutableStateFlow(loadFilters())
     private val summary = MutableStateFlow(loadSummary())
     private val holiday = MutableStateFlow(loadHoliday())
+    private val pause =
+        MutableStateFlow(prefs.getString(KEY_PAUSE, null)?.let { runCatching { LocalDate.parse(it) }.getOrNull() })
+    private val pauseButton = MutableStateFlow(prefs.getBoolean(KEY_PAUSE_BUTTON, true))
     private val skipButtons = MutableStateFlow(prefs.getBoolean(KEY_SKIP_BUTTONS, true))
 
     override fun observeCalendarFilters(): Flow<List<CalendarFilter>> = filters.asStateFlow()
@@ -56,6 +60,13 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         }
     }
 
+    override fun observePauseButton(): Flow<Boolean> = pauseButton.asStateFlow()
+
+    override suspend fun setPauseButton(enabled: Boolean) {
+        pauseButton.value = enabled
+        withContext(Dispatchers.IO) { prefs.edit().putBoolean(KEY_PAUSE_BUTTON, enabled).commit() }
+    }
+
     override fun observeSkipButtons(): Flow<Boolean> = skipButtons.asStateFlow()
 
     override suspend fun getSkipButtons(): Boolean = skipButtons.value
@@ -63,6 +74,25 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
     override suspend fun setSkipButtons(enabled: Boolean) {
         skipButtons.value = enabled
         withContext(Dispatchers.IO) { prefs.edit().putBoolean(KEY_SKIP_BUTTONS, enabled).commit() }
+    }
+
+    override fun observePause(): Flow<LocalDate?> = pause.asStateFlow()
+
+    override suspend fun getPause(): LocalDate? = pause.value
+
+    override suspend fun setPause(until: LocalDate?) {
+        pause.value = until
+        withContext(Dispatchers.IO) {
+            prefs.edit().apply {
+                if (until !=
+                    null
+                ) {
+                    putString(KEY_PAUSE, until.toString())
+                } else {
+                    remove(KEY_PAUSE)
+                }
+            }.commit()
+        }
     }
 
     override fun observeHolidaySettings(): Flow<HolidaySettings> = holiday.asStateFlow()
@@ -130,6 +160,8 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         const val PREFS = "settings"
         const val KEY_FILTERS = "calendar_filters"
         const val KEY_SKIP_BUTTONS = "skip_buttons"
+        const val KEY_PAUSE = "pause_until"
+        const val KEY_PAUSE_BUTTON = "pause_button"
         const val KEY_SUMMARY_ENABLED = "summary_enabled"
         const val KEY_SUMMARY_TIME = "summary_time"
         const val KEY_HOLIDAY_COUNTRY = "holiday_country"
