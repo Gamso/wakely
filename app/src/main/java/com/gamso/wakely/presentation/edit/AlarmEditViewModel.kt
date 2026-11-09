@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.gamso.wakely.domain.model.Alarm
 import com.gamso.wakely.domain.model.AlarmSound
 import com.gamso.wakely.domain.model.DayOffMode
+import com.gamso.wakely.domain.model.SkipIfAwake
 import com.gamso.wakely.domain.repository.AlarmRepository
 import com.gamso.wakely.domain.usecase.DeleteAlarmUseCase
 import com.gamso.wakely.domain.usecase.SaveAlarmUseCase
@@ -31,6 +32,8 @@ class AlarmEditViewModel(
     private val deleteAlarm: DeleteAlarmUseCase,
     /** Sound used when the alarm has none selected. */
     val defaultSound: AlarmSound,
+    /** Whether the phone has a step counter (the option is offered only then). */
+    val stepSensorAvailable: Boolean,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AlarmEditUiState(loaded = alarmId == null))
@@ -55,10 +58,24 @@ class AlarmEditViewModel(
     fun setLabel(label: String) = edit { it.copy(label = label) }
     fun setDays(days: Set<DayOfWeek>) = edit { it.copy(days = days) }
     fun toggleDay(day: DayOfWeek) = edit { it.copy(days = if (day in it.days) it.days - day else it.days + day) }
-    fun setDayOffMode(mode: DayOffMode) = edit { it.copy(dayOffMode = mode) }
+    fun setDayOffMode(mode: DayOffMode) = edit {
+        // With "don't ring" there is no ring on a day off, so "only on days off" would never apply.
+        val skip = if (mode == DayOffMode.SKIP && it.skipIfAwake == SkipIfAwake.DAYS_OFF_ONLY) {
+            SkipIfAwake.ALWAYS
+        } else {
+            it.skipIfAwake
+        }
+        it.copy(dayOffMode = mode, skipIfAwake = skip)
+    }
     fun setDayOffTime(time: LocalTime) = edit { it.copy(dayOffTime = time) }
     fun setSound(sound: AlarmSound) = edit { it.copy(sound = sound) }
     fun setSnoozeMinutes(minutes: Int) = edit { it.copy(snoozeMinutes = minutes) }
+    fun setSkipIfAwake(skip: SkipIfAwake) = edit { it.copy(skipIfAwake = skip) }
+
+    /** Turns the option on: an alarm that also rings on days off is only skipped on those days at first. */
+    fun enableSkipIfAwake() = edit {
+        it.copy(skipIfAwake = if (it.dayOffMode == DayOffMode.SKIP) SkipIfAwake.ALWAYS else SkipIfAwake.DAYS_OFF_ONLY)
+    }
 
     fun save() = viewModelScope.launch {
         saveAlarm(_uiState.value.alarm.copy(enabled = true))

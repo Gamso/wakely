@@ -78,6 +78,13 @@
     <string name="mode_other_time_button">Time on days off: %1$s</string>
     <string name="mode_ignore">Ring normally (ignore the calendar)</string>
     <string name="ringtone">Ringtone</string>
+    <string name="skip_awake_title">Skip if I\'m already up</string>
+    <string name="skip_awake_desc">If you have already walked a few dozen steps in the half hour before the alarm, it does not ring that day.</string>
+    <string name="skip_awake_all">Every ring</string>
+    <string name="skip_awake_days_off">Only on holidays and days off</string>
+    <string name="skip_awake_scope_note">The %1$s alarm always rings on ordinary days. Only the ring of a public holiday or a leave day can be skipped.</string>
+    <string name="skip_awake_unavailable">This phone has no step counter, so the option is not available.</string>
+    <string name="skip_awake_denied">Permission refused: without it, the phone cannot tell that you are up, so the option stays off.</string>
     <string name="snooze_title">Snooze</string>
     <string name="snooze_off">Off</string>
     <string name="snooze_minutes">%1$d min</string>

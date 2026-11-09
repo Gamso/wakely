@@ -27,6 +27,24 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
         alarmManager.cancel(firePendingIntent(key, snooze = false))
     }
 
+    override fun schedulePreCheck(key: RingKey, at: LocalDateTime) {
+        val operation = preCheckPendingIntent(key)
+        val triggerMs = at.toEpochMs()
+        try {
+            if (canScheduleExactAlarms()) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerMs, operation)
+            } else {
+                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerMs, operation)
+            }
+        } catch (_: SecurityException) {
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerMs, operation)
+        }
+    }
+
+    override fun cancelPreCheck(key: RingKey) {
+        alarmManager.cancel(preCheckPendingIntent(key))
+    }
+
     override fun scheduleSummary(at: LocalDateTime?) {
         val operation = PendingIntent.getBroadcast(
             context,
@@ -74,6 +92,21 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
     }
 
     private fun LocalDateTime.toEpochMs(): Long = atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+    private fun preCheckPendingIntent(key: RingKey): PendingIntent {
+        val intent = Intent(context, AlarmReceiver::class.java)
+            .setAction(AlarmReceiver.ACTION_PRECHECK)
+            .putExtra(AlarmReceiver.EXTRA_KIND, key.kind.name)
+            .putExtra(AlarmReceiver.EXTRA_ID, key.id)
+        // Negative codes never meet the ring and snooze ones.
+        val kindOffset = if (key.kind == RingKind.ALARM) 0 else 1
+        return PendingIntent.getBroadcast(
+            context,
+            -(key.id * 2 + kindOffset).toInt() - 1,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+    }
 
     private fun firePendingIntent(key: RingKey, snooze: Boolean, scheduledAt: Long = -1L): PendingIntent {
         val intent = Intent(context, AlarmReceiver::class.java)
