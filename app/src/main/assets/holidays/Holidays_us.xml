@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="us" description="United States"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR">
+      <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="FRIDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="MAY" day="30" validFrom="1869" validTo="1970" descriptionPropertiesKey="MEMORIAL_DAY"/>
+    <Fixed month="JUNE" day="19" validFrom="2021" descriptionPropertiesKey="JUNETEENTH">
+      <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="FRIDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="JULY" day="4" validFrom="1776" descriptionPropertiesKey="INDEPENDENCE_DAY">
+      <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="FRIDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="NOVEMBER" day="11" validFrom="1938" descriptionPropertiesKey="VETERANS_DAY">
+      <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="FRIDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS">
+      <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="FRIDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <FixedWeekday which="THIRD" weekday="MONDAY" month="JANUARY" validFrom="1986" descriptionPropertiesKey="MARTIN_LUTHER_KING"/>
+    <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1971" descriptionPropertiesKey="PRESIDENTS_DAY"/>
+    <FixedWeekday which="LAST" weekday="MONDAY" month="MAY" validFrom="1971" descriptionPropertiesKey="MEMORIAL_DAY"/>
+    <FixedWeekday which="FIRST" weekday="MONDAY" month="SEPTEMBER" validFrom="1895" descriptionPropertiesKey="LABOUR_DAY"/>
+    <FixedWeekday which="FOURTH" weekday="THURSDAY" month="NOVEMBER" validFrom="1863" descriptionPropertiesKey="THANKSGIVING"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Federal_holidays_in_the_United_States</Source>
+    <Source>https://en.wikipedia.org/wiki/Indigenous_Peoples%27_Day_(United_States)#Indigenous_Peoples_Day_observers</Source>
+    <Source>https://en.wikipedia.org/wiki/Confederate_Memorial_Day</Source>
+    <Source of="Legal basis (5 U.S.C. 6103, Uniform Monday Holiday Act)">https://www.govinfo.gov/content/pkg/USCODE-2024-title5/html/USCODE-2024-title5-partIII-subpartE-chap61-subchapI-sec6103.htm</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:US</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:US</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="al" description="Alabama">
+    <Holidays>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="FOURTH" weekday="MONDAY" month="APRIL" descriptionPropertiesKey="CONFEDERATE" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="FIRST" weekday="MONDAY" month="JUNE" descriptionPropertiesKey="JEFFERSON_DAVIS" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2019" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ak" description="Alaska">
+    <Holidays>
+      <Fixed month="OCTOBER" day="18" descriptionPropertiesKey="ALASKA" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="LAST" weekday="MONDAY" month="MARCH" descriptionPropertiesKey="SEWARD" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2015" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="az" description="Arizona">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ar" description="Arkansas">
+    <Holidays>
+      <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE" localizedType="OBSERVANCE"/>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ca" description="California">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="12" descriptionPropertiesKey="LINCOLN" localizedType="OBSERVANCE">
+        <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+      </Fixed>
+      <Fixed month="MARCH" day="31" descriptionPropertiesKey="CESAR_CHAVEZ">
+        <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+      </Fixed>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2019" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="co" description="Colorado">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="FIRST" weekday="MONDAY" month="OCTOBER" validFrom="2020" descriptionPropertiesKey="CABRINI_DAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1906" validTo="2019" descriptionPropertiesKey="COLUMBUS_DAY"/>
+    </Holidays>
+
+    <Sources>
+      <Source>https://leg.colorado.gov/bills/hb19-1185</Source>
+      <Source>https://www.cpr.org/2020/10/03/monday-is-colorados-1st-mother-cabrini-day-heres-why-the-state-chose-her-to-replace-columbus-day/</Source>
+    </Sources>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ct" description="Connecticut">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="12" descriptionPropertiesKey="LINCOLN">
+        <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="FRIDAY"/>
+        <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+      </Fixed>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <ChristianHoliday type="GOOD_FRIDAY"/>
+    </Holidays>
+
+    <Sources>
+      <Source>https://portal.ct.gov/about/legal-state-holidays</Source>
+    </Sources>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="de" description="Delaware">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+      <ChristianHoliday type="GOOD_FRIDAY"/>
+    </Holidays>
+
+    <Sources>
+      <Source>https://delcode.delaware.gov/title1/c005/index.html</Source>
+    </Sources>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="fl" description="Florida">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="FOURTH" weekday="MONDAY" month="APRIL" descriptionPropertiesKey="CONFEDERATE" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ga" description="Georgia">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="MONDAY" month="APRIL" validFrom="1874" validTo="2016" descriptionPropertiesKey="CONFEDERATE"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="hi" description="Hawaii">
+    <Holidays>
+      <Fixed month="MARCH" day="26" descriptionPropertiesKey="KALANIANAOLE" localizedType="OBSERVANCE"/>
+      <Fixed month="JUNE" day="11" descriptionPropertiesKey="KAMEHAMEHA" localizedType="OBSERVANCE"/>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="FRIDAY" month="AUGUST" descriptionPropertiesKey="STATEHOOD" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1988" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <ChristianHoliday type="GOOD_FRIDAY" localizedType="OBSERVANCE"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="id" description="Idaho">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="il" description="Illinois">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="12" descriptionPropertiesKey="LINCOLN" localizedType="OBSERVANCE"/>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="FIRST" weekday="MONDAY" month="MARCH" descriptionPropertiesKey="PULASKI" localizedType="OBSERVANCE"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="in" description="Indiana">
+    <Holidays>
+      <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <ChristianHoliday type="GOOD_FRIDAY" localizedType="OBSERVANCE"/>
+      <ChristianHoliday type="EASTER_MONDAY" localizedType="OBSERVANCE"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ia" description="Iowa">
+    <Holidays>
+      <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE" localizedType="OBSERVANCE"/>
+      <Fixed month="DECEMBER" day="31" descriptionPropertiesKey="NEW_YEARS_EVE" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2019" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ks" description="Kansas">
+    <Holidays>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ky" description="Kentucky">
+    <Holidays>
+      <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE" localizedType="OBSERVANCE"/>
+      <Fixed month="DECEMBER" day="31" descriptionPropertiesKey="NEW_YEARS_EVE" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+      <ChristianHoliday type="GOOD_FRIDAY" localizedType="OBSERVANCE"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="la" description="Louisiana">
+    <Holidays>
+      <Fixed month="APRIL" day="26" validFrom="1925" validTo="2022" descriptionPropertiesKey="CONFEDERATE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2019" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <ChristianHoliday type="GOOD_FRIDAY" localizedType="OBSERVANCE"/>
+      <ChristianHoliday type="MARDI_GRAS" localizedType="OBSERVANCE"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="me" description="Maine">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2019" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="md" description="Maryland">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <RelativeToWeekdayInMonth weekday="FRIDAY" when="BEFORE" descriptionPropertiesKey="SERVICE_REDUCTION" localizedType="OBSERVANCE">
+        <FixedWeekday which="LAST" weekday="MONDAY" month="MAY"/>
+      </RelativeToWeekdayInMonth>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="AMERICAN_INDIAN_HERITAGE_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ma" description="Massachusetts">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="APRIL" descriptionPropertiesKey="PATRIOT" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+    </Holidays>
+    <SubConfigurations hierarchy="sc" description="Suffolk County">
+      <Holidays>
+        <Fixed month="MARCH" day="17" descriptionPropertiesKey="EVACUATION"/>
+        <Fixed month="JUNE" day="17" descriptionPropertiesKey="BUNKER_HILL"/>
+      </Holidays>
+    </SubConfigurations>
+    <SubConfigurations hierarchy="ca" description="Cambridge">
+      <Holidays>
+        <Fixed month="MARCH" day="17" descriptionPropertiesKey="EVACUATION"/>
+      </Holidays>
+    </SubConfigurations>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="mi" description="Michigan">
+    <Holidays>
+      <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE"/>
+      <Fixed month="DECEMBER" day="31" descriptionPropertiesKey="NEW_YEARS_EVE"/>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2019" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+      <ChristianHoliday type="EASTER_MONDAY" localizedType="OBSERVANCE"/>
+    </Holidays>
+
+    <Sources>
+      <Source>https://www.michigan.gov/som/government/state-holidays</Source>
+    </Sources>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="mn" description="Minnesota">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2016" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ms" description="Mississippi">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="FOURTH" weekday="MONDAY" month="APRIL" descriptionPropertiesKey="CONFEDERATE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+    </Holidays>
+
+    <Sources>
+      <Source>https://www.sos.ms.gov/communications-publications/state-holidays</Source>
+    </Sources>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="mo" description="Missouri">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="12" descriptionPropertiesKey="LINCOLN" localizedType="OBSERVANCE"/>
+      <Fixed month="MAY" day="8" descriptionPropertiesKey="TRUMAN" localizedType="OBSERVANCE"/>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="mt" description="Montana">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <RelativeToWeekdayInMonth weekday="TUESDAY" when="AFTER" descriptionPropertiesKey="THANKSGIVING" localizedType="OBSERVANCE">
+        <FixedWeekday which="FIRST" weekday="MONDAY" month="NOVEMBER"/>
+      </RelativeToWeekdayInMonth>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ne" description="Nebraska">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="LAST" weekday="FRIDAY" month="APRIL" descriptionPropertiesKey="ARBOR"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2020" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="nv" description="Nevada">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="LAST" weekday="FRIDAY" month="OCTOBER" descriptionPropertiesKey="NEVADA" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="nh" description="New Hampshire">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="nj" description="New Jersey">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="12" descriptionPropertiesKey="LINCOLN" localizedType="OBSERVANCE"/>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <ChristianHoliday type="GOOD_FRIDAY" localizedType="OBSERVANCE"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="nm" description="New Mexico">
+    <Holidays>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2019" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ny" description="New York">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <Fixed month="FEBRUARY" day="12" descriptionPropertiesKey="LINCOLN" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <ChristianHoliday type="EASTER_MONDAY" localizedType="OBSERVANCE"/>
+    </Holidays>
+    <SubConfigurations hierarchy="nyc" description="New York City">
+      <Holidays>
+        <FixedWeekday which="FIRST" weekday="THURSDAY" month="JUNE" descriptionPropertiesKey="BROOKLY_QUEENS"/>
+      </Holidays>
+    </SubConfigurations>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="nc" description="North Carolina">
+    <Holidays>
+      <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE"/>
+      <FixedWeekday which="FOURTH" weekday="MONDAY" month="APRIL" descriptionPropertiesKey="CONFEDERATE" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2018" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+      <ChristianHoliday type="GOOD_FRIDAY" localizedType="OBSERVANCE"/>
+    </Holidays>
+    <SubConfigurations hierarchy="ce" description="Charlotte">
+      <Holidays>
+        <Fixed month="MAY" day="20" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+      </Holidays>
+    </SubConfigurations>
+    <SubConfigurations hierarchy="me" description="Mecklenburg">
+      <Holidays>
+        <Fixed month="MAY" day="20" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+      </Holidays>
+    </SubConfigurations>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="nd" description="North Dakota">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <ChristianHoliday type="GOOD_FRIDAY" localizedType="OBSERVANCE"/>
+      <ChristianHoliday type="EASTER_MONDAY" localizedType="OBSERVANCE"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="oh" description="Ohio">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <Fixed month="APRIL" day="27" validFrom="2024" descriptionPropertiesKey="ULYSSES_S_GRANT_DAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+    </Holidays>
+
+    <Sources>
+      <Source>https://codes.ohio.gov/ohio-revised-code/section-5.2532</Source>
+    </Sources>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ok" description="Oklahoma">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2019" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="or" description="Oregon">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2021" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="pa" description="Pennsylvania">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ri" description="Rhode Island">
+    <Holidays>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="AUGUST" descriptionPropertiesKey="VICTORY" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="sc" description="South Carolina">
+    <Holidays>
+      <Fixed month="MAY" day="10" validFrom="2000" descriptionPropertiesKey="CONFEDERATE" localizedType="OBSERVANCE"/>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="sd" description="South Dakota">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1989" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="tn" description="Tennessee">
+    <Holidays>
+      <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE"/>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="FOURTH" weekday="MONDAY" month="APRIL" descriptionPropertiesKey="CONFEDERATE" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+      <ChristianHoliday type="GOOD_FRIDAY" localizedType="OBSERVANCE"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="tx" description="Texas">
+    <Holidays>
+      <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE" localizedType="OBSERVANCE"/>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="FOURTH" weekday="MONDAY" month="APRIL" validFrom="1973" descriptionPropertiesKey="CONFEDERATE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2021" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+      <ChristianHoliday type="GOOD_FRIDAY" localizedType="OBSERVANCE"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="ut" description="Utah">
+    <Holidays>
+      <Fixed month="JULY" day="24" descriptionPropertiesKey="PIONEER" localizedType="OBSERVANCE"/>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="vt" description="Vermont">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="AUGUST" descriptionPropertiesKey="BENNINGTON" localizedType="OBSERVANCE"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2016" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="va" description="Virginia">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <RelativeToWeekdayInMonth weekday="FRIDAY" when="BEFORE" validTo="2019" descriptionPropertiesKey="LEE_JACKSON" localizedType="OBSERVANCE">
+        <FixedWeekday which="THIRD" weekday="MONDAY" month="JANUARY" descriptionPropertiesKey="MARTIN_LUTHER_KING"/>
+      </RelativeToWeekdayInMonth>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2020" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+    </Holidays>
+
+    <Sources>
+      <Source>https://en.wikipedia.org/wiki/Lee%E2%80%93Jackson_Day</Source>
+      <Source>https://law.lis.virginia.gov/vacode/title2.2/chapter33/section2.2-3300/</Source>
+    </Sources>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="wa" description="Washington">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="NATIVE_AMERICAN_HERITAGE_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="wv" description="West Virginia">
+    <Holidays>
+      <Fixed month="JUNE" day="20" descriptionPropertiesKey="WEST_VIRGINIA" localizedType="OBSERVANCE"/>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="1934" descriptionPropertiesKey="COLUMBUS_DAY"/>
+      <FixedWeekday which="FOURTH" weekday="FRIDAY" month="NOVEMBER" descriptionPropertiesKey="DAY_AFTER_THANKSGIVING"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="wi" description="Wisconsin">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2019" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="wy" description="Wyoming">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+    </Holidays>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="dc" description="Washington, D.C.">
+    <Holidays>
+      <Fixed month="FEBRUARY" day="22" validFrom="1879" validTo="1967" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="THIRD" weekday="MONDAY" month="FEBRUARY" validFrom="1968" descriptionPropertiesKey="WASHINGTONS_BIRTHDAY"/>
+      <FixedWeekday which="SECOND" weekday="MONDAY" month="OCTOBER" validFrom="2019" descriptionPropertiesKey="INDIGENOUS_PEOPLES_DAY"/>
+    </Holidays>
+  </SubConfigurations>
+</Configuration>

@@ -10,6 +10,7 @@ bundled in the app (`app/src/main/assets/licenses/`) and shown in **RÃ©glages â†
 | Material Design icons ("settings", "arrow_back", "expand_more") | Google | Apache 2.0 | `app/src/main/res/drawable/ic_settings.xml`, `ic_arrow_back.xml`, `ic_expand_more.xml` |
 | AndroidX / Jetpack Compose | The Android Open Source Project | Apache 2.0 | UI, activities, lifecycle, ViewModel |
 | Kotlin standard library, kotlinx.coroutines | JetBrains s.r.o. and contributors | Apache 2.0 | Language runtime, coroutines |
+| Jollyday holiday data | The Jollyday project (focus-shift) and contributors | Apache 2.0 | `app/src/main/assets/holidays/` |
 
 ## Android Open Source Project alarm sounds
 
@@ -32,3 +33,14 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+## Jollyday holiday data
+
+Files: `app/src/main/assets/holidays/` (`Holidays_<country>.xml`, `holiday_descriptions*.properties`)
+
+Source: https://github.com/focus-shift/jollyday (see `SOURCE.txt` in that folder for the exact commit),
+copied unmodified by `tools/update_holidays.py`. The holiday dates are computed by the app from these rules.
+
+Copyright (C) The Jollyday project and contributors
+
+Licensed under the Apache License, Version 2.0, the same text as above.

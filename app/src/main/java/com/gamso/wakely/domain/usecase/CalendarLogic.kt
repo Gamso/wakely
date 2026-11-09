@@ -44,7 +44,7 @@ object CalendarLogic {
             .toList()
     }
 
-    /** Days off from events of day-off calendars ([filters] of HOLIDAYS / LEAVE). */
+    /** Days off from events of the day-off calendars ([filters] of the leave category). */
     fun daysOff(
         events: List<CalendarEvent>,
         filters: List<CalendarFilter>,
@@ -56,16 +56,9 @@ object CalendarLogic {
         for (event in events.sortedBy { it.start }) {
             for (filter in bySource[event.sourceKey].orEmpty()) {
                 if (!matches(event, filter.keywordList())) continue
+                // The title may be blank: the UI shows a localized default.
                 coveredDates(event).filter { it in from..to }.forEach { date ->
-                    result.putIfAbsent(
-                        date,
-                        DayOff(
-                            date,
-                            // May be blank: the UI shows a localized default.
-                            event.title,
-                            filter.category,
-                        ),
-                    )
+                    result.putIfAbsent(date, DayOff(date, event.title))
                 }
             }
         }

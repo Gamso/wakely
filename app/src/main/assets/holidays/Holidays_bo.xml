@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="bo" description="Bolivia"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="FEBRUARY" day="2" descriptionPropertiesKey="CANDELARIA"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="AUGUST" day="6" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="NOVEMBER" day="1" descriptionPropertiesKey="ALL_SAINTS"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+    <ChristianHoliday type="CORPUS_CHRISTI"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Bolivia</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:BO</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:BO</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="b" description="El Beni">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="c" description="Cochabamba">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="h" description="Chuquisaca">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="l" description="La Paz">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="n" description="Pando">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="o" description="Oruro">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="p" description="Potosí">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="s" description="Santa Cruz">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="t" description="Tarija">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

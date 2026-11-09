@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="li" description="Liechtenstein"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" validFrom="1967" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="JANUARY" day="6" descriptionPropertiesKey="EPIPHANY"/>
+    <Fixed month="FEBRUARY" day="2" descriptionPropertiesKey="CANDLEMAS"/>
+    <Fixed month="MARCH" day="19" descriptionPropertiesKey="ST_JOSEPH"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="MAY_DAY"/>
+    <Fixed month="AUGUST" day="15" descriptionPropertiesKey="ASSUMPTION_DAY"/>
+    <Fixed month="SEPTEMBER" day="8" descriptionPropertiesKey="NATIVITY_LADY"/>
+    <Fixed month="NOVEMBER" day="1" descriptionPropertiesKey="ALL_SAINTS"/>
+    <Fixed month="DECEMBER" day="8" descriptionPropertiesKey="IMMACULATE_CONCEPTION"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <Fixed month="DECEMBER" day="26" descriptionPropertiesKey="STEPHENS"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="EASTER_MONDAY" validFrom="1642"/>
+    <ChristianHoliday type="WHIT_SUNDAY"/>
+    <ChristianHoliday type="ASCENSION_DAY"/>
+    <ChristianHoliday type="WHIT_MONDAY"/>
+    <ChristianHoliday type="CORPUS_CHRISTI"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Liechtenstein</Source>
+    <Source>https://www.llb.li/de/kontakt/bankfeiertage</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:LI</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:LI</Source>
+    <Source of="Arbeitsgesetz, LGBl. 1967 Nr. 6 / LR 822.10, Art. 18 Abs. 2">https://www.gesetze.li/konso/pdf/1967006000</Source>
+  </Sources>
+
+  <!-- Article 18(2) of the Arbeitsgesetz is an exhaustive national list. The
+       Gemeindegesetz mentions neither Feiertag nor Ruhetag nor Patrozinium, so the
+       communes have no holiday setting power; Patrozinium observances are local
+       Festanlaesse only. -->
+
+  <SubConfigurations hierarchy="01" description="Balzers">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="02" description="Eschen">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="03" description="Gamprin">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="04" description="Mauren">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="05" description="Planken">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="06" description="Ruggell">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="07" description="Schaan">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="08" description="Schellenberg">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="09" description="Triesen">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="10" description="Triesenberg">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="11" description="Vaduz">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

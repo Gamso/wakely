@@ -63,6 +63,9 @@ class CalendarRepositoryImpl(private val context: Context) : CalendarRepository 
     }
 
     override suspend fun getEvents(sourceKeys: Set<String>, from: LocalDate, to: LocalDate): List<CalendarEvent> =
+        deviceEvents(sourceKeys, from, to)
+
+    private suspend fun deviceEvents(sourceKeys: Set<String>, from: LocalDate, to: LocalDate): List<CalendarEvent> =
         withContext(Dispatchers.IO) {
             val ids = sourceKeys.filter { it.startsWith(PREFIX) }.mapNotNull { it.removePrefix(PREFIX).toLongOrNull() }
             if (ids.isEmpty() || !hasPermission()) return@withContext emptyList()

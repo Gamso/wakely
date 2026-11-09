@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="fi" description="Finland"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="JANUARY" day="6" descriptionPropertiesKey="EPIPHANY"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="DECEMBER" day="6" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <Fixed month="DECEMBER" day="26" descriptionPropertiesKey="STEPHENS"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="EASTER_MONDAY"/>
+    <ChristianHoliday type="ASCENSION_DAY"/>
+    <ChristianHoliday type="WHIT_SUNDAY"/>
+    <FixedWeekdayBetweenFixed weekday="FRIDAY" descriptionPropertiesKey="MIDSUMMER_EVE">
+      <from month="JUNE" day="19"/>
+      <to month="JUNE" day="25"/>
+    </FixedWeekdayBetweenFixed>
+    <FixedWeekdayBetweenFixed weekday="SATURDAY" descriptionPropertiesKey="MIDSUMMER">
+      <from month="JUNE" day="20"/>
+      <to month="JUNE" day="26"/>
+    </FixedWeekdayBetweenFixed>
+    <FixedWeekdayBetweenFixed weekday="SATURDAY" descriptionPropertiesKey="ALL_SAINTS">
+      <from month="OCTOBER" day="31"/>
+      <to month="NOVEMBER" day="6"/>
+    </FixedWeekdayBetweenFixed>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Finland</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:FI</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:FI</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="01" description="Åland">
+    <Holidays>
+      <Fixed month="JUNE" day="9" descriptionPropertiesKey="SELF_GOVERNANCE"/>
+    </Holidays>
+
+    <Sources>
+      <Source>https://en.wikipedia.org/wiki/Public_holidays_in_%C3%85land</Source>
+    </Sources>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="02" description="South Karelia">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="03" description="South Ostrobothnia">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="04" description="South Savo">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="05" description="Kainuu">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="06" description="Kanta-Häme">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="07" description="Central Ostrobothnia">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="08" description="Central Finland">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="09" description="Kymenlaakso">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="10" description="Lapland">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="11" description="Pirkanmaa">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="12" description="Ostrobothnia">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="13" description="North Karelia">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="14" description="North Ostrobothnia">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="15" description="North Savo">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="16" description="Päijät-Häme">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="17" description="Satakunta">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="18" description="Uusimaa">
+    <Holidays/>
+  </SubConfigurations>
+
+  <SubConfigurations hierarchy="19" description="Southwest Finland">
+    <Holidays/>
+  </SubConfigurations>
+</Configuration>

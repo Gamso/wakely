@@ -31,7 +31,7 @@ naming:
 
 style:
   MagicNumber:
-    excludes: ['**/test/**', '**/presentation/**', '**/domain/model/Models.kt']
+    excludes: ['**/test/**', '**/presentation/**', '**/domain/model/Models.kt', '**/domain/holiday/**']
   MaxLineLength:
     maxLineLength: 120
   ReturnCount:

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="sk" description="Slovakia"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" validFrom="1993" descriptionPropertiesKey="FOUNDATION"/>
+    <Fixed month="JANUARY" day="6" descriptionPropertiesKey="EPIPHANY"/>
+    <Fixed month="MAY" day="1" validFrom="1886" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="MAY" day="8" descriptionPropertiesKey="VICTORY"/>
+    <Fixed month="JULY" day="5" descriptionPropertiesKey="CYRUS_METHODIUS"/>
+    <Fixed month="AUGUST" day="29" descriptionPropertiesKey="NATIONAL_UPRISING"/>
+    <Fixed month="SEPTEMBER" day="1" validTo="2024" descriptionPropertiesKey="CONSTITUTION_DAY"/>
+    <Fixed month="SEPTEMBER" day="1" validFrom="2025" descriptionPropertiesKey="CONSTITUTION_DAY" localizedType="OBSERVANCE"/>
+    <Fixed month="SEPTEMBER" day="15" descriptionPropertiesKey="VIRGIN_MARY"/>
+    <Fixed month="NOVEMBER" day="1" descriptionPropertiesKey="ALL_SAINTS"/>
+    <Fixed month="NOVEMBER" day="17" descriptionPropertiesKey="FREEDOM_DEMOCRACY"/>
+    <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <Fixed month="DECEMBER" day="26" descriptionPropertiesKey="STEPHENS"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+    <ChristianHoliday type="EASTER_MONDAY"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://mzv.sk/en/web/en/slovakia/public-holidays</Source>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Slovakia</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:SK</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:SK</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="bc" description="Banská Bystrica">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="bl" description="Bratislava">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ki" description="Košice">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ni" description="Nitra">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="pv" description="Prešov">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ta" description="Trnava">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="tc" description="Trenčín">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="zi" description="Žilina">
+    <Holidays/>
+  </SubConfigurations>
+</Configuration>

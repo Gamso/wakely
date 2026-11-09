@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="md" description="Moldova"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="JANUARY" day="7" descriptionPropertiesKey="CHRISTMAS_EVE"/>
+    <Fixed month="JANUARY" day="8" descriptionPropertiesKey="CHRISTMAS"/>
+    <Fixed month="MARCH" day="8" descriptionPropertiesKey="INTERNATIONAL_WOMAN" validFrom="1977"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="MAY" day="9" descriptionPropertiesKey="VICTORY" validFrom="1965"/>
+    <Fixed month="JUNE" day="1" descriptionPropertiesKey="CHILDRENS_DAY" validFrom="2016"/>
+    <Fixed month="AUGUST" day="27" descriptionPropertiesKey="INDEPENDENCE_DAY" validFrom="1991"/>
+    <Fixed month="AUGUST" day="31" descriptionPropertiesKey="LANGUAGE_DAY" validFrom="1990"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <ChristianHoliday type="EASTER" chronology="JULIAN"/>
+    <ChristianHoliday type="EASTER_MONDAY" chronology="JULIAN"/>
+  </Holidays>
+
+  <Sources>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:MD</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:MD</Source>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Moldova</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="ba" description="Bălți">
+    <Holidays>
+      <Fixed month="MAY" day="22" descriptionPropertiesKey="REGIONAL"/>
+    </Holidays>
+  </SubConfigurations>
+
+</Configuration>

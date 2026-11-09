@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="ve" description="Venezuela"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="JANUARY" day="6" descriptionPropertiesKey="EPIPHANY"/>
+    <Fixed month="MARCH" day="19" descriptionPropertiesKey="ST_JOSEPH"/>
+    <Fixed month="APRIL" day="19" descriptionPropertiesKey="REPUBLIC_DAY"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="JUNE" day="24" descriptionPropertiesKey="CARABOBO"/>
+    <Fixed month="JULY" day="5" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="JULY" day="24" descriptionPropertiesKey="NAVY_DAY"/>
+    <Fixed month="AUGUST" day="3" validFrom="2006" descriptionPropertiesKey="FLAG_DAY"/>
+    <Fixed month="OCTOBER" day="12" descriptionPropertiesKey="INDIGENOUS_RESISTANCE"/>
+    <Fixed month="NOVEMBER" day="1" descriptionPropertiesKey="ALL_SAINTS"/>
+    <Fixed month="DECEMBER" day="8" descriptionPropertiesKey="IMMACULATE_CONCEPTION"/>
+    <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE"/>
+    <Fixed month="DECEMBER" day="31" descriptionPropertiesKey="NEW_YEARS_EVE"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="SHROVE_MONDAY"/>
+    <ChristianHoliday type="CARNIVAL"/>
+    <ChristianHoliday type="MAUNDY_THURSDAY"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Venezuela</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:VE</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:VE</Source>
+  </Sources>
+
+</Configuration>

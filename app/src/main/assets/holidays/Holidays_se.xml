@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="se" description="Sweden"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="JANUARY" day="6" descriptionPropertiesKey="EPIPHANY"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="JUNE" day="6" descriptionPropertiesKey="NATIONAL_DAY"/>
+    <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <Fixed month="DECEMBER" day="26" descriptionPropertiesKey="BOXING_DAY"/>
+    <Fixed month="DECEMBER" day="31" descriptionPropertiesKey="NEW_YEARS_EVE"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+    <ChristianHoliday type="EASTER_MONDAY"/>
+    <ChristianHoliday type="ASCENSION_DAY"/>
+    <ChristianHoliday type="PENTECOST"/>
+    <FixedWeekdayBetweenFixed weekday="FRIDAY" descriptionPropertiesKey="MIDSUMMER_EVE">
+      <from month="JUNE" day="19"/>
+      <to month="JUNE" day="25"/>
+    </FixedWeekdayBetweenFixed>
+    <FixedWeekdayBetweenFixed weekday="SATURDAY" descriptionPropertiesKey="MIDSUMMER">
+      <from month="JUNE" day="20"/>
+      <to month="JUNE" day="26"/>
+    </FixedWeekdayBetweenFixed>
+    <FixedWeekdayBetweenFixed weekday="SATURDAY" descriptionPropertiesKey="ALL_SAINTS">
+      <from month="OCTOBER" day="31"/>
+      <to month="NOVEMBER" day="6"/>
+    </FixedWeekdayBetweenFixed>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Sweden</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:SE</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:SE</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="ab" description="Stockholm">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ac" description="Västerbotten">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="bd" description="Norrbotten">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="c" description="Uppsala">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="d" description="Södermanland">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="e" description="Östergötland">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="f" description="Jönköping">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="g" description="Kronoberg">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="h" description="Kalmar">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="i" description="Gotland">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="k" description="Blekinge">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="m" description="Scania">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="n" description="Halland">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="o" description="Västra Götaland">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="s" description="Värmland">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="t" description="Örebro">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="u" description="Västmanland">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="w" description="Dalarna">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="x" description="Gävleborg">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="y" description="Västernorrland">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="z" description="Jämtland">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

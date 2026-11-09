@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="pe" description="Peru"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <!-- Ley 31788, published 2023-06-15 after that year's 7 June -->
+    <Fixed month="JUNE" day="7" validFrom="2024" descriptionPropertiesKey="ARICA"/>
+    <Fixed month="JUNE" day="29" descriptionPropertiesKey="ST_PETER_PAUL"/>
+    <!-- Ley 31822, published 2023-07-08 -->
+    <Fixed month="JULY" day="23" validFrom="2023" descriptionPropertiesKey="AIR_FORCE_DAY"/>
+    <Fixed month="JULY" day="28" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="JULY" day="29" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <!-- Ley 31530, published 2022-07-26 -->
+    <Fixed month="AUGUST" day="6" validFrom="2022" descriptionPropertiesKey="JUNIN"/>
+    <Fixed month="AUGUST" day="30" descriptionPropertiesKey="SANTA_ROSA"/>
+    <Fixed month="OCTOBER" day="8" descriptionPropertiesKey="ANGAMOS"/>
+    <Fixed month="NOVEMBER" day="1" descriptionPropertiesKey="ALL_SAINTS"/>
+    <Fixed month="DECEMBER" day="8" descriptionPropertiesKey="IMMACULATE_CONCEPTION"/>
+    <!-- Ley 31381, signed 2021-12-30 -->
+    <Fixed month="DECEMBER" day="9" validFrom="2022" descriptionPropertiesKey="AYACUCHO"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <ChristianHoliday type="MAUNDY_THURSDAY"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+  </Holidays>
+
+  <Sources>
+    <Source of="Ley N.° 31381">https://busquedas.elperuano.pe/dispositivo/NL/2026913-1</Source>
+    <Source of="Ley N.° 31530">https://busquedas.elperuano.pe/dispositivo/NL/2089960-2</Source>
+    <Source of="Ley N.° 31788">https://leyes.congreso.gob.pe/Documentos/2021_2026/ADLP/Texto_Consolidado/31788-TXM.pdf</Source>
+    <Source of="Ley N.° 31822">https://leyes.congreso.gob.pe/Documentos/2021_2026/ADLP/Texto_Consolidado/31822-TXM.pdf</Source>
+    <Source of="gob.pe feriados">https://www.gob.pe/feriados</Source>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Peru</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:PE</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:PE</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="ama" description="Amazonas">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="anc" description="Ancash">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="apu" description="Apurímac">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="are" description="Arequipa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="aya" description="Ayacucho">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="caj" description="Cajamarca">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cal" description="El Callao">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="cus" description="Cusco">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="huc" description="Huánuco">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="huv" description="Huancavelica">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ica" description="Ica">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="jun" description="Junín">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="lal" description="La Libertad">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="lam" description="Lambayeque">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="lim" description="Lima">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="lma" description="Municipalidad Metropolitana de Lima">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="lor" description="Loreto">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="mdd" description="Madre de Dios">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="moq" description="Moquegua">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="pas" description="Pasco">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="piu" description="Piura">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="pun" description="Puno">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="sam" description="San Martín">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="tac" description="Tacna">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="tum" description="Tumbes">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="uca" description="Ucayali">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

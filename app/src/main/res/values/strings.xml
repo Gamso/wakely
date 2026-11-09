@@ -72,7 +72,7 @@
     <string name="chip_weekdays">Weekdays</string>
     <string name="chip_every_day">Every day</string>
     <string name="chip_once">Once</string>
-    <string name="days_off_section">Public holidays and days off (from your calendar)</string>
+    <string name="days_off_section">Public holidays and days off</string>
     <string name="mode_skip">Don\'t ring</string>
     <string name="mode_other_time">Ring at another time</string>
     <string name="mode_other_time_button">Time on days off: %1$s</string>
@@ -113,9 +113,6 @@
     <string name="allow_calendar_access">Allow calendar access</string>
     <string name="calendars_title">Calendars</string>
     <string name="calendars_description">Calendars synced on this phone (Google, Outlook, Samsung…). The same calendar can be used in several categories.</string>
-    <string name="cat_holidays_title">Public holidays</string>
-    <string name="cat_holidays_desc">All-day events in these calendars are days off.</string>
-    <string name="cat_holidays_hint">e.g. public holiday (excludes plain observances)</string>
     <string name="cat_leave_title">Leave and vacations</string>
     <string name="cat_leave_desc">Your leave, vacations, time off…: days off.</string>
     <string name="cat_leave_hint">e.g. leave, vacation, time off</string>
@@ -133,8 +130,6 @@
     <string name="add_to_category">Add to “%1$s”</string>
     <string name="no_other_calendar">No other calendar available. Add an account (Google, Outlook…) in Android settings, and turn on its calendar sync.</string>
     <string name="about_link">About Wakely</string>
-    <!-- Keyword pre-filled for public-holiday calendars (matches the calendar's own wording) -->
-    <string name="holiday_keyword">public holiday</string>
 
     <!-- Sound picker -->
     <string name="sound_picker_title">Ringtone</string>
@@ -168,6 +163,9 @@
     <string name="credit_kotlin_name">Kotlin and kotlinx.coroutines</string>
     <string name="credit_kotlin_usage">Language and standard library, asynchronous programming.</string>
     <string name="author_jetbrains">JetBrains s.r.o. and contributors</string>
+    <string name="credit_jollyday_name">Jollyday holiday data</string>
+    <string name="credit_jollyday_usage">Public holidays of 150 countries and their regions, embedded unmodified; dates are computed in the app.</string>
+    <string name="author_jollyday" translatable="false">The Jollyday project (focus-shift) and contributors</string>
 
     <!-- Ringing screen and notifications -->
     <string name="ring_default_label">Alarm</string>
@@ -188,4 +186,22 @@
     <string name="summary_detail_event">event at %1$s</string>
     <string name="summary_detail_before">before “%1$s” at %2$s</string>
     <string name="summary_skipped">%1$s %2$s skipped: %3$s</string>
+
+    <!-- Public holidays by country and region -->
+    <string name="holidays_title">Public holidays</string>
+    <string name="holidays_desc">Public holidays of your country, built into the app: no calendar needed. The data is embedded, nothing is downloaded.</string>
+    <string name="holidays_region_desc">Some regions have extra holidays (e.g. Alsace-Moselle in France).</string>
+    <string name="holidays_region_label">Region: %1$s</string>
+    <string name="holidays_region_whole">Whole country</string>
+    <string name="holidays_region_dialog_title">Choose a region</string>
+    <string name="holidays_country_label">Country: %1$s</string>
+    <string name="holidays_country_label_auto">Country: %1$s (automatic)</string>
+    <string name="holidays_country_auto">Automatic (%1$s)</string>
+    <string name="holidays_country_auto_none">Automatic (no supported country)</string>
+    <string name="holidays_country_none">None</string>
+    <string name="holidays_country_dialog_title">Choose a country</string>
+    <string name="upcoming_holidays_title">Upcoming public holidays</string>
+    <string name="upcoming_holidays_desc">Turn off a holiday if you work that day: your alarms will ring normally.</string>
+    <string name="holiday_working">I work that day</string>
+    <string name="upcoming_holidays_empty">No upcoming public holiday. Choose a country.</string>
 </resources>

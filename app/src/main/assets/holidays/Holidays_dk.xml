@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="dk" description="Denmark"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="FIRST_CHRISTMAS_DAY"/>
+    <Fixed month="DECEMBER" day="26" descriptionPropertiesKey="SECOND_CHRISTMAS_DAY"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="MAUNDY_THURSDAY"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+    <ChristianHoliday type="EASTER_MONDAY"/>
+    <ChristianHoliday type="GENERAL_PRAYER_DAY" validTo="2023"/>
+    <ChristianHoliday type="ASCENSION_DAY"/>
+    <ChristianHoliday type="WHIT_MONDAY"/>
+    <ChristianHoliday type="PENTECOST"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Denmark</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:DK</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:DK</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="81" description="Nordjylland">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="82" description="Midtjylland">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="83" description="Syddanmark">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="84" description="Hovedstaden">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="85" description="Sjælland">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

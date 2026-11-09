@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="ec" description="Ecuador"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <!-- Since 2017 (Código del Trabajo art. 65, RO Supl. 906 of 2016-12-20): Tuesday to the Monday before,
+         Wednesday and Thursday to the Friday after, Saturday to the Friday before, Sunday to the Monday after -->
+    <Fixed month="MAY" day="1" validTo="2016" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="MAY" day="1" validFrom="2017" descriptionPropertiesKey="LABOUR_DAY">
+      <MovingCondition substitute="TUESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="FRIDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="FRIDAY"/>
+      <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="FRIDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="MAY" day="24" validTo="2016" descriptionPropertiesKey="PICHINCHA"/>
+    <Fixed month="MAY" day="24" validFrom="2017" descriptionPropertiesKey="PICHINCHA">
+      <MovingCondition substitute="TUESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="FRIDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="FRIDAY"/>
+      <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="FRIDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="AUGUST" day="10" validTo="2016" descriptionPropertiesKey="INDEP_QUITO"/>
+    <Fixed month="AUGUST" day="10" validFrom="2017" descriptionPropertiesKey="INDEP_QUITO">
+      <MovingCondition substitute="TUESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="FRIDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="FRIDAY"/>
+      <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="FRIDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="OCTOBER" day="9" validTo="2016" descriptionPropertiesKey="INDEP_GUYAQUIL"/>
+    <Fixed month="OCTOBER" day="9" validFrom="2017" descriptionPropertiesKey="INDEP_GUYAQUIL">
+      <MovingCondition substitute="TUESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="FRIDAY"/>
+      <MovingCondition substitute="THURSDAY" with="NEXT" weekday="FRIDAY"/>
+      <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="FRIDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="NOVEMBER" day="2" validTo="2016" descriptionPropertiesKey="ALL_SOULS"/>
+    <Fixed month="NOVEMBER" day="3" validTo="2016" descriptionPropertiesKey="INDEP_CUENCA"/>
+    <!-- Since 2017 the consecutive 2 and 3 November follow Disposición General Primera of RO Supl. 906:
+         Mon/Tue and Thu/Fri stay, Tue/Wed: Wednesday to Monday, Wed/Thu: Wednesday to Friday,
+         Fri/Sat: Saturday to Thursday, Sat/Sun: Saturday to Friday and Sunday to Monday, Sun/Mon: Sunday to Tuesday -->
+    <Fixed month="NOVEMBER" day="2" validFrom="2017" descriptionPropertiesKey="ALL_SOULS">
+      <MovingCondition substitute="WEDNESDAY" with="NEXT" weekday="FRIDAY"/>
+      <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="FRIDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="TUESDAY"/>
+    </Fixed>
+    <Fixed month="NOVEMBER" day="3" validFrom="2017" descriptionPropertiesKey="INDEP_CUENCA">
+      <MovingCondition substitute="WEDNESDAY" with="PREVIOUS" weekday="MONDAY"/>
+      <MovingCondition substitute="SATURDAY" with="PREVIOUS" weekday="THURSDAY"/>
+      <MovingCondition substitute="SUNDAY" with="NEXT" weekday="MONDAY"/>
+    </Fixed>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <ChristianHoliday type="SHROVE_MONDAY"/>
+    <ChristianHoliday type="CARNIVAL"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+  </Holidays>
+
+  <Sources>
+    <Source of="Ley Orgánica Reformatoria a la LOSEP y al Código del Trabajo, RO Supl. 906 (2016-12-20)">https://esacc.corteconstitucional.gob.ec/storage/api/v1/10_DWL_FL/eyJjYXJwZXRhIjoicm8iLCJ1dWlkIjoiNjY4NDI5OTEtNmU1Zi00NDNmLWE4OTgtYmU2MWVjNTUyZjRkLnBkZiJ9</Source>
+    <Source>https://www.asambleanacional.gob.ec/es/blogs/herman-moya/47579-ley-de-feriados</Source>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Ecuador</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:EC</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:EC</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="a" description="Azuay">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="b" description="Bolívar">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="c" description="Carchi">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="d" description="Orellana">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="e" description="Esmeraldas">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="f" description="Cañar">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="g" description="Guayas">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="h" description="Chimborazo">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="i" description="Imbabura">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="l" description="Loja">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="m" description="Manabí">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="n" description="Napo">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="o" description="El Oro">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="p" description="Pichincha">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="r" description="Los Ríos">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="s" description="Morona Santiago">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="sd" description="Santo Domingo de los Tsáchilas">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="se" description="Santa Elena">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="t" description="Tungurahua">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="u" description="Sucumbíos">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="w" description="Galápagos">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="x" description="Cotopaxi">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="y" description="Pastaza">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="z" description="Zamora Chinchipe">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

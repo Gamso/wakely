@@ -58,7 +58,7 @@
     <string name="chip_weekdays">Semaine</string>
     <string name="chip_every_day">Tous les jours</string>
     <string name="chip_once">Une fois</string>
-    <string name="days_off_section">Jours fériés et congés (selon l\'agenda)</string>
+    <string name="days_off_section">Jours fériés et congés</string>
     <string name="mode_skip">Ne pas sonner</string>
     <string name="mode_other_time">Sonner à une autre heure</string>
     <string name="mode_other_time_button">Heure les jours non travaillés : %1$s</string>
@@ -99,9 +99,6 @@
     <string name="allow_calendar_access">Autoriser l\'accès à l\'agenda</string>
     <string name="calendars_title">Agendas</string>
     <string name="calendars_description">Agendas synchronisés sur ce téléphone (Google, Outlook, Samsung…). Un même agenda peut être utilisé dans plusieurs catégories.</string>
-    <string name="cat_holidays_title">Jours fériés</string>
-    <string name="cat_holidays_desc">Les événements « journée entière » de ces agendas sont des jours non travaillés.</string>
-    <string name="cat_holidays_hint">ex. férié (exclut les simples fêtes)</string>
     <string name="cat_leave_title">Congés et vacances</string>
     <string name="cat_leave_desc">Vos jours de congé, vacances, RTT… : jours non travaillés.</string>
     <string name="cat_leave_hint">ex. congé, vacances, RTT</string>
@@ -119,7 +116,6 @@
     <string name="add_to_category">Ajouter à « %1$s »</string>
     <string name="no_other_calendar">Aucun autre agenda disponible. Ajoutez un compte (Google, Outlook…) dans les paramètres Android, et activez la synchronisation de son agenda.</string>
     <string name="about_link">À propos de Wakely</string>
-    <string name="holiday_keyword">férié</string>
 
     <!-- Sound picker -->
     <string name="sound_picker_title">Sonnerie</string>
@@ -153,6 +149,8 @@
     <string name="credit_kotlin_name">Kotlin et kotlinx.coroutines</string>
     <string name="credit_kotlin_usage">Langage et bibliothèque standard, programmation asynchrone.</string>
     <string name="author_jetbrains">JetBrains s.r.o. et contributeurs</string>
+    <string name="credit_jollyday_name">Données de jours fériés Jollyday</string>
+    <string name="credit_jollyday_usage">Jours fériés de 150 pays et de leurs régions, embarqués sans modification ; les dates sont calculées dans l\'application.</string>
 
     <!-- Ringing screen and notifications -->
     <string name="ring_default_label">Réveil</string>
@@ -173,4 +171,22 @@
     <string name="summary_detail_event">événement à %1$s</string>
     <string name="summary_detail_before">avant « %1$s » à %2$s</string>
     <string name="summary_skipped">%1$s %2$s ignoré : %3$s</string>
+
+    <!-- Public holidays by country and region -->
+    <string name="holidays_title">Jours fériés</string>
+    <string name="holidays_desc">Jours fériés de votre pays, intégrés à l\'application : aucun agenda n\'est nécessaire. Les données sont embarquées, rien n\'est téléchargé.</string>
+    <string name="holidays_region_desc">Certaines régions ont des jours fériés en plus (ex. l\'Alsace-Moselle en France).</string>
+    <string name="holidays_region_label">Région : %1$s</string>
+    <string name="holidays_region_whole">Tout le pays</string>
+    <string name="holidays_region_dialog_title">Choisir une région</string>
+    <string name="holidays_country_label">Pays : %1$s</string>
+    <string name="holidays_country_label_auto">Pays : %1$s (automatique)</string>
+    <string name="holidays_country_auto">Automatique (%1$s)</string>
+    <string name="holidays_country_auto_none">Automatique (aucun pays pris en charge)</string>
+    <string name="holidays_country_none">Aucun</string>
+    <string name="holidays_country_dialog_title">Choisir un pays</string>
+    <string name="upcoming_holidays_title">Prochains jours fériés</string>
+    <string name="upcoming_holidays_desc">Désactivez un jour férié si vous travaillez ce jour-là : vos réveils sonneront normalement.</string>
+    <string name="holiday_working">Je travaille ce jour-là</string>
+    <string name="upcoming_holidays_empty">Aucun jour férié à venir. Choisissez un pays.</string>
 </resources>

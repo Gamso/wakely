@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="ee" description="Estonia"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="FEBRUARY" day="24" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="SPRING_DAY"/>
+    <Fixed month="JUNE" day="23" descriptionPropertiesKey="VICTORY"/>
+    <Fixed month="JUNE" day="24" descriptionPropertiesKey="MIDSUMMER"/>
+    <Fixed month="AUGUST" day="20" validFrom="1991" descriptionPropertiesKey="REST_INDEP"/>
+    <Fixed month="DECEMBER" day="24" descriptionPropertiesKey="CHRISTMAS_EVE"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+    <Fixed month="DECEMBER" day="26" descriptionPropertiesKey="BOXING_DAY"/>
+    <ChristianHoliday type="GOOD_FRIDAY"/>
+    <ChristianHoliday type="EASTER"/>
+    <ChristianHoliday type="PENTECOST"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Estonia</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:EE</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:EE</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="37" description="Harjumaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="39" description="Hiiumaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="45" description="Ida-Virumaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="50" description="Jõgevamaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="52" description="Järvamaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="56" description="Läänemaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="60" description="Lääne-Virumaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="64" description="Põlvamaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="68" description="Pärnumaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="71" description="Raplamaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="74" description="Saaremaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="79" description="Tartumaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="81" description="Valgamaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="84" description="Viljandimaa">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="87" description="Võrumaa">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

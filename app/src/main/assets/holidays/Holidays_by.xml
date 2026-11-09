@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration hierarchy="by" description="Belarus"
+               xmlns="https://focus_shift.de/jollyday/schema/holiday"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="https://focus_shift.de/jollyday/schema/holiday https://focus_shift.de/jollyday/schema/holiday/holiday.xsd">
+  <Holidays>
+    <Fixed month="JANUARY" day="1" descriptionPropertiesKey="NEW_YEAR"/>
+    <Fixed month="JANUARY" day="7" descriptionPropertiesKey="CHRISTMAS"/>
+    <Fixed month="MARCH" day="8" descriptionPropertiesKey="INTERNATIONAL_WOMAN"/>
+    <Fixed month="MARCH" day="15" descriptionPropertiesKey="CONSTITUTION_DAY"/>
+    <Fixed month="MAY" day="1" descriptionPropertiesKey="LABOUR_DAY"/>
+    <Fixed month="MAY" day="9" descriptionPropertiesKey="VICTORY"/>
+    <Fixed month="JULY" day="3" descriptionPropertiesKey="INDEPENDENCE_DAY"/>
+    <Fixed month="NOVEMBER" day="7" descriptionPropertiesKey="OCT_REVOLUTION"/>
+    <Fixed month="DECEMBER" day="25" descriptionPropertiesKey="CHRISTMAS"/>
+  </Holidays>
+
+  <Sources>
+    <Source>https://en.wikipedia.org/wiki/Public_holidays_in_Belarus</Source>
+    <Source of="ISO 3166">https://www.iso.org/obp/ui/#iso:code:3166:BY</Source>
+    <Source of="ISO 3166-2">https://en.wikipedia.org/wiki/ISO_3166-2:BY</Source>
+  </Sources>
+
+  <SubConfigurations hierarchy="br" description="Brest">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="hm" description="Minsk City">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ho" description="Gomel">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="hr" description="Grodno">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="ma" description="Mogilev">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="mi" description="Minsk Region">
+    <Holidays/>
+  </SubConfigurations>
+  <SubConfigurations hierarchy="vi" description="Vitebsk">
+    <Holidays/>
+  </SubConfigurations>
+
+</Configuration>

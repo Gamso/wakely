@@ -1,0 +1,4 @@
+Holiday definitions and names from Jollyday (Apache License 2.0)
+https://github.com/focus-shift/jollyday
+Taken from commit f7c5e3d66856e8c0b720195d84808c94f7d774f7 2026-11-08
+151 countries: ad ag ai am ao ar as at au aw ax bb be bg bl bm bo bq br bs bw by bz ca cc cd cg ch ck cl co cr cu cv cw cy cz de dk dm do ec ee es fi fk fm fo fr gb gd ge gf gg gi gl gp gq gr gs gt gu hk hn hr ht hu ie im is it je jm jp ki kn kr ky lc li lr ls lt lu lv mc md me mf mh mn mp mq ms mt mx mz na nc nf ni nl no nr nu nz pa pe pf pg pl pm pn pt pw py re ro rs ru sb sc se sh si sj sk sm st sv sx sz tc tk to tv ua us uy va vc ve vg vi vn vu wf ws za zm zw
