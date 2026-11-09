@@ -122,7 +122,13 @@
     <string name="cat_events_title">Events</string>
     <string name="cat_events_desc">Calendars used by “alarm before an event” rules.</string>
     <string name="cat_events_hint">e.g. meeting, client</string>
-    <string name="no_calendar_assigned">No calendar.</string>
+    <string name="calendars_none">No calendar</string>
+    <plurals name="calendars_count">
+        <item quantity="one">%d calendar</item>
+        <item quantity="other">%d calendars</item>
+    </plurals>
+    <string name="action_expand">Expand</string>
+    <string name="action_collapse">Collapse</string>
     <string name="add_calendar">+  Add a calendar</string>
     <string name="add_to_category">Add to “%1$s”</string>
     <string name="no_other_calendar">No other calendar available. Add an account (Google, Outlook…) in Android settings, and turn on its calendar sync.</string>
@@ -156,7 +162,7 @@
     <string name="credit_aosp_name">Android alarm sounds</string>
     <string name="credit_aosp_usage">The 30 “Android ringtones (AOSP)”, included unmodified (files renamed).</string>
     <string name="credit_icons_name">Material Design icons</string>
-    <string name="credit_icons_usage">“Settings” (gear) and “Back” (arrow) icons.</string>
+    <string name="credit_icons_usage">“Settings” (gear), “Back” (arrow) and “Expand” (chevron) icons.</string>
     <string name="credit_androidx_name">AndroidX and Jetpack Compose</string>
     <string name="credit_androidx_usage">Interface (Compose, Material 3), activities, lifecycle and ViewModel.</string>
     <string name="credit_kotlin_name">Kotlin and kotlinx.coroutines</string>

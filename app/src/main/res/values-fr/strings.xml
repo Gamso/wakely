@@ -108,7 +108,13 @@
     <string name="cat_events_title">Événements</string>
     <string name="cat_events_desc">Agendas utilisés par les réveils « avant un événement ».</string>
     <string name="cat_events_hint">ex. réunion, client</string>
-    <string name="no_calendar_assigned">Aucun agenda.</string>
+    <string name="calendars_none">Aucun agenda</string>
+    <plurals name="calendars_count">
+        <item quantity="one">%d agenda</item>
+        <item quantity="other">%d agendas</item>
+    </plurals>
+    <string name="action_expand">Développer</string>
+    <string name="action_collapse">Réduire</string>
     <string name="add_calendar">+  Ajouter un agenda</string>
     <string name="add_to_category">Ajouter à « %1$s »</string>
     <string name="no_other_calendar">Aucun autre agenda disponible. Ajoutez un compte (Google, Outlook…) dans les paramètres Android, et activez la synchronisation de son agenda.</string>
@@ -141,7 +147,7 @@
     <string name="credit_aosp_name">Sonneries d\'alarme Android</string>
     <string name="credit_aosp_usage">Les 30 sonneries « Sonneries Android (AOSP) », intégrées sans modification (fichiers renommés).</string>
     <string name="credit_icons_name">Icônes Material Design</string>
-    <string name="credit_icons_usage">Icônes « Réglages » (roue dentée) et « Retour » (flèche).</string>
+    <string name="credit_icons_usage">Icônes « Réglages » (roue dentée), « Retour » (flèche) et « Développer » (chevron).</string>
     <string name="credit_androidx_name">AndroidX et Jetpack Compose</string>
     <string name="credit_androidx_usage">Interface (Compose, Material 3), activités, cycle de vie et ViewModel.</string>
     <string name="credit_kotlin_name">Kotlin et kotlinx.coroutines</string>
