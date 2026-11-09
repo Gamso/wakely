@@ -11,6 +11,7 @@ import com.gamso.wakely.domain.model.EventAlarm
 import com.gamso.wakely.domain.model.HolidaySettings
 import com.gamso.wakely.domain.model.LicenseId
 import com.gamso.wakely.domain.model.RingKey
+import com.gamso.wakely.domain.model.SkippedOccurrence
 import com.gamso.wakely.domain.model.StepBaseline
 import com.gamso.wakely.domain.model.SummarySettings
 import java.time.LocalDate
@@ -45,6 +46,11 @@ interface SettingsRepository {
     fun observeSummarySettings(): Flow<SummarySettings>
     suspend fun getSummarySettings(): SummarySettings
     suspend fun setSummarySettings(settings: SummarySettings)
+
+    /** Whether the "Skip" buttons are offered on the alarms and in the evening notification. On by default. */
+    fun observeSkipButtons(): Flow<Boolean>
+    suspend fun getSkipButtons(): Boolean
+    suspend fun setSkipButtons(enabled: Boolean)
 
     fun observeHolidaySettings(): Flow<HolidaySettings>
     suspend fun getHolidaySettings(): HolidaySettings
@@ -109,6 +115,20 @@ interface AlarmScheduler {
     /** Schedules the evening summary; null cancels it. */
     fun scheduleSummary(at: LocalDateTime?)
     fun canScheduleExactAlarms(): Boolean
+}
+
+/** The occurrences the user skipped. They are forgotten once their time has passed, or when the alarm is edited. */
+interface SkippedOccurrences {
+    fun observe(): Flow<Set<SkippedOccurrence>>
+    suspend fun get(): Set<SkippedOccurrence>
+    suspend fun add(occurrence: SkippedOccurrence)
+    suspend fun remove(occurrence: SkippedOccurrence)
+
+    /** Forgets every skipped occurrence of [key]. */
+    suspend fun clear(key: RingKey)
+
+    /** Forgets the occurrences before [limit]. */
+    suspend fun prune(limit: LocalDateTime)
 }
 
 /** The step counter of the phone. Everything is null or false when it cannot be read: the alarm then rings. */

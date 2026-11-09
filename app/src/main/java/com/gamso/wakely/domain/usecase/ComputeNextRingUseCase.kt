@@ -15,8 +15,10 @@ class ComputeNextRingUseCase {
         after: LocalDateTime,
         daysOff: Map<LocalDate, DayOff>,
         horizonDays: Int = HORIZON_DAYS,
+        /** Ring times the user skipped: they are passed over. */
+        skipped: Set<LocalDateTime> = emptySet(),
     ): NextRing? {
-        val skipped = mutableListOf<DayOff>()
+        val skippedDaysOff = mutableListOf<DayOff>()
         var date = after.toLocalDate()
         repeat(horizonDays) {
             if (!alarm.isRepeating || date.dayOfWeek in alarm.days) {
@@ -24,16 +26,18 @@ class ComputeNextRingUseCase {
                 when {
                     off == null -> {
                         val at = date.atTime(alarm.time)
-                        if (at.isAfter(after)) return NextRing(alarm.id, at, null, skipped)
+                        if (at.isAfter(after) && at !in skipped) return NextRing(alarm.id, at, null, skippedDaysOff)
                     }
 
                     alarm.dayOffMode == DayOffMode.SKIP -> {
-                        if (date.atTime(alarm.time).isAfter(after)) skipped += off
+                        if (date.atTime(alarm.time).isAfter(after)) skippedDaysOff += off
                     }
 
                     else -> {
                         val at = date.atTime(alarm.dayOffTime)
-                        if (at.isAfter(after)) return NextRing(alarm.id, at, off.reason, skipped)
+                        if (at.isAfter(after) && at !in skipped) {
+                            return NextRing(alarm.id, at, off.reason, skippedDaysOff)
+                        }
                     }
                 }
             }

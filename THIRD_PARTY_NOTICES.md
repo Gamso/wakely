@@ -7,7 +7,7 @@ bundled in the app (`app/src/main/assets/licenses/`) and shown in **RÃ©glages â†
 | Component | Copyright | License | Used for |
 |---|---|---|---|
 | Android alarm sounds | The Android Open Source Project | Apache 2.0 | `app/src/main/res/raw/aosp_*.ogg` |
-| Material Design icons ("settings", "arrow_back", "expand_more") | Google | Apache 2.0 | `app/src/main/res/drawable/ic_settings.xml`, `ic_arrow_back.xml`, `ic_expand_more.xml` |
+| Material Design icons | Google | Apache 2.0 | Interface icons |
 | AndroidX / Jetpack Compose | The Android Open Source Project | Apache 2.0 | UI, activities, lifecycle, ViewModel |
 | Kotlin standard library, kotlinx.coroutines | JetBrains s.r.o. and contributors | Apache 2.0 | Language runtime, coroutines |
 | Jollyday holiday data | The Jollyday project (focus-shift) and contributors | Apache 2.0 | `app/src/main/assets/holidays/` |

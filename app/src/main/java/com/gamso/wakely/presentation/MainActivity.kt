@@ -35,6 +35,7 @@ import com.gamso.wakely.presentation.about.AboutViewModel
 import com.gamso.wakely.presentation.alarms.AlarmListScreen
 import com.gamso.wakely.presentation.alarms.AlarmListViewModel
 import com.gamso.wakely.presentation.alarms.SystemWarnings
+import com.gamso.wakely.presentation.alarms.alarmListViewModel
 import com.gamso.wakely.presentation.common.appViewModelFactory
 import com.gamso.wakely.presentation.edit.AlarmEditScreen
 import com.gamso.wakely.presentation.edit.AlarmEditViewModel
@@ -75,11 +76,7 @@ private fun WakelyNavigation() {
     // Read through a State so the pre-filled keyword follows the language of the phone.
     val listVm: AlarmListViewModel = viewModel(
         factory = appViewModelFactory {
-            AlarmListViewModel(
-                it.alarmRepository, it.eventAlarmRepository, it.settingsRepository, it.calendarRepository,
-                it.alarmScheduler, it.getDaysOff, it.getRuleEvents, it.computeNextRing, it.setAlarmEnabled,
-                it.setEventAlarmEnabled, it.rescheduleAlarms, it.timeProvider,
-            )
+            it.alarmListViewModel()
         },
     )
     var warnings by rememberSaveable(stateSaver = WarningsSaver) { mutableStateOf(SystemWarnings()) }
@@ -128,6 +125,8 @@ private fun WakelyNavigation() {
                 onEditEventAlarm = { route = Routes.editEvent(it) },
                 onToggle = { item, enabled -> listVm.onToggle(item.alarm, enabled) },
                 onToggleEventAlarm = { item, enabled -> listVm.onToggle(item.rule, enabled) },
+                onSkip = listVm::skip,
+                onUndoSkip = listVm::undoSkip,
                 onOpenCalendars = { route = Routes.SETTINGS },
                 onRequestCalendarPermission = requestCalendar,
                 onRequestNotifications = requestNotifications,

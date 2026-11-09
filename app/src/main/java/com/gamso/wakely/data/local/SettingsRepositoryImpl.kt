@@ -21,6 +21,7 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
     private val filters = MutableStateFlow(loadFilters())
     private val summary = MutableStateFlow(loadSummary())
     private val holiday = MutableStateFlow(loadHoliday())
+    private val skipButtons = MutableStateFlow(prefs.getBoolean(KEY_SKIP_BUTTONS, true))
 
     override fun observeCalendarFilters(): Flow<List<CalendarFilter>> = filters.asStateFlow()
 
@@ -53,6 +54,15 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
                 .putString(KEY_SUMMARY_TIME, settings.time.toString())
                 .commit()
         }
+    }
+
+    override fun observeSkipButtons(): Flow<Boolean> = skipButtons.asStateFlow()
+
+    override suspend fun getSkipButtons(): Boolean = skipButtons.value
+
+    override suspend fun setSkipButtons(enabled: Boolean) {
+        skipButtons.value = enabled
+        withContext(Dispatchers.IO) { prefs.edit().putBoolean(KEY_SKIP_BUTTONS, enabled).commit() }
     }
 
     override fun observeHolidaySettings(): Flow<HolidaySettings> = holiday.asStateFlow()
@@ -119,6 +129,7 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
     private companion object {
         const val PREFS = "settings"
         const val KEY_FILTERS = "calendar_filters"
+        const val KEY_SKIP_BUTTONS = "skip_buttons"
         const val KEY_SUMMARY_ENABLED = "summary_enabled"
         const val KEY_SUMMARY_TIME = "summary_time"
         const val KEY_HOLIDAY_COUNTRY = "holiday_country"

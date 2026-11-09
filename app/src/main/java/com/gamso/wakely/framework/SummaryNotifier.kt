@@ -14,15 +14,18 @@ import com.gamso.wakely.domain.model.PlannedRing
 import com.gamso.wakely.domain.model.SkippedRing
 import com.gamso.wakely.presentation.MainActivity
 import com.gamso.wakely.presentation.common.DatePatterns
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /** Posts the evening notification describing the next day's rings. */
 object SummaryNotifier {
     private const val NOTIFICATION_ID = 2
+    private const val MAX_ACTIONS = 3
     private val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
 
-    fun show(context: Context, plan: DayPlan) {
+    /** [skipActions]: offer a "Skip" action for the first rings (Settings). */
+    fun show(context: Context, plan: DayPlan, skipActions: Boolean) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
             PackageManager.PERMISSION_GRANTED &&
             android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU
@@ -48,15 +51,42 @@ object SummaryNotifier {
         )
         val style = NotificationCompat.InboxStyle().setBigContentTitle(title)
         lines.forEach { style.addLine(it) }
-        val notification = NotificationCompat.Builder(context, Notifications.CHANNEL_SUMMARY)
+        val builder = NotificationCompat.Builder(context, Notifications.CHANNEL_SUMMARY)
             .setSmallIcon(R.drawable.ic_alarm)
             .setContentTitle(title)
             .setContentText(summary)
             .setStyle(if (lines.isEmpty()) null else style)
             .setContentIntent(open)
             .setAutoCancel(true)
-            .build()
+        // Android shows three actions at most: one "Skip" for each of the first rings.
+        plan.rings.filter { skipActions && it.key != null }.take(MAX_ACTIONS).forEach { ring ->
+            builder.addAction(
+                0,
+                context.getString(R.string.skip_notif_action, ring.at.format(timeFormat)),
+                skipIntent(context, ring),
+            )
+        }
+        val notification = builder.build()
         runCatching { NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification) }
+    }
+
+    private fun skipIntent(context: Context, ring: PlannedRing): PendingIntent {
+        val key = checkNotNull(ring.key)
+        val intent = Intent(context, AlarmReceiver::class.java)
+            .setAction(AlarmReceiver.ACTION_SKIP)
+            .putExtra(AlarmReceiver.EXTRA_KIND, key.kind.name)
+            .putExtra(AlarmReceiver.EXTRA_ID, key.id)
+            .putExtra(
+                AlarmReceiver.EXTRA_SCHEDULED_AT,
+                ring.at.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+            )
+        // Extras do not tell two intents apart: the request code does.
+        return PendingIntent.getBroadcast(
+            context,
+            "${key.kind}:${key.id}:${ring.at}".hashCode(),
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
     }
 
     /** "07:00 · Title (detail)". */

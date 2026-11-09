@@ -48,6 +48,12 @@
     <string name="tomorrow">tomorrow</string>
     <string name="adapted_time">Adapted time: %1$s</string>
     <string name="skipped_days">Skipped: %1$s</string>
+    <string name="skip_buttons_title">“Skip” buttons</string>
+    <string name="skip_buttons_description">Show “Skip tomorrow” on your alarms and in the evening notification, to skip a single ring. A ring already skipped can always be undone.</string>
+    <string name="skip_next">Skip %1$s</string>
+    <string name="skip_tag">Skipped: %1$s</string>
+    <string name="skip_undo">Undo</string>
+    <string name="skip_notif_action">Skip %1$s</string>
     <string name="no_next_ring">No ring scheduled</string>
     <string name="day_off_default">Day off</string>
     <string name="minutes_before">%1$s before</string>
@@ -164,14 +170,14 @@
     <string name="credit_aosp_name">Android alarm sounds</string>
     <string name="credit_aosp_usage">The 30 “Android ringtones (AOSP)”, included unmodified (files renamed).</string>
     <string name="credit_icons_name">Material Design icons</string>
-    <string name="credit_icons_usage">“Settings” (gear), “Back” (arrow) and “Expand” (chevron) icons.</string>
+    <string name="credit_icons_usage">Interface icons.</string>
     <string name="credit_androidx_name">AndroidX and Jetpack Compose</string>
     <string name="credit_androidx_usage">Interface (Compose, Material 3), activities, lifecycle and ViewModel.</string>
     <string name="credit_kotlin_name">Kotlin and kotlinx.coroutines</string>
     <string name="credit_kotlin_usage">Language and standard library, asynchronous programming.</string>
     <string name="author_jetbrains">JetBrains s.r.o. and contributors</string>
     <string name="credit_jollyday_name">Jollyday holiday data</string>
-    <string name="credit_jollyday_usage">Public holidays of 150 countries and their regions, embedded unmodified; dates are computed in the app.</string>
+    <string name="credit_jollyday_usage">Public holidays of 150 countries and their regions, embedded unmodified. Dates are computed in the app.</string>
     <string name="author_jollyday" translatable="false">The Jollyday project (focus-shift) and contributors</string>
 
     <!-- Ringing screen and notifications -->

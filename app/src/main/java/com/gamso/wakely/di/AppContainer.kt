@@ -8,6 +8,7 @@ import com.gamso.wakely.data.holiday.HolidayRepositoryImpl
 import com.gamso.wakely.data.local.AlarmRepositoryImpl
 import com.gamso.wakely.data.local.EventAlarmRepositoryImpl
 import com.gamso.wakely.data.local.SettingsRepositoryImpl
+import com.gamso.wakely.data.local.SkippedOccurrencesPrefs
 import com.gamso.wakely.data.region.AndroidDeviceRegion
 import com.gamso.wakely.data.scheduler.AndroidAlarmScheduler
 import com.gamso.wakely.data.sensor.StepBaselinePrefs
@@ -21,6 +22,7 @@ import com.gamso.wakely.domain.repository.DeviceRegion
 import com.gamso.wakely.domain.repository.EventAlarmRepository
 import com.gamso.wakely.domain.repository.HolidayRepository
 import com.gamso.wakely.domain.repository.SettingsRepository
+import com.gamso.wakely.domain.repository.SkippedOccurrences
 import com.gamso.wakely.domain.repository.SoundPreviewer
 import com.gamso.wakely.domain.repository.SoundRepository
 import com.gamso.wakely.domain.repository.StepBaselineStore
@@ -43,7 +45,9 @@ import com.gamso.wakely.domain.usecase.SaveAlarmUseCase
 import com.gamso.wakely.domain.usecase.SaveEventAlarmUseCase
 import com.gamso.wakely.domain.usecase.SetAlarmEnabledUseCase
 import com.gamso.wakely.domain.usecase.SetEventAlarmEnabledUseCase
+import com.gamso.wakely.domain.usecase.SkipNextRingUseCase
 import com.gamso.wakely.domain.usecase.SnoozeAlarmUseCase
+import com.gamso.wakely.domain.usecase.UndoSkipUseCase
 import com.gamso.wakely.domain.usecase.UpdateCalendarFiltersUseCase
 import com.gamso.wakely.domain.usecase.UpdateHolidaySettingsUseCase
 import com.gamso.wakely.domain.usecase.UpdateSummarySettingsUseCase
@@ -71,6 +75,7 @@ class AppContainer(context: Context) {
     val calendarRepository: CalendarRepository = CalendarRepositoryImpl(appContext)
     val holidayRepository: HolidayRepository = HolidayRepositoryImpl(AssetHolidayDataSource(appContext))
     val alarmScheduler: AlarmScheduler = AndroidAlarmScheduler(appContext)
+    val skippedOccurrences: SkippedOccurrences = SkippedOccurrencesPrefs(appContext)
     val stepSensor: StepSensor = StepCounterSensor(appContext)
     val stepBaselines: StepBaselineStore = StepBaselinePrefs(appContext)
     val soundRepository: SoundRepository = SoundRepositoryImpl(appContext)
@@ -93,13 +98,14 @@ class AppContainer(context: Context) {
         computeNextRing,
         alarmScheduler,
         timeProvider,
+        skippedOccurrences,
     )
-    val saveAlarm = SaveAlarmUseCase(alarmRepository, rescheduleAlarms)
+    val saveAlarm = SaveAlarmUseCase(alarmRepository, rescheduleAlarms, skippedOccurrences)
     val setAlarmEnabled = SetAlarmEnabledUseCase(alarmRepository, rescheduleAlarms)
-    val deleteAlarm = DeleteAlarmUseCase(alarmRepository, alarmScheduler)
-    val saveEventAlarm = SaveEventAlarmUseCase(eventAlarmRepository, rescheduleAlarms)
+    val deleteAlarm = DeleteAlarmUseCase(alarmRepository, alarmScheduler, skippedOccurrences)
+    val saveEventAlarm = SaveEventAlarmUseCase(eventAlarmRepository, rescheduleAlarms, skippedOccurrences)
     val setEventAlarmEnabled = SetEventAlarmEnabledUseCase(eventAlarmRepository, rescheduleAlarms)
-    val deleteEventAlarm = DeleteEventAlarmUseCase(eventAlarmRepository, alarmScheduler)
+    val deleteEventAlarm = DeleteEventAlarmUseCase(eventAlarmRepository, alarmScheduler, skippedOccurrences)
     val updateCalendarFilters = UpdateCalendarFiltersUseCase(settingsRepository, rescheduleAlarms)
     val updateSummarySettings = UpdateSummarySettingsUseCase(settingsRepository, rescheduleAlarms)
     val updateHolidaySettings = UpdateHolidaySettingsUseCase(settingsRepository, rescheduleAlarms)
@@ -116,6 +122,7 @@ class AppContainer(context: Context) {
         timeProvider,
         stepSensor,
         stepBaselines,
+        skippedOccurrences,
     )
     val recordStepBaseline = RecordStepBaselineUseCase(alarmRepository, stepSensor, stepBaselines, timeProvider)
     val getDayPlan = GetDayPlanUseCase(
@@ -125,5 +132,17 @@ class AppContainer(context: Context) {
         getRuleEvents,
         computeNextRing,
         timeProvider,
+        skippedOccurrences,
     )
+    val skipNextRing = SkipNextRingUseCase(
+        alarmRepository,
+        eventAlarmRepository,
+        getDaysOff,
+        getRuleEvents,
+        computeNextRing,
+        skippedOccurrences,
+        rescheduleAlarms,
+        timeProvider,
+    )
+    val undoSkip = UndoSkipUseCase(skippedOccurrences, rescheduleAlarms, timeProvider)
 }

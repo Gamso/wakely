@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -22,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,8 +43,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.DayOffMode
+import com.gamso.wakely.domain.model.RingKey
+import com.gamso.wakely.domain.model.RingKind
 import com.gamso.wakely.presentation.common.Format
 import com.gamso.wakely.presentation.common.dayOffReasonText
+import java.time.LocalDateTime
 
 private const val MAX_SKIPPED_SHOWN = 3
 
@@ -58,6 +65,8 @@ fun AlarmListScreen(
     onEditEventAlarm: (Long) -> Unit,
     onToggle: (AlarmItemUi, Boolean) -> Unit,
     onToggleEventAlarm: (EventAlarmItemUi, Boolean) -> Unit,
+    onSkip: (RingKey) -> Unit,
+    onUndoSkip: (RingKey) -> Unit,
     onOpenCalendars: () -> Unit,
     onRequestCalendarPermission: () -> Unit,
     onRequestNotifications: () -> Unit,
@@ -156,7 +165,15 @@ fun AlarmListScreen(
                 }
             }
             items(state.items, key = { "alarm-${it.alarm.id}" }) { item ->
-                AlarmCard(item, onClick = { onEdit(item.alarm.id) }, onToggle = { onToggle(item, it) })
+                val key = RingKey(RingKind.ALARM, item.alarm.id)
+                AlarmCard(
+                    item,
+                    showSkip = state.showSkipButtons,
+                    onClick = { onEdit(item.alarm.id) },
+                    onToggle = { onToggle(item, it) },
+                    onSkip = { onSkip(key) },
+                    onUndoSkip = { onUndoSkip(key) },
+                )
             }
             if (state.eventItems.isNotEmpty()) {
                 item(key = "events-header") {
@@ -168,16 +185,29 @@ fun AlarmListScreen(
                 }
             }
             items(state.eventItems, key = { "event-${it.rule.id}" }) { item ->
-                EventAlarmCard(item, onClick = {
-                    onEditEventAlarm(item.rule.id)
-                }, onToggle = { onToggleEventAlarm(item, it) })
+                val key = RingKey(RingKind.EVENT, item.rule.id)
+                EventAlarmCard(
+                    item,
+                    showSkip = state.showSkipButtons,
+                    onClick = { onEditEventAlarm(item.rule.id) },
+                    onToggle = { onToggleEventAlarm(item, it) },
+                    onSkip = { onSkip(key) },
+                    onUndoSkip = { onUndoSkip(key) },
+                )
             }
         }
     }
 }
 
 @Composable
-private fun AlarmCard(item: AlarmItemUi, onClick: () -> Unit, onToggle: (Boolean) -> Unit) {
+private fun AlarmCard(
+    item: AlarmItemUi,
+    showSkip: Boolean,
+    onClick: () -> Unit,
+    onToggle: (Boolean) -> Unit,
+    onSkip: () -> Unit,
+    onUndoSkip: () -> Unit,
+) {
     val alarm = item.alarm
     val dim = if (alarm.enabled) 1f else 0.5f
     Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
@@ -232,12 +262,20 @@ private fun AlarmCard(item: AlarmItemUi, onClick: () -> Unit, onToggle: (Boolean
             } else if (alarm.enabled) {
                 Text(stringResource(R.string.no_next_ring), style = MaterialTheme.typography.bodySmall)
             }
+            if (item.canSkip) SkipRow(next?.at.takeIf { showSkip }, item.skippedAt, onSkip, onUndoSkip)
         }
     }
 }
 
 @Composable
-private fun EventAlarmCard(item: EventAlarmItemUi, onClick: () -> Unit, onToggle: (Boolean) -> Unit) {
+private fun EventAlarmCard(
+    item: EventAlarmItemUi,
+    showSkip: Boolean,
+    onClick: () -> Unit,
+    onToggle: (Boolean) -> Unit,
+    onSkip: () -> Unit,
+    onUndoSkip: () -> Unit,
+) {
     val rule = item.rule
     Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp)) {
@@ -290,7 +328,42 @@ private fun EventAlarmCard(item: EventAlarmItemUi, onClick: () -> Unit, onToggle
             } else if (rule.enabled) {
                 Text(stringResource(R.string.no_upcoming_event), style = MaterialTheme.typography.bodySmall)
             }
+            if (item.canSkip) SkipRow(next?.at.takeIf { showSkip }, item.skippedAt, onSkip, onUndoSkip)
         }
+    }
+}
+
+/**
+ * "Skip tomorrow" as a button with an icon, or, once skipped, a coloured strip that says so with a way back.
+ * The alarm itself is not changed.
+ */
+@Composable
+private fun SkipRow(nextAt: LocalDateTime?, skippedAt: LocalDateTime?, onSkip: () -> Unit, onUndo: () -> Unit) {
+    when {
+        skippedAt != null -> Surface(
+            color = MaterialTheme.colorScheme.tertiaryContainer,
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+        ) {
+            Row(Modifier.padding(start = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(painterResource(R.drawable.ic_skip_next), contentDescription = null, Modifier.size(18.dp))
+                Text(
+                    stringResource(R.string.skip_tag, Format.dayWord(skippedAt)),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f).padding(start = 8.dp),
+                )
+                TextButton(onClick = onUndo) { Text(stringResource(R.string.skip_undo)) }
+            }
+        }
+
+        nextAt != null -> AssistChip(
+            onClick = onSkip,
+            label = { Text(stringResource(R.string.skip_next, Format.dayWord(nextAt))) },
+            leadingIcon = {
+                Icon(painterResource(R.drawable.ic_skip_next), contentDescription = null, Modifier.size(18.dp))
+            },
+            modifier = Modifier.padding(top = 8.dp),
+        )
     }
 }
 
