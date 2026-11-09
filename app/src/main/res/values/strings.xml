@@ -86,6 +86,10 @@
     <string name="skip_awake_unavailable">This phone has no step counter, so the option is not available.</string>
     <string name="skip_awake_denied">Permission refused: without it, the phone cannot tell that you are up, so the option stays off.</string>
     <string name="snooze_title">Snooze</string>
+    <string name="ramp_title">Gradual volume</string>
+    <string name="ramp_description">The sound starts quietly and reaches the alarm volume over the time you choose.</string>
+    <string name="ramp_seconds">%1$d s</string>
+    <string name="vibration_title">Vibration</string>
     <string name="snooze_off">Off</string>
     <string name="snooze_minutes">%1$d min</string>
     <string name="delete_alarm">Delete this alarm</string>

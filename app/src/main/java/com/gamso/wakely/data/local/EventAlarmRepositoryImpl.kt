@@ -73,6 +73,8 @@ class EventAlarmRepositoryImpl(context: Context) : EventAlarmRepository {
         )
         .put("sound", sound?.toJson())
         .put("snoozeMinutes", snoozeMinutes)
+        .put("volumeRampSeconds", volumeRampSeconds)
+        .put("vibrate", vibrate)
 
     private fun JSONObject.toEventAlarm(): EventAlarm {
         val sources = optJSONArray("sources")
@@ -89,6 +91,8 @@ class EventAlarmRepositoryImpl(context: Context) : EventAlarmRepository {
             },
             sound = optJSONObject("sound")?.toAlarmSound(),
             snoozeMinutes = optInt("snoozeMinutes", Alarm.DEFAULT_SNOOZE_MINUTES),
+            volumeRampSeconds = optInt("volumeRampSeconds", 0),
+            vibrate = optBoolean("vibrate", true),
         )
     }
 

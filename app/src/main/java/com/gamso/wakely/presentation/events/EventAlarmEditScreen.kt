@@ -49,6 +49,7 @@ import com.gamso.wakely.domain.model.CalendarEvent
 import com.gamso.wakely.domain.model.EventAlarm
 import com.gamso.wakely.presentation.common.ColorDot
 import com.gamso.wakely.presentation.common.Format
+import com.gamso.wakely.presentation.common.RingStyleSection
 import com.gamso.wakely.presentation.common.SnoozeChips
 import com.gamso.wakely.presentation.sound.SoundPickerDialog
 
@@ -113,6 +114,9 @@ fun EventAlarmEditScreen(viewModel: EventAlarmEditViewModel, state: EventAlarmEd
             }
             Text(stringResource(R.string.snooze_title), style = MaterialTheme.typography.titleMedium)
             SnoozeChips(rule.snoozeMinutes, viewModel::setSnoozeMinutes)
+
+            HorizontalDivider()
+            RingStyleSection(rule.volumeRampSeconds, rule.vibrate, viewModel::setVolumeRamp, viewModel::setVibrate)
 
             if (!state.isNew) {
                 Spacer(Modifier.height(16.dp))
