@@ -1,5 +1,11 @@
 package com.gamso.wakely.presentation.edit
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,12 +25,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -36,12 +44,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.Alarm
 import com.gamso.wakely.domain.model.DayOffMode
+import com.gamso.wakely.domain.model.SkipIfAwake
 import com.gamso.wakely.presentation.common.Format
 import com.gamso.wakely.presentation.common.SnoozeChips
 import com.gamso.wakely.presentation.common.TimePickerDialog
@@ -136,6 +147,8 @@ fun AlarmEditScreen(viewModel: AlarmEditViewModel, state: AlarmEditUiState, onCl
             Text(stringResource(R.string.snooze_title), style = MaterialTheme.typography.titleMedium)
             SnoozeChips(alarm.snoozeMinutes, viewModel::setSnoozeMinutes)
 
+            SkipIfAwakeSection(alarm, viewModel)
+
             if (!state.isNew) {
                 Spacer(Modifier.height(16.dp))
                 TextButton(
@@ -156,6 +169,74 @@ fun AlarmEditScreen(viewModel: AlarmEditViewModel, state: AlarmEditUiState, onCl
     if (pickMain) TimePickerDialog(alarm.time, { pickMain = false }) { viewModel.setTime(it) }
     if (pickOff) TimePickerDialog(alarm.dayOffTime, { pickOff = false }) { viewModel.setDayOffTime(it) }
 }
+
+/** The "skip if I'm already up" option: switch, scope, and the permission it needs. */
+@Composable
+private fun SkipIfAwakeSection(alarm: Alarm, viewModel: AlarmEditViewModel) {
+    val context = LocalContext.current
+    var note by remember { mutableStateOf<Int?>(null) }
+    val activityPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) viewModel.enableSkipIfAwake()
+        note = if (granted) null else R.string.skip_awake_denied
+    }
+    val on = alarm.skipIfAwake != SkipIfAwake.OFF
+    val supported = viewModel.stepSensorAvailable
+
+    HorizontalDivider()
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(1f)) {
+            Text(stringResource(R.string.skip_awake_title), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.skip_awake_desc), style = MaterialTheme.typography.bodySmall)
+        }
+        Switch(
+            checked = on,
+            enabled = supported || on,
+            onCheckedChange = { turnOn ->
+                note = null
+                when {
+                    !turnOn -> viewModel.setSkipIfAwake(SkipIfAwake.OFF)
+
+                    needsActivityPermission(context) ->
+                        activityPermission.launch(Manifest.permission.ACTIVITY_RECOGNITION)
+
+                    else -> viewModel.enableSkipIfAwake()
+                }
+            },
+        )
+    }
+    // An alarm that does not ring on days off has no ring to tell apart.
+    if (on && alarm.dayOffMode != DayOffMode.SKIP) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(
+                selected = alarm.skipIfAwake == SkipIfAwake.ALWAYS,
+                onClick = { viewModel.setSkipIfAwake(SkipIfAwake.ALWAYS) },
+                label = { Text(stringResource(R.string.skip_awake_all)) },
+            )
+            FilterChip(
+                selected = alarm.skipIfAwake == SkipIfAwake.DAYS_OFF_ONLY,
+                onClick = { viewModel.setSkipIfAwake(SkipIfAwake.DAYS_OFF_ONLY) },
+                label = { Text(stringResource(R.string.skip_awake_days_off)) },
+            )
+        }
+        if (alarm.skipIfAwake == SkipIfAwake.DAYS_OFF_ONLY) {
+            Text(
+                stringResource(R.string.skip_awake_scope_note, Format.time(alarm.time)),
+                style = MaterialTheme.typography.bodySmall,
+            )
+        }
+    }
+    if (!supported) {
+        Text(stringResource(R.string.skip_awake_unavailable), style = MaterialTheme.typography.bodySmall)
+    }
+    note?.let {
+        Text(stringResource(it), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+    }
+}
+
+/** The step counter needs a runtime permission from Android 10. */
+private fun needsActivityPermission(context: Context): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+    ContextCompat.checkSelfPermission(context, Manifest.permission.ACTIVITY_RECOGNITION) !=
+    PackageManager.PERMISSION_GRANTED
 
 @Composable
 private fun DayToggle(letter: String, selected: Boolean, onClick: () -> Unit) {

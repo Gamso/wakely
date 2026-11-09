@@ -215,6 +215,7 @@ private fun WakelyNavigation() {
                         it.saveAlarm,
                         it.deleteAlarm,
                         it.soundRepository.defaultSound(),
+                        it.stepSensor.isAvailable(),
                     )
                 },
             )

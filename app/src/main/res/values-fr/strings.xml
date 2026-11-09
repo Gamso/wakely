@@ -64,6 +64,13 @@
     <string name="mode_other_time_button">Heure les jours non travaillés : %1$s</string>
     <string name="mode_ignore">Sonner normalement (ignorer l\'agenda)</string>
     <string name="ringtone">Sonnerie</string>
+    <string name="skip_awake_title">Ignorer si je suis déjà levé</string>
+    <string name="skip_awake_desc">Si vous avez déjà marché quelques dizaines de pas dans la demi-heure qui précède, le réveil ne sonne pas ce jour-là.</string>
+    <string name="skip_awake_all">Toutes les sonneries</string>
+    <string name="skip_awake_days_off">Seulement les jours fériés et congés</string>
+    <string name="skip_awake_scope_note">Le réveil de %1$s sonne toujours les jours ordinaires. Seule la sonnerie d\'un jour férié ou de congé peut être ignorée.</string>
+    <string name="skip_awake_unavailable">Ce téléphone n\'a pas de compteur de pas : l\'option n\'est pas disponible.</string>
+    <string name="skip_awake_denied">Autorisation refusée : sans elle, le téléphone ne peut pas savoir que vous êtes levé, l\'option reste désactivée.</string>
     <string name="snooze_title">Répéter (snooze)</string>
     <string name="snooze_off">Désactivé</string>
     <string name="snooze_minutes">%1$d min</string>

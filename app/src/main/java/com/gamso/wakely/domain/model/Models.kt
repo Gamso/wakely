@@ -17,6 +17,17 @@ enum class DayOffMode {
     IGNORE,
 }
 
+/** When an alarm may be skipped because the user is already up. */
+enum class SkipIfAwake {
+    OFF,
+
+    /** Every ring of the alarm. */
+    ALWAYS,
+
+    /** Only the rings that fall on a public holiday or a leave day, never the ring of an ordinary day. */
+    DAYS_OFF_ONLY,
+}
+
 data class Alarm(
     val id: Long = 0,
     val time: LocalTime = LocalTime.of(7, 0),
@@ -30,6 +41,8 @@ data class Alarm(
     val sound: AlarmSound? = null,
     /** Snooze duration in minutes; 0 = snooze disabled. */
     val snoozeMinutes: Int = DEFAULT_SNOOZE_MINUTES,
+    /** Skip a ring (that occurrence only) when the user is already up and walking. Never for event alarms. */
+    val skipIfAwake: SkipIfAwake = SkipIfAwake.OFF,
 ) {
     val isRepeating: Boolean get() = days.isNotEmpty()
 
@@ -142,6 +155,9 @@ data class NextRing(
 data class EventRing(val ruleId: Long, val at: LocalDateTime, val event: CalendarEvent)
 
 enum class RingKind { ALARM, EVENT }
+
+/** Step counter reading taken [takenAt], shortly before an alarm. */
+data class StepBaseline(val steps: Long, val takenAt: LocalDateTime)
 
 /** Identifies what a system alarm belongs to. */
 data class RingKey(val kind: RingKind, val id: Long)

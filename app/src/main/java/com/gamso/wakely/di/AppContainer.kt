@@ -10,6 +10,8 @@ import com.gamso.wakely.data.local.EventAlarmRepositoryImpl
 import com.gamso.wakely.data.local.SettingsRepositoryImpl
 import com.gamso.wakely.data.region.AndroidDeviceRegion
 import com.gamso.wakely.data.scheduler.AndroidAlarmScheduler
+import com.gamso.wakely.data.sensor.StepBaselinePrefs
+import com.gamso.wakely.data.sensor.StepCounterSensor
 import com.gamso.wakely.data.sound.SoundRepositoryImpl
 import com.gamso.wakely.domain.repository.AlarmRepository
 import com.gamso.wakely.domain.repository.AlarmScheduler
@@ -21,6 +23,8 @@ import com.gamso.wakely.domain.repository.HolidayRepository
 import com.gamso.wakely.domain.repository.SettingsRepository
 import com.gamso.wakely.domain.repository.SoundPreviewer
 import com.gamso.wakely.domain.repository.SoundRepository
+import com.gamso.wakely.domain.repository.StepBaselineStore
+import com.gamso.wakely.domain.repository.StepSensor
 import com.gamso.wakely.domain.repository.TimeProvider
 import com.gamso.wakely.domain.usecase.ComputeNextRingUseCase
 import com.gamso.wakely.domain.usecase.DayOffSources
@@ -33,6 +37,7 @@ import com.gamso.wakely.domain.usecase.GetRuleEventsUseCase
 import com.gamso.wakely.domain.usecase.GetUpcomingHolidaysUseCase
 import com.gamso.wakely.domain.usecase.HandleRingFiredUseCase
 import com.gamso.wakely.domain.usecase.HandleSnoozeFiredUseCase
+import com.gamso.wakely.domain.usecase.RecordStepBaselineUseCase
 import com.gamso.wakely.domain.usecase.RescheduleAlarmsUseCase
 import com.gamso.wakely.domain.usecase.SaveAlarmUseCase
 import com.gamso.wakely.domain.usecase.SaveEventAlarmUseCase
@@ -66,6 +71,8 @@ class AppContainer(context: Context) {
     val calendarRepository: CalendarRepository = CalendarRepositoryImpl(appContext)
     val holidayRepository: HolidayRepository = HolidayRepositoryImpl(AssetHolidayDataSource(appContext))
     val alarmScheduler: AlarmScheduler = AndroidAlarmScheduler(appContext)
+    val stepSensor: StepSensor = StepCounterSensor(appContext)
+    val stepBaselines: StepBaselineStore = StepBaselinePrefs(appContext)
     val soundRepository: SoundRepository = SoundRepositoryImpl(appContext)
     val soundPreviewer: SoundPreviewer = MediaSoundPreviewer(appContext)
     val ringingState = RingingStateHolder()
@@ -107,7 +114,10 @@ class AppContainer(context: Context) {
         computeNextRing,
         rescheduleAlarms,
         timeProvider,
+        stepSensor,
+        stepBaselines,
     )
+    val recordStepBaseline = RecordStepBaselineUseCase(alarmRepository, stepSensor, stepBaselines, timeProvider)
     val getDayPlan = GetDayPlanUseCase(
         alarmRepository,
         eventAlarmRepository,

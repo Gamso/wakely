@@ -3,6 +3,7 @@ package com.gamso.wakely.data.local
 import android.content.Context
 import com.gamso.wakely.domain.model.Alarm
 import com.gamso.wakely.domain.model.DayOffMode
+import com.gamso.wakely.domain.model.SkipIfAwake
 import com.gamso.wakely.domain.repository.AlarmRepository
 import java.time.DayOfWeek
 import java.time.LocalTime
@@ -70,7 +71,8 @@ class AlarmRepositoryImpl(context: Context) : AlarmRepository {
                     .put("dayOffMode", a.dayOffMode.name)
                     .put("dayOffTime", a.dayOffTime.toString())
                     .put("sound", a.sound?.toJson())
-                    .put("snoozeMinutes", a.snoozeMinutes),
+                    .put("snoozeMinutes", a.snoozeMinutes)
+                    .put("skipIfAwake", a.skipIfAwake.name),
             )
         }
     }
@@ -88,7 +90,18 @@ class AlarmRepositoryImpl(context: Context) : AlarmRepository {
             dayOffTime = LocalTime.parse(optString("dayOffTime", "09:00")),
             sound = optJSONObject("sound")?.toAlarmSound(),
             snoozeMinutes = optInt("snoozeMinutes", Alarm.DEFAULT_SNOOZE_MINUTES),
+            skipIfAwake = skipIfAwake(),
         )
+    }
+
+    /** Absent = off; a former boolean `true` meant every ring. */
+    private fun JSONObject.skipIfAwake(): SkipIfAwake {
+        val value = opt("skipIfAwake")
+        return when {
+            value is Boolean -> if (value) SkipIfAwake.ALWAYS else SkipIfAwake.OFF
+            value is String -> runCatching { SkipIfAwake.valueOf(value) }.getOrDefault(SkipIfAwake.OFF)
+            else -> SkipIfAwake.OFF
+        }
     }
 
     private companion object {

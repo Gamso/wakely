@@ -44,6 +44,10 @@ class AlarmReceiver : BroadcastReceiver() {
         val kind = runCatching { RingKind.valueOf(intent.getStringExtra(EXTRA_KIND).orEmpty()) }
             .getOrDefault(RingKind.ALARM)
         val key = RingKey(kind, id)
+        if (intent.action == ACTION_PRECHECK) {
+            launchAsync { container.recordStepBaseline(key) }
+            return
+        }
         launchAsync {
             val info = when (intent.action) {
                 ACTION_SNOOZE_FIRED -> container.handleSnoozeFired(
@@ -62,6 +66,7 @@ class AlarmReceiver : BroadcastReceiver() {
     companion object {
         const val ACTION_FIRED = "com.gamso.wakely.action.ALARM_FIRED"
         const val ACTION_SNOOZE_FIRED = "com.gamso.wakely.action.SNOOZE_FIRED"
+        const val ACTION_PRECHECK = "com.gamso.wakely.action.PRECHECK"
         const val ACTION_SUMMARY = "com.gamso.wakely.action.SUMMARY"
         const val EXTRA_KIND = "kind"
         const val EXTRA_ID = "id"

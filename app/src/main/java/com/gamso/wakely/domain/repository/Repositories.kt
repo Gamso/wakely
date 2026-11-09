@@ -11,6 +11,7 @@ import com.gamso.wakely.domain.model.EventAlarm
 import com.gamso.wakely.domain.model.HolidaySettings
 import com.gamso.wakely.domain.model.LicenseId
 import com.gamso.wakely.domain.model.RingKey
+import com.gamso.wakely.domain.model.StepBaseline
 import com.gamso.wakely.domain.model.SummarySettings
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -101,9 +102,29 @@ interface AlarmScheduler {
     fun scheduleSnooze(key: RingKey, at: LocalDateTime)
     fun cancel(key: RingKey)
 
+    /** Schedules the step check that precedes a ring of an alarm that can be skipped. */
+    fun schedulePreCheck(key: RingKey, at: LocalDateTime)
+    fun cancelPreCheck(key: RingKey)
+
     /** Schedules the evening summary; null cancels it. */
     fun scheduleSummary(at: LocalDateTime?)
     fun canScheduleExactAlarms(): Boolean
+}
+
+/** The step counter of the phone. Everything is null or false when it cannot be read: the alarm then rings. */
+interface StepSensor {
+    fun isAvailable(): Boolean
+    fun hasPermission(): Boolean
+
+    /** Steps since the phone booted, or null (no sensor, no permission, no answer in time). */
+    suspend fun readSteps(): Long?
+}
+
+/** Remembers the step count taken before each alarm. Only compared, never kept after the ring. */
+interface StepBaselineStore {
+    fun save(key: RingKey, baseline: StepBaseline)
+    fun get(key: RingKey): StepBaseline?
+    fun clear(key: RingKey)
 }
 
 interface AppInfoRepository {

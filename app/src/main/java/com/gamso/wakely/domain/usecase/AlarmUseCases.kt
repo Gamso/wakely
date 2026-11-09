@@ -2,6 +2,7 @@ package com.gamso.wakely.domain.usecase
 
 import com.gamso.wakely.domain.model.Alarm
 import com.gamso.wakely.domain.model.CalendarFilter
+import com.gamso.wakely.domain.model.DayOff
 import com.gamso.wakely.domain.model.DayOffMode
 import com.gamso.wakely.domain.model.DayPlan
 import com.gamso.wakely.domain.model.EventAlarm
@@ -15,6 +16,8 @@ import com.gamso.wakely.domain.repository.AlarmRepository
 import com.gamso.wakely.domain.repository.AlarmScheduler
 import com.gamso.wakely.domain.repository.EventAlarmRepository
 import com.gamso.wakely.domain.repository.SettingsRepository
+import com.gamso.wakely.domain.repository.StepBaselineStore
+import com.gamso.wakely.domain.repository.StepSensor
 import com.gamso.wakely.domain.repository.TimeProvider
 import java.time.Duration
 import java.time.LocalDate
@@ -44,6 +47,13 @@ class RescheduleAlarmsUseCase(
             val key = RingKey(RingKind.ALARM, alarm.id)
             val next = if (alarm.enabled) computeNextRing(alarm, afterFor(key), daysOff) else null
             if (next != null) scheduler.schedule(key, next.at) else scheduler.cancel(key)
+            val checkAt = next?.takeIf { AwakeCheck.appliesTo(alarm, it.at.toLocalDate(), daysOff) }
+                ?.at?.minus(AwakeCheck.WINDOW)
+            if (checkAt != null && checkAt.isAfter(now)) {
+                scheduler.schedulePreCheck(key, checkAt)
+            } else {
+                scheduler.cancelPreCheck(key)
+            }
         }
 
         val rules = eventAlarmRepository.getEventAlarms()
@@ -187,6 +197,8 @@ class HandleRingFiredUseCase(
     private val computeNextRing: ComputeNextRingUseCase,
     private val reschedule: RescheduleAlarmsUseCase,
     private val time: TimeProvider,
+    private val stepSensor: StepSensor,
+    private val stepBaselines: StepBaselineStore,
 ) {
     suspend operator fun invoke(key: RingKey): RingInfo? {
         val now = time.now()
@@ -195,13 +207,16 @@ class HandleRingFiredUseCase(
         val info: RingInfo? = when (key.kind) {
             RingKind.ALARM -> {
                 val alarm = alarmRepository.getAlarm(key.id)?.takeIf { it.enabled }
-                val expected = alarm?.let {
-                    computeNextRing(it, windowStart, getDaysOff(now.toLocalDate().minusDays(1)))
-                }
+                val daysOff = getDaysOff(now.toLocalDate().minusDays(1))
+                val expected = alarm?.let { computeNextRing(it, windowStart, daysOff) }
                 if (alarm != null && expected != null && isDue(now, expected.at)) {
                     expectedAt = expected.at
                     if (!alarm.isRepeating) alarmRepository.save(alarm.copy(enabled = false))
-                    RingInfo(key, alarm.label, alarm.sound, alarm.snoozeMinutes)
+                    if (alreadyUp(alarm, key, expected.at, daysOff)) {
+                        null
+                    } else {
+                        RingInfo(key, alarm.label, alarm.sound, alarm.snoozeMinutes)
+                    }
                 } else {
                     null
                 }
@@ -231,6 +246,24 @@ class HandleRingFiredUseCase(
         }
         reschedule(key, expectedAt)
         return info
+    }
+
+    /** True when the option covers this ring and the user walked enough since the step check. */
+    private suspend fun alreadyUp(
+        alarm: Alarm,
+        key: RingKey,
+        ringAt: LocalDateTime,
+        daysOff: Map<LocalDate, DayOff>,
+    ): Boolean {
+        val baseline = stepBaselines.get(key)
+        stepBaselines.clear(key)
+        if (!AwakeCheck.appliesTo(alarm, ringAt.toLocalDate(), daysOff)) return false
+        val current = if (baseline != null && stepSensor.hasPermission()) {
+            runCatching { stepSensor.readSteps() }.getOrNull()
+        } else {
+            null
+        }
+        return AwakeCheck.shouldSkip(baseline, current, ringAt)
     }
 
     private fun isDue(now: LocalDateTime, at: LocalDateTime) = Duration.between(now, at).abs() <= TOLERANCE
