@@ -159,6 +159,9 @@ enum class RingKind { ALARM, EVENT }
 /** Step counter reading taken [takenAt], shortly before an alarm. */
 data class StepBaseline(val steps: Long, val takenAt: LocalDateTime)
 
+/** One occurrence of an alarm that the user chose not to hear. The alarm itself is untouched. */
+data class SkippedOccurrence(val key: RingKey, val at: LocalDateTime)
+
 /** Identifies what a system alarm belongs to. */
 data class RingKey(val kind: RingKind, val id: Long)
 
@@ -185,6 +188,8 @@ data class PlannedRing(
     val label: String,
     val dayOffReason: String? = null,
     val event: CalendarEvent? = null,
+    /** What the ring belongs to, so it can be skipped from the notification. */
+    val key: RingKey? = null,
 )
 
 /** An alarm that will not ring on a day off. */

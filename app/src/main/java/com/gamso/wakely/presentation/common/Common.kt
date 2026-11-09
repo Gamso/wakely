@@ -83,13 +83,17 @@ object Format {
     fun nextRing(next: NextRing, now: LocalDateTime = LocalDateTime.now()): String = nextRing(next.at, now)
 
     @Composable
-    fun nextRing(at: LocalDateTime, now: LocalDateTime = LocalDateTime.now()): String {
+    fun nextRing(at: LocalDateTime, now: LocalDateTime = LocalDateTime.now()): String =
+        stringResource(R.string.next_ring, dayWord(at, now), time(at.toLocalTime()))
+
+    /** "today", "tomorrow", or the weekday and date. */
+    @Composable
+    fun dayWord(at: LocalDateTime, now: LocalDateTime = LocalDateTime.now()): String {
         val date = at.toLocalDate()
-        val day = when (date) {
+        return when (date) {
             now.toLocalDate() -> stringResource(R.string.today)
             now.toLocalDate().plusDays(1) -> stringResource(R.string.tomorrow)
             else -> dayDate(date)
         }
-        return stringResource(R.string.next_ring, day, time(at.toLocalTime()))
     }
 }

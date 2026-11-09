@@ -134,6 +134,24 @@ fun SettingsScreen(
                 }
             }
 
+            item(key = "skip-buttons") {
+                Card(Modifier.fillMaxWidth()) {
+                    Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                stringResource(R.string.skip_buttons_title),
+                                style = MaterialTheme.typography.titleMedium,
+                            )
+                            Text(
+                                stringResource(R.string.skip_buttons_description),
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                        Switch(checked = state.skipButtons, onCheckedChange = viewModel::setSkipButtons)
+                    }
+                }
+            }
+
             if (!state.loading && !state.hasPermission) {
                 item(key = "permission") {
                     Button(onClick = onRequestPermission) { Text(stringResource(R.string.allow_calendar_access)) }

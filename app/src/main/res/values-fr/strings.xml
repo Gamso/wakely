@@ -34,6 +34,12 @@
     <string name="tomorrow">demain</string>
     <string name="adapted_time">Heure adaptée : %1$s</string>
     <string name="skipped_days">Ignoré : %1$s</string>
+    <string name="skip_buttons_title">Boutons « Sauter »</string>
+    <string name="skip_buttons_description">Affiche « Sauter demain » sur vos réveils et dans la notification du soir, pour ignorer une seule sonnerie. Une sonnerie déjà ignorée peut toujours être rétablie.</string>
+    <string name="skip_next">Sauter %1$s</string>
+    <string name="skip_tag">Ignorée : %1$s</string>
+    <string name="skip_undo">Annuler</string>
+    <string name="skip_notif_action">Sauter %1$s</string>
     <string name="no_next_ring">Aucune sonnerie prévue</string>
     <string name="day_off_default">Jour non travaillé</string>
     <string name="minutes_before">%1$s avant</string>
@@ -150,14 +156,14 @@
     <string name="credit_aosp_name">Sonneries d\'alarme Android</string>
     <string name="credit_aosp_usage">Les 30 sonneries « Sonneries Android (AOSP) », intégrées sans modification (fichiers renommés).</string>
     <string name="credit_icons_name">Icônes Material Design</string>
-    <string name="credit_icons_usage">Icônes « Réglages » (roue dentée), « Retour » (flèche) et « Développer » (chevron).</string>
+    <string name="credit_icons_usage">Icônes de l\'interface.</string>
     <string name="credit_androidx_name">AndroidX et Jetpack Compose</string>
     <string name="credit_androidx_usage">Interface (Compose, Material 3), activités, cycle de vie et ViewModel.</string>
     <string name="credit_kotlin_name">Kotlin et kotlinx.coroutines</string>
     <string name="credit_kotlin_usage">Langage et bibliothèque standard, programmation asynchrone.</string>
     <string name="author_jetbrains">JetBrains s.r.o. et contributeurs</string>
     <string name="credit_jollyday_name">Données de jours fériés Jollyday</string>
-    <string name="credit_jollyday_usage">Jours fériés de 150 pays et de leurs régions, embarqués sans modification ; les dates sont calculées dans l\'application.</string>
+    <string name="credit_jollyday_usage">Jours fériés de 150 pays et de leurs régions, embarqués sans modification. Les dates sont calculées dans l\'application.</string>
 
     <!-- Ringing screen and notifications -->
     <string name="ring_default_label">Réveil</string>

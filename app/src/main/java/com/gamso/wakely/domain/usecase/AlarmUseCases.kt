@@ -16,6 +16,7 @@ import com.gamso.wakely.domain.repository.AlarmRepository
 import com.gamso.wakely.domain.repository.AlarmScheduler
 import com.gamso.wakely.domain.repository.EventAlarmRepository
 import com.gamso.wakely.domain.repository.SettingsRepository
+import com.gamso.wakely.domain.repository.SkippedOccurrences
 import com.gamso.wakely.domain.repository.StepBaselineStore
 import com.gamso.wakely.domain.repository.StepSensor
 import com.gamso.wakely.domain.repository.TimeProvider
@@ -33,6 +34,7 @@ class RescheduleAlarmsUseCase(
     private val computeNextRing: ComputeNextRingUseCase,
     private val scheduler: AlarmScheduler,
     private val time: TimeProvider,
+    private val skips: SkippedOccurrences,
 ) {
     /**
      * @param fired ring that just fired: it is rescheduled after [firedAt]
@@ -42,10 +44,16 @@ class RescheduleAlarmsUseCase(
         val now = time.now()
         fun afterFor(key: RingKey) = if (key == fired && firedAt != null && firedAt > now) firedAt else now
 
+        skips.prune(now.minusDays(1))
+        val skipped = skips.get()
         val daysOff = getDaysOff(now.toLocalDate())
         alarmRepository.getAlarms().forEach { alarm ->
             val key = RingKey(RingKind.ALARM, alarm.id)
-            val next = if (alarm.enabled) computeNextRing(alarm, afterFor(key), daysOff) else null
+            val next = if (alarm.enabled) {
+                computeNextRing(alarm, afterFor(key), daysOff, skipped = skipped.timesOf(key))
+            } else {
+                null
+            }
             if (next != null) scheduler.schedule(key, next.at) else scheduler.cancel(key)
             val checkAt = next?.takeIf { AwakeCheck.appliesTo(alarm, it.at.toLocalDate(), daysOff) }
                 ?.at?.minus(AwakeCheck.WINDOW)
@@ -61,7 +69,13 @@ class RescheduleAlarmsUseCase(
         rules.forEach { rule ->
             val key = RingKey(RingKind.EVENT, rule.id)
             val next = if (rule.enabled) {
-                CalendarLogic.nextEventRing(rule, afterFor(key), ruleEvents.events, ruleEvents.eventFilters)
+                CalendarLogic.nextEventRing(
+                    rule,
+                    afterFor(key),
+                    ruleEvents.events,
+                    ruleEvents.eventFilters,
+                    skipped.timesOf(key),
+                )
             } else {
                 null
             }
@@ -80,8 +94,16 @@ class RescheduleAlarmsUseCase(
     }
 }
 
-class SaveAlarmUseCase(private val alarmRepository: AlarmRepository, private val reschedule: RescheduleAlarmsUseCase) {
-    suspend operator fun invoke(alarm: Alarm): Alarm = alarmRepository.save(alarm).also { reschedule() }
+class SaveAlarmUseCase(
+    private val alarmRepository: AlarmRepository,
+    private val reschedule: RescheduleAlarmsUseCase,
+    private val skips: SkippedOccurrences,
+) {
+    /** Editing an alarm forgets its skipped ring: the user decided on the old settings. */
+    suspend operator fun invoke(alarm: Alarm): Alarm = alarmRepository.save(alarm).also {
+        skips.clear(RingKey(RingKind.ALARM, it.id))
+        reschedule()
+    }
 }
 
 class SetAlarmEnabledUseCase(
@@ -94,9 +116,14 @@ class SetAlarmEnabledUseCase(
     }
 }
 
-class DeleteAlarmUseCase(private val alarmRepository: AlarmRepository, private val scheduler: AlarmScheduler) {
+class DeleteAlarmUseCase(
+    private val alarmRepository: AlarmRepository,
+    private val scheduler: AlarmScheduler,
+    private val skips: SkippedOccurrences,
+) {
     suspend operator fun invoke(id: Long) {
         scheduler.cancel(RingKey(RingKind.ALARM, id))
+        skips.clear(RingKey(RingKind.ALARM, id))
         alarmRepository.delete(id)
     }
 }
@@ -104,8 +131,12 @@ class DeleteAlarmUseCase(private val alarmRepository: AlarmRepository, private v
 class SaveEventAlarmUseCase(
     private val repository: EventAlarmRepository,
     private val reschedule: RescheduleAlarmsUseCase,
+    private val skips: SkippedOccurrences,
 ) {
-    suspend operator fun invoke(alarm: EventAlarm): EventAlarm = repository.save(alarm).also { reschedule() }
+    suspend operator fun invoke(alarm: EventAlarm): EventAlarm = repository.save(alarm).also {
+        skips.clear(RingKey(RingKind.EVENT, it.id))
+        reschedule()
+    }
 }
 
 class SetEventAlarmEnabledUseCase(
@@ -118,9 +149,14 @@ class SetEventAlarmEnabledUseCase(
     }
 }
 
-class DeleteEventAlarmUseCase(private val repository: EventAlarmRepository, private val scheduler: AlarmScheduler) {
+class DeleteEventAlarmUseCase(
+    private val repository: EventAlarmRepository,
+    private val scheduler: AlarmScheduler,
+    private val skips: SkippedOccurrences,
+) {
     suspend operator fun invoke(id: Long) {
         scheduler.cancel(RingKey(RingKind.EVENT, id))
+        skips.clear(RingKey(RingKind.EVENT, id))
         repository.delete(id)
     }
 }
@@ -199,16 +235,19 @@ class HandleRingFiredUseCase(
     private val time: TimeProvider,
     private val stepSensor: StepSensor,
     private val stepBaselines: StepBaselineStore,
+    private val skips: SkippedOccurrences,
 ) {
     suspend operator fun invoke(key: RingKey): RingInfo? {
         val now = time.now()
         val windowStart = now.minus(TOLERANCE)
+        // A ring the user skipped is passed over, even if the system still fires it.
+        val skipped = skips.get().timesOf(key)
         var expectedAt: LocalDateTime? = null
         val info: RingInfo? = when (key.kind) {
             RingKind.ALARM -> {
                 val alarm = alarmRepository.getAlarm(key.id)?.takeIf { it.enabled }
                 val daysOff = getDaysOff(now.toLocalDate().minusDays(1))
-                val expected = alarm?.let { computeNextRing(it, windowStart, daysOff) }
+                val expected = alarm?.let { computeNextRing(it, windowStart, daysOff, skipped = skipped) }
                 if (alarm != null && expected != null && isDue(now, expected.at)) {
                     expectedAt = expected.at
                     if (!alarm.isRepeating) alarmRepository.save(alarm.copy(enabled = false))
@@ -226,7 +265,7 @@ class HandleRingFiredUseCase(
                 val rule = eventAlarmRepository.getEventAlarm(key.id)?.takeIf { it.enabled }
                 val expected = rule?.let {
                     val data = getRuleEvents(now.toLocalDate().minusDays(1), extraSourceKeys = it.sourceKeys)
-                    CalendarLogic.nextEventRing(it, windowStart, data.events, data.eventFilters)
+                    CalendarLogic.nextEventRing(it, windowStart, data.events, data.eventFilters, skipped)
                 }
                 if (rule != null && expected != null && isDue(now, expected.at)) {
                     expectedAt = expected.at
@@ -281,19 +320,22 @@ class GetDayPlanUseCase(
     private val getRuleEvents: GetRuleEventsUseCase,
     private val computeNextRing: ComputeNextRingUseCase,
     private val time: TimeProvider,
+    private val skips: SkippedOccurrences,
 ) {
     suspend operator fun invoke(date: LocalDate): DayPlan {
         val now = time.now()
         val dayStart = date.atStartOfDay().minusNanos(1)
         val daysOff = getDaysOff(now.toLocalDate())
+        val skippedByUser = skips.get()
         val rings = mutableListOf<PlannedRing>()
         val skipped = mutableListOf<SkippedRing>()
 
         alarmRepository.getAlarms().filter { it.enabled }.forEach { alarm ->
             val after = if (alarm.isRepeating) maxOf(dayStart, now) else now
-            val next = computeNextRing(alarm, after, daysOff)
+            val key = RingKey(RingKind.ALARM, alarm.id)
+            val next = computeNextRing(alarm, after, daysOff, skipped = skippedByUser.timesOf(key))
             if (next != null && next.at.toLocalDate() == date) {
-                rings += PlannedRing(next.at, alarm.label, dayOffReason = next.dayOffReason)
+                rings += PlannedRing(next.at, alarm.label, dayOffReason = next.dayOffReason, key = key)
             } else {
                 val off = daysOff[date]
                 val normallyRings = !alarm.isRepeating || date.dayOfWeek in alarm.days
@@ -307,9 +349,16 @@ class GetDayPlanUseCase(
         if (rules.isNotEmpty()) {
             val data = getRuleEvents(now.toLocalDate(), extraSourceKeys = rules.flatMap { it.sourceKeys }.toSet())
             rules.forEach { rule ->
-                CalendarLogic.upcomingEventRings(rule, maxOf(dayStart, now), data.events, data.eventFilters)
+                val key = RingKey(RingKind.EVENT, rule.id)
+                CalendarLogic.upcomingEventRings(
+                    rule,
+                    maxOf(dayStart, now),
+                    data.events,
+                    data.eventFilters,
+                    skippedByUser.timesOf(key),
+                )
                     .filter { it.at.toLocalDate() == date }
-                    .forEach { ring -> rings += PlannedRing(ring.at, rule.label, event = ring.event) }
+                    .forEach { ring -> rings += PlannedRing(ring.at, rule.label, event = ring.event, key = key) }
             }
         }
         return DayPlan(date, rings.sortedBy { it.at }, skipped)

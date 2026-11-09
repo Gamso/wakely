@@ -40,6 +40,7 @@ data class SettingsUiState(
     val loading: Boolean = true,
     val hasPermission: Boolean = true,
     val summary: SummarySettings = SummarySettings(),
+    val skipButtons: Boolean = true,
     val calendars: List<DeviceCalendar> = emptyList(),
     val byCategory: Map<CalendarCategory, List<AssignedCalendar>> = emptyMap(),
     /** Country whose public holidays apply (chosen, or detected from the device); null = none. */
@@ -87,11 +88,17 @@ class SettingsViewModel(
     val uiState: StateFlow<SettingsUiState> = combine(
         calendars,
         draft,
-        settingsRepository.observeSummarySettings(),
+        combine(settingsRepository.observeSummarySettings(), settingsRepository.observeSkipButtons()) { summary, skip ->
+            summary to skip
+        },
         settingsRepository.observeHolidaySettings(),
         upcoming,
-    ) { cals, filters, summary, holiday, upcomingHolidays ->
-        if (cals == null || filters == null) return@combine SettingsUiState(summary = summary)
+    ) { cals, filters, (summary, skipButtons), holiday, upcomingHolidays ->
+        if (cals == null ||
+            filters == null
+        ) {
+            return@combine SettingsUiState(summary = summary, skipButtons = skipButtons)
+        }
         val byKey = cals.associateBy { it.key }
         val supported = holidayRepository.countries()
         val candidates = deviceRegion.countryCandidates()
@@ -101,6 +108,7 @@ class SettingsViewModel(
             loading = false,
             hasPermission = calendarRepository.hasPermission(),
             summary = summary,
+            skipButtons = skipButtons,
             calendars = cals,
             byCategory = CalendarCategory.entries.associateWith { category ->
                 filters.filter { it.category == category }
@@ -121,6 +129,10 @@ class SettingsViewModel(
             draft.value = settingsRepository.getCalendarFilters()
             calendars.value = calendarRepository.getCalendars()
         }
+    }
+
+    fun setSkipButtons(enabled: Boolean) {
+        applicationScope.launch { settingsRepository.setSkipButtons(enabled) }
     }
 
     fun setSummaryEnabled(enabled: Boolean) = updateSummary { it.copy(enabled = enabled) }

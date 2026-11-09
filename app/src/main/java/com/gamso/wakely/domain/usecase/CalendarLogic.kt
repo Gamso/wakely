@@ -102,15 +102,17 @@ object CalendarLogic {
         after: LocalDateTime,
         events: List<CalendarEvent>,
         eventFilters: List<CalendarFilter>,
-    ): EventRing? = upcomingEventRings(rule, after, events, eventFilters).firstOrNull()
+        skipped: Set<LocalDateTime> = emptySet(),
+    ): EventRing? = upcomingEventRings(rule, after, events, eventFilters, skipped).firstOrNull()
 
     fun upcomingEventRings(
         rule: EventAlarm,
         after: LocalDateTime,
         events: List<CalendarEvent>,
         eventFilters: List<CalendarFilter>,
+        skipped: Set<LocalDateTime> = emptySet(),
     ): List<EventRing> = matchingEvents(rule, events, eventFilters)
         .map { EventRing(rule.id, it.start.minusMinutes(rule.minutesBefore.toLong()), it) }
-        .filter { it.at.isAfter(after) }
+        .filter { it.at.isAfter(after) && it.at !in skipped }
         .sortedBy { it.at }
 }
