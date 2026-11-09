@@ -1,6 +1,8 @@
 package com.gamso.wakely.presentation.settings
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -30,10 +33,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.CalendarCategory
@@ -42,6 +50,8 @@ import com.gamso.wakely.presentation.common.BackButton
 import com.gamso.wakely.presentation.common.ColorDot
 import com.gamso.wakely.presentation.common.Format
 import com.gamso.wakely.presentation.common.TimePickerDialog
+
+private const val CHEVRON_OPEN_DEGREES = 180f
 
 private data class CategoryText(
     @StringRes val title: Int,
@@ -181,38 +191,73 @@ private fun CategoryCard(
     onKeywords: (DeviceCalendar, String) -> Unit,
 ) {
     val text = CATEGORY_TEXTS.getValue(category)
+    // Collapsed by default; kept across screen rotation.
+    var expanded by rememberSaveable(category.name) { mutableStateOf(false) }
     Card(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(stringResource(text.title), style = MaterialTheme.typography.titleMedium)
-            Text(stringResource(text.description), style = MaterialTheme.typography.bodySmall)
-            if (assigned.isEmpty()) {
-                Text(
-                    stringResource(R.string.no_calendar_assigned),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            assigned.forEach { item ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    ColorDot(item.calendar.color)
-                    Column(Modifier.weight(1f).padding(start = 12.dp)) {
-                        Text(item.calendar.name)
-                        Text(item.calendar.account, style = MaterialTheme.typography.bodySmall)
+        Column(Modifier.padding(16.dp)) {
+            CategoryHeader(
+                title = stringResource(text.title),
+                count = assigned.size,
+                expanded = expanded,
+                onToggle = { expanded = !expanded },
+            )
+            AnimatedVisibility(visible = expanded) {
+                Column(Modifier.padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(stringResource(text.description), style = MaterialTheme.typography.bodySmall)
+                    assigned.forEach { item ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            ColorDot(item.calendar.color)
+                            Column(Modifier.weight(1f).padding(start = 12.dp)) {
+                                Text(item.calendar.name)
+                                Text(item.calendar.account, style = MaterialTheme.typography.bodySmall)
+                            }
+                            TextButton(onClick = { onRemove(item.calendar) }) {
+                                Text(stringResource(R.string.action_remove))
+                            }
+                        }
+                        OutlinedTextField(
+                            value = item.keywords,
+                            onValueChange = { onKeywords(item.calendar, it) },
+                            label = { Text(stringResource(R.string.keywords_optional)) },
+                            placeholder = { Text(stringResource(text.keywordHint)) },
+                            supportingText = { Text(stringResource(R.string.keywords_help)) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
                     }
-                    TextButton(onClick = { onRemove(item.calendar) }) { Text(stringResource(R.string.action_remove)) }
+                    OutlinedButton(onClick = onAdd) { Text(stringResource(R.string.add_calendar)) }
                 }
-                OutlinedTextField(
-                    value = item.keywords,
-                    onValueChange = { onKeywords(item.calendar, it) },
-                    label = { Text(stringResource(R.string.keywords_optional)) },
-                    placeholder = { Text(stringResource(text.keywordHint)) },
-                    supportingText = { Text(stringResource(R.string.keywords_help)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
             }
-            OutlinedButton(onClick = onAdd) { Text(stringResource(R.string.add_calendar)) }
         }
+    }
+}
+
+/** Tappable header of a category: title, number of calendars and a chevron. */
+@Composable
+private fun CategoryHeader(title: String, count: Int, expanded: Boolean, onToggle: () -> Unit) {
+    val rotation by animateFloatAsState(if (expanded) CHEVRON_OPEN_DEGREES else 0f, label = "chevron")
+    val actionLabel = stringResource(if (expanded) R.string.action_collapse else R.string.action_expand)
+    Row(
+        Modifier.fillMaxWidth().clickable(onClickLabel = actionLabel, role = Role.Button, onClick = onToggle),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.titleMedium)
+            Text(
+                if (count == 0) {
+                    stringResource(R.string.calendars_none)
+                } else {
+                    pluralStringResource(R.plurals.calendars_count, count, count)
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Icon(
+            painterResource(R.drawable.ic_expand_more),
+            contentDescription = null,
+            modifier = Modifier.rotate(rotation),
+        )
     }
 }
 
