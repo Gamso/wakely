@@ -13,11 +13,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -65,6 +68,40 @@ fun SnoozeChips(selected: Int, onSelect: (Int) -> Unit) {
         }
     }
 }
+
+/** How the alarm sounds: gradual volume (0 = off) and vibration. Shared by both alarm editors. */
+@Composable
+fun RingStyleSection(rampSeconds: Int, vibrate: Boolean, onRamp: (Int) -> Unit, onVibrate: (Boolean) -> Unit) {
+    Text(stringResource(R.string.ramp_title), style = MaterialTheme.typography.titleMedium)
+    Text(stringResource(R.string.ramp_description), style = MaterialTheme.typography.bodySmall)
+    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Alarm.RAMP_CHOICES.forEach { seconds ->
+            FilterChip(
+                selected = rampSeconds == seconds,
+                onClick = { onRamp(seconds) },
+                label = {
+                    Text(
+                        when {
+                            seconds == 0 -> stringResource(R.string.snooze_off)
+                            seconds < SECONDS_PER_MINUTE -> stringResource(R.string.ramp_seconds, seconds)
+                            else -> stringResource(R.string.snooze_minutes, seconds / SECONDS_PER_MINUTE)
+                        },
+                    )
+                },
+            )
+        }
+    }
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            stringResource(R.string.vibration_title),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.weight(1f),
+        )
+        Switch(checked = vibrate, onCheckedChange = onVibrate)
+    }
+}
+
+private const val SECONDS_PER_MINUTE = 60
 
 /** Top bar "back" arrow. */
 @Composable

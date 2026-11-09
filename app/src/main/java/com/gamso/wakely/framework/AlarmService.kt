@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.os.SystemClock
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
@@ -23,6 +24,7 @@ import com.gamso.wakely.appContainer
 import com.gamso.wakely.domain.model.RingInfo
 import com.gamso.wakely.domain.model.RingKey
 import com.gamso.wakely.domain.model.RingKind
+import com.gamso.wakely.domain.usecase.VolumeRamp
 import com.gamso.wakely.presentation.ring.RingActivity
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -34,6 +36,17 @@ class AlarmService : Service() {
     private var vibrator: Vibrator? = null
     private val handler = Handler(Looper.getMainLooper())
     private val timeout = Runnable { stopRinging() }
+    private var rampStartedAt = 0L
+    private var rampSeconds = 0
+    private val rampStep = object : Runnable {
+        override fun run() {
+            val elapsed = SystemClock.elapsedRealtime() - rampStartedAt
+            val level = VolumeRamp.level(elapsed, rampSeconds)
+            // Any failure leaves the volume where it is: the next step or the end of the ramp sets it again.
+            player?.runCatching { setVolume(level, level) }
+            if (level < 1f) handler.postDelayed(this, RAMP_STEP_MS)
+        }
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -51,6 +64,8 @@ class AlarmService : Service() {
                     eventTime = intent.getStringExtra(EXTRA_EVENT_TIME)?.let(LocalTime::parse),
                 ),
                 soundUri = intent.getStringExtra(EXTRA_SOUND_URI),
+                rampSeconds = intent.getIntExtra(EXTRA_RAMP_SECONDS, 0),
+                vibrate = intent.getBooleanExtra(EXTRA_VIBRATE, true),
             )
 
             ACTION_SNOOZE -> {
@@ -64,7 +79,7 @@ class AlarmService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun startRinging(ringing: RingingAlarm, soundUri: String?) {
+    private fun startRinging(ringing: RingingAlarm, soundUri: String?, rampSeconds: Int, vibrate: Boolean) {
         stopPlayback()
         ServiceCompat.startForeground(
             this,
@@ -77,8 +92,8 @@ class AlarmService : Service() {
             },
         )
         appContainer.ringingState.set(ringing)
-        playSound(soundUri)
-        vibrate()
+        playSound(soundUri, rampSeconds)
+        if (vibrate) vibrate()
         handler.removeCallbacks(timeout)
         handler.postDelayed(timeout, AUTO_STOP_MS)
     }
@@ -91,14 +106,18 @@ class AlarmService : Service() {
         stopSelf()
     }
 
-    private fun playSound(soundUri: String?) {
+    private fun playSound(soundUri: String?, rampSeconds: Int) {
         // Chosen sound first, then the app default, then system defaults (see AlarmAudio).
         val default = appContainer.soundRepository.defaultSound().uri
         player = AlarmAudio.play(
             this,
             listOf(soundUri?.let(Uri::parse), Uri.parse(default)),
             wakeLock = true,
+            initialVolume = VolumeRamp.level(0, rampSeconds),
         )
+        this.rampSeconds = rampSeconds
+        rampStartedAt = SystemClock.elapsedRealtime()
+        if (rampSeconds > 0) handler.post(rampStep)
     }
 
     private fun vibrate() {
@@ -112,6 +131,7 @@ class AlarmService : Service() {
     }
 
     private fun stopPlayback() {
+        handler.removeCallbacks(rampStep)
         player?.runCatching {
             stop()
             release()
@@ -180,6 +200,9 @@ class AlarmService : Service() {
         private const val EXTRA_LABEL = "label"
         private const val EXTRA_SOUND_URI = "sound_uri"
         private const val EXTRA_EVENT_TIME = "event_time"
+        private const val EXTRA_RAMP_SECONDS = "ramp_seconds"
+        private const val EXTRA_VIBRATE = "vibrate"
+        private const val RAMP_STEP_MS = 100L
         private val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
         private const val EXTRA_SNOOZE_MINUTES = "snooze_minutes"
         private const val NOTIFICATION_ID = 1
@@ -198,7 +221,9 @@ class AlarmService : Service() {
                     .putExtra(EXTRA_LABEL, info.label)
                     .putExtra(EXTRA_EVENT_TIME, info.eventTime?.toString())
                     .putExtra(EXTRA_SOUND_URI, info.sound?.uri)
-                    .putExtra(EXTRA_SNOOZE_MINUTES, info.snoozeMinutes),
+                    .putExtra(EXTRA_SNOOZE_MINUTES, info.snoozeMinutes)
+                    .putExtra(EXTRA_RAMP_SECONDS, info.volumeRampSeconds)
+                    .putExtra(EXTRA_VIBRATE, info.vibrate),
             )
         }
 

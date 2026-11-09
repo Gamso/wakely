@@ -115,6 +115,8 @@ class EventAlarmEditViewModel(
     }
     fun setSound(sound: AlarmSound) = edit { it.copy(sound = sound) }
     fun setSnoozeMinutes(minutes: Int) = edit { it.copy(snoozeMinutes = minutes) }
+    fun setVolumeRamp(seconds: Int) = edit { it.copy(volumeRampSeconds = seconds) }
+    fun setVibrate(vibrate: Boolean) = edit { it.copy(vibrate = vibrate) }
 
     fun save() = viewModelScope.launch {
         saveEventAlarm(_uiState.value.alarm.copy(enabled = true))

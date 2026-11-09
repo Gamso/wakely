@@ -196,11 +196,25 @@ class GetRingInfoUseCase(
 ) {
     suspend operator fun invoke(key: RingKey, eventLabel: String? = null): RingInfo? = when (key.kind) {
         RingKind.ALARM -> alarmRepository.getAlarm(key.id)?.let {
-            RingInfo(key, it.label, it.sound, it.snoozeMinutes)
+            RingInfo(
+                key,
+                it.label,
+                it.sound,
+                it.snoozeMinutes,
+                volumeRampSeconds = it.volumeRampSeconds,
+                vibrate = it.vibrate,
+            )
         }
 
         RingKind.EVENT -> eventAlarmRepository.getEventAlarm(key.id)?.let {
-            RingInfo(key, eventLabel ?: it.label, it.sound, it.snoozeMinutes)
+            RingInfo(
+                key,
+                eventLabel ?: it.label,
+                it.sound,
+                it.snoozeMinutes,
+                volumeRampSeconds = it.volumeRampSeconds,
+                vibrate = it.vibrate,
+            )
         }
     }
 }
@@ -254,7 +268,14 @@ class HandleRingFiredUseCase(
                     if (alreadyUp(alarm, key, expected.at, daysOff)) {
                         null
                     } else {
-                        RingInfo(key, alarm.label, alarm.sound, alarm.snoozeMinutes)
+                        RingInfo(
+                            key,
+                            alarm.label,
+                            alarm.sound,
+                            alarm.snoozeMinutes,
+                            volumeRampSeconds = alarm.volumeRampSeconds,
+                            vibrate = alarm.vibrate,
+                        )
                     }
                 } else {
                     null
@@ -277,6 +298,8 @@ class HandleRingFiredUseCase(
                         rule.sound,
                         rule.snoozeMinutes,
                         eventTime = expected.event.start.toLocalTime(),
+                        volumeRampSeconds = rule.volumeRampSeconds,
+                        vibrate = rule.vibrate,
                     )
                 } else {
                     null

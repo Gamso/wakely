@@ -78,6 +78,10 @@
     <string name="skip_awake_unavailable">Ce téléphone n\'a pas de compteur de pas : l\'option n\'est pas disponible.</string>
     <string name="skip_awake_denied">Autorisation refusée : sans elle, le téléphone ne peut pas savoir que vous êtes levé, l\'option reste désactivée.</string>
     <string name="snooze_title">Répéter (snooze)</string>
+    <string name="ramp_title">Volume progressif</string>
+    <string name="ramp_description">Le son démarre doucement et atteint le volume de l\'alarme au bout du temps choisi.</string>
+    <string name="ramp_seconds">%1$d s</string>
+    <string name="vibration_title">Vibration</string>
     <string name="snooze_off">Désactivé</string>
     <string name="snooze_minutes">%1$d min</string>
     <string name="delete_alarm">Supprimer ce réveil</string>

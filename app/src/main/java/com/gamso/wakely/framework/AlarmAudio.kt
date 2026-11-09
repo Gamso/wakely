@@ -14,19 +14,19 @@ internal object AlarmAudio {
      * Starts looping playback on the alarm stream. Tries each candidate in order so the
      * alarm still rings if the chosen file was deleted or its permission revoked.
      */
-    fun play(context: Context, candidates: List<Uri?>, wakeLock: Boolean): MediaPlayer? {
+    fun play(context: Context, candidates: List<Uri?>, wakeLock: Boolean, initialVolume: Float = 1f): MediaPlayer? {
         val fallbacks = candidates + listOf(
             RingtoneManager.getActualDefaultRingtoneUri(context, RingtoneManager.TYPE_ALARM),
             RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM),
             RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE),
         )
         for (uri in fallbacks.filterNotNull().distinct()) {
-            create(context, uri, wakeLock)?.let { return it }
+            create(context, uri, wakeLock, initialVolume)?.let { return it }
         }
         return null
     }
 
-    private fun create(context: Context, uri: Uri, wakeLock: Boolean): MediaPlayer? {
+    private fun create(context: Context, uri: Uri, wakeLock: Boolean, initialVolume: Float): MediaPlayer? {
         val player = MediaPlayer()
         return runCatching {
             player.setAudioAttributes(
@@ -38,6 +38,8 @@ internal object AlarmAudio {
             if (wakeLock) player.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
             player.setDataSource(context, uri)
             player.isLooping = true
+            // Set before the first sample so a gradual alarm never starts with a burst.
+            player.setVolume(initialVolume, initialVolume)
             player.prepare()
             player.start()
             player

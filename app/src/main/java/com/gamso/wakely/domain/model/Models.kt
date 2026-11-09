@@ -43,11 +43,16 @@ data class Alarm(
     val snoozeMinutes: Int = DEFAULT_SNOOZE_MINUTES,
     /** Skip a ring (that occurrence only) when the user is already up and walking. Never for event alarms. */
     val skipIfAwake: SkipIfAwake = SkipIfAwake.OFF,
+    /** Seconds over which the volume rises from silence to the alarm volume; 0 = full volume at once. */
+    val volumeRampSeconds: Int = 0,
+    /** Whether the phone vibrates while the alarm rings. */
+    val vibrate: Boolean = true,
 ) {
     val isRepeating: Boolean get() = days.isNotEmpty()
 
     companion object {
         const val DEFAULT_SNOOZE_MINUTES = 10
+        val RAMP_CHOICES = listOf(0, 10, 30, 60)
         val SNOOZE_CHOICES = listOf(0, 5, 10, 15, 20, 30)
 
         val WORKDAYS: Set<DayOfWeek> = setOf(
@@ -79,6 +84,8 @@ data class EventAlarm(
     val singleEvent: EventRef? = null,
     val sound: AlarmSound? = null,
     val snoozeMinutes: Int = Alarm.DEFAULT_SNOOZE_MINUTES,
+    val volumeRampSeconds: Int = 0,
+    val vibrate: Boolean = true,
 ) {
     companion object {
         const val DEFAULT_MINUTES_BEFORE = 60
@@ -174,6 +181,8 @@ data class RingInfo(
     val snoozeMinutes: Int,
     /** Start time of the event an event rule rings for. */
     val eventTime: LocalTime? = null,
+    val volumeRampSeconds: Int = 0,
+    val vibrate: Boolean = true,
 )
 
 /** Evening reminder of the next day's rings, shared by every alarm. */

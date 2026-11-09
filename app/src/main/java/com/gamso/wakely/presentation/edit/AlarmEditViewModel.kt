@@ -70,6 +70,8 @@ class AlarmEditViewModel(
     fun setDayOffTime(time: LocalTime) = edit { it.copy(dayOffTime = time) }
     fun setSound(sound: AlarmSound) = edit { it.copy(sound = sound) }
     fun setSnoozeMinutes(minutes: Int) = edit { it.copy(snoozeMinutes = minutes) }
+    fun setVolumeRamp(seconds: Int) = edit { it.copy(volumeRampSeconds = seconds) }
+    fun setVibrate(vibrate: Boolean) = edit { it.copy(vibrate = vibrate) }
     fun setSkipIfAwake(skip: SkipIfAwake) = edit { it.copy(skipIfAwake = skip) }
 
     /** Turns the option on: an alarm that also rings on days off is only skipped on those days at first. */

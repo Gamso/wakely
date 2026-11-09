@@ -54,6 +54,7 @@ import com.gamso.wakely.domain.model.Alarm
 import com.gamso.wakely.domain.model.DayOffMode
 import com.gamso.wakely.domain.model.SkipIfAwake
 import com.gamso.wakely.presentation.common.Format
+import com.gamso.wakely.presentation.common.RingStyleSection
 import com.gamso.wakely.presentation.common.SnoozeChips
 import com.gamso.wakely.presentation.common.TimePickerDialog
 import com.gamso.wakely.presentation.sound.SoundPickerDialog
@@ -146,6 +147,9 @@ fun AlarmEditScreen(viewModel: AlarmEditViewModel, state: AlarmEditUiState, onCl
             HorizontalDivider()
             Text(stringResource(R.string.snooze_title), style = MaterialTheme.typography.titleMedium)
             SnoozeChips(alarm.snoozeMinutes, viewModel::setSnoozeMinutes)
+
+            HorizontalDivider()
+            RingStyleSection(alarm.volumeRampSeconds, alarm.vibrate, viewModel::setVolumeRamp, viewModel::setVibrate)
 
             SkipIfAwakeSection(alarm, viewModel)
 

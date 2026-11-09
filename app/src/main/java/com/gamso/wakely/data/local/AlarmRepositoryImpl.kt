@@ -72,7 +72,9 @@ class AlarmRepositoryImpl(context: Context) : AlarmRepository {
                     .put("dayOffTime", a.dayOffTime.toString())
                     .put("sound", a.sound?.toJson())
                     .put("snoozeMinutes", a.snoozeMinutes)
-                    .put("skipIfAwake", a.skipIfAwake.name),
+                    .put("skipIfAwake", a.skipIfAwake.name)
+                    .put("volumeRampSeconds", a.volumeRampSeconds)
+                    .put("vibrate", a.vibrate),
             )
         }
     }
@@ -91,6 +93,8 @@ class AlarmRepositoryImpl(context: Context) : AlarmRepository {
             sound = optJSONObject("sound")?.toAlarmSound(),
             snoozeMinutes = optInt("snoozeMinutes", Alarm.DEFAULT_SNOOZE_MINUTES),
             skipIfAwake = skipIfAwake(),
+            volumeRampSeconds = optInt("volumeRampSeconds", 0),
+            vibrate = optBoolean("vibrate", true),
         )
     }
 
