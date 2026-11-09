@@ -126,6 +126,8 @@ private fun WakelyNavigation() {
                 onToggle = { item, enabled -> listVm.onToggle(item.alarm, enabled) },
                 onToggleEventAlarm = { item, enabled -> listVm.onToggle(item.rule, enabled) },
                 onSkip = listVm::skip,
+                onPause = listVm::pauseUntil,
+                onResume = listVm::resume,
                 onUndoSkip = listVm::undoSkip,
                 onOpenCalendars = { route = Routes.SETTINGS },
                 onRequestCalendarPermission = requestCalendar,

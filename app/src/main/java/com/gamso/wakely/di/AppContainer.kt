@@ -45,6 +45,7 @@ import com.gamso.wakely.domain.usecase.SaveAlarmUseCase
 import com.gamso.wakely.domain.usecase.SaveEventAlarmUseCase
 import com.gamso.wakely.domain.usecase.SetAlarmEnabledUseCase
 import com.gamso.wakely.domain.usecase.SetEventAlarmEnabledUseCase
+import com.gamso.wakely.domain.usecase.SetPauseUseCase
 import com.gamso.wakely.domain.usecase.SkipNextRingUseCase
 import com.gamso.wakely.domain.usecase.SnoozeAlarmUseCase
 import com.gamso.wakely.domain.usecase.UndoSkipUseCase
@@ -108,6 +109,7 @@ class AppContainer(context: Context) {
     val deleteEventAlarm = DeleteEventAlarmUseCase(eventAlarmRepository, alarmScheduler, skippedOccurrences)
     val updateCalendarFilters = UpdateCalendarFiltersUseCase(settingsRepository, rescheduleAlarms)
     val updateSummarySettings = UpdateSummarySettingsUseCase(settingsRepository, rescheduleAlarms)
+    val setPause = SetPauseUseCase(settingsRepository, rescheduleAlarms)
     val updateHolidaySettings = UpdateHolidaySettingsUseCase(settingsRepository, rescheduleAlarms)
     val snoozeAlarm = SnoozeAlarmUseCase(alarmScheduler, timeProvider)
     val getRingInfo = GetRingInfoUseCase(alarmRepository, eventAlarmRepository)
@@ -123,6 +125,7 @@ class AppContainer(context: Context) {
         stepSensor,
         stepBaselines,
         skippedOccurrences,
+        settingsRepository,
     )
     val recordStepBaseline = RecordStepBaselineUseCase(alarmRepository, stepSensor, stepBaselines, timeProvider)
     val getDayPlan = GetDayPlanUseCase(
@@ -133,6 +136,7 @@ class AppContainer(context: Context) {
         computeNextRing,
         timeProvider,
         skippedOccurrences,
+        settingsRepository,
     )
     val skipNextRing = SkipNextRingUseCase(
         alarmRepository,
@@ -143,6 +147,7 @@ class AppContainer(context: Context) {
         skippedOccurrences,
         rescheduleAlarms,
         timeProvider,
+        settingsRepository,
     )
     val undoSkip = UndoSkipUseCase(skippedOccurrences, rescheduleAlarms, timeProvider)
 }

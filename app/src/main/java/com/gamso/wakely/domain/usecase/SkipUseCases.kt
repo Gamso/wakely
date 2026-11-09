@@ -5,6 +5,7 @@ import com.gamso.wakely.domain.model.RingKind
 import com.gamso.wakely.domain.model.SkippedOccurrence
 import com.gamso.wakely.domain.repository.AlarmRepository
 import com.gamso.wakely.domain.repository.EventAlarmRepository
+import com.gamso.wakely.domain.repository.SettingsRepository
 import com.gamso.wakely.domain.repository.SkippedOccurrences
 import com.gamso.wakely.domain.repository.TimeProvider
 import java.time.LocalDateTime
@@ -26,6 +27,7 @@ class SkipNextRingUseCase(
     private val skips: SkippedOccurrences,
     private val reschedule: RescheduleAlarmsUseCase,
     private val time: TimeProvider,
+    private val settingsRepository: SettingsRepository,
 ) {
     /** [at] is the ring to skip (from a notification); by default the next one that would sound. */
     suspend operator fun invoke(key: RingKey, at: LocalDateTime? = null) {
@@ -45,14 +47,16 @@ class SkipNextRingUseCase(
 
     private suspend fun nextRing(key: RingKey, now: LocalDateTime): LocalDateTime? {
         val skipped = skips.get().timesOf(key)
+        // During a pause, the next ring that would sound is the first one after it.
+        val from = Pause.clamp(now, settingsRepository.getPause())
         return when (key.kind) {
             RingKind.ALARM -> alarmRepository.getAlarm(key.id)?.let {
-                computeNextRing(it, now, getDaysOff(now.toLocalDate()), skipped = skipped)?.at
+                computeNextRing(it, from, getDaysOff(now.toLocalDate()), skipped = skipped)?.at
             }
 
             RingKind.EVENT -> eventAlarmRepository.getEventAlarm(key.id)?.let {
                 val data = getRuleEvents(now.toLocalDate(), extraSourceKeys = it.sourceKeys)
-                CalendarLogic.nextEventRing(it, now, data.events, data.eventFilters, skipped)?.at
+                CalendarLogic.nextEventRing(it, from, data.events, data.eventFilters, skipped)?.at
             }
         }
     }

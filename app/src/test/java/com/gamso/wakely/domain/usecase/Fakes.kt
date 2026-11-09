@@ -72,6 +72,15 @@ internal class FakeSettings(initial: List<CalendarFilter> = emptyList()) : Setti
     override fun observeSummarySettings(): Flow<SummarySettings> = summary
     override suspend fun getSummarySettings() = summary.value
     override suspend fun setSummarySettings(settings: SummarySettings) = Unit
+    private val pause = MutableStateFlow<LocalDate?>(null)
+    override fun observePause(): Flow<LocalDate?> = pause
+    override suspend fun getPause() = pause.value
+    override suspend fun setPause(until: LocalDate?) {
+        pause.value = until
+    }
+
+    override fun observePauseButton(): Flow<Boolean> = flowOf(true)
+    override suspend fun setPauseButton(enabled: Boolean) = Unit
     override fun observeSkipButtons(): Flow<Boolean> = flowOf(true)
     override suspend fun getSkipButtons() = true
     override suspend fun setSkipButtons(enabled: Boolean) = Unit
@@ -151,7 +160,7 @@ internal class Graph(alarm: Alarm, now: LocalDateTime, leaveDay: LocalDate? = nu
         CalendarEvent("l", "Congé", "", it.atStartOfDay(), it.plusDays(1).atStartOfDay(), true)
     }
     private val calendar = FakeCalendar(listOfNotNull(leave))
-    private val settings = FakeSettings(listOf(CalendarFilter("l", CalendarCategory.LEAVE)))
+    val settings = FakeSettings(listOf(CalendarFilter("l", CalendarCategory.LEAVE)))
     val getDaysOff =
         GetDaysOffUseCase(calendar, NoPublicHolidays, DayOffSources(settings, NoRegion, NoPublicHolidays))
     private val getRuleEvents = GetRuleEventsUseCase(calendar, settings)
@@ -178,10 +187,13 @@ internal class Graph(alarm: Alarm, now: LocalDateTime, leaveDay: LocalDate? = nu
         sensor,
         store,
         skips,
+        settings,
     )
     val record = RecordStepBaselineUseCase(alarms, sensor, store, time)
-    val skipNext = SkipNextRingUseCase(alarms, NoEvents, getDaysOff, getRuleEvents, compute, skips, reschedule, time)
+    val skipNext =
+        SkipNextRingUseCase(alarms, NoEvents, getDaysOff, getRuleEvents, compute, skips, reschedule, time, settings)
     val undoSkip = UndoSkipUseCase(skips, reschedule, time)
+    val setPause = SetPauseUseCase(settings, reschedule)
 }
 
 internal class FakeSkips : SkippedOccurrences {

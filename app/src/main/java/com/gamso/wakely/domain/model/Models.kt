@@ -195,7 +195,13 @@ data class PlannedRing(
 /** An alarm that will not ring on a day off. */
 data class SkippedRing(val label: String, val time: LocalTime, val reason: String)
 
-data class DayPlan(val date: LocalDate, val rings: List<PlannedRing>, val skipped: List<SkippedRing>)
+/** The rings of a day. [pausedUntil] is set when the alarms are paused on that day. */
+data class DayPlan(
+    val date: LocalDate,
+    val rings: List<PlannedRing>,
+    val skipped: List<SkippedRing>,
+    val pausedUntil: LocalDate? = null,
+)
 
 data class AppInfo(val versionName: String)
 

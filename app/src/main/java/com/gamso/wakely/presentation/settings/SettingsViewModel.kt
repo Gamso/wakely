@@ -41,6 +41,7 @@ data class SettingsUiState(
     val hasPermission: Boolean = true,
     val summary: SummarySettings = SummarySettings(),
     val skipButtons: Boolean = true,
+    val pauseButton: Boolean = true,
     val calendars: List<DeviceCalendar> = emptyList(),
     val byCategory: Map<CalendarCategory, List<AssignedCalendar>> = emptyMap(),
     /** Country whose public holidays apply (chosen, or detected from the device); null = none. */
@@ -88,16 +89,18 @@ class SettingsViewModel(
     val uiState: StateFlow<SettingsUiState> = combine(
         calendars,
         draft,
-        combine(settingsRepository.observeSummarySettings(), settingsRepository.observeSkipButtons()) { summary, skip ->
-            summary to skip
-        },
+        combine(
+            settingsRepository.observeSummarySettings(),
+            settingsRepository.observeSkipButtons(),
+            settingsRepository.observePauseButton(),
+        ) { summary, skip, pause -> Triple(summary, skip, pause) },
         settingsRepository.observeHolidaySettings(),
         upcoming,
-    ) { cals, filters, (summary, skipButtons), holiday, upcomingHolidays ->
+    ) { cals, filters, (summary, skipButtons, pauseButton), holiday, upcomingHolidays ->
         if (cals == null ||
             filters == null
         ) {
-            return@combine SettingsUiState(summary = summary, skipButtons = skipButtons)
+            return@combine SettingsUiState(summary = summary, skipButtons = skipButtons, pauseButton = pauseButton)
         }
         val byKey = cals.associateBy { it.key }
         val supported = holidayRepository.countries()
@@ -109,6 +112,7 @@ class SettingsViewModel(
             hasPermission = calendarRepository.hasPermission(),
             summary = summary,
             skipButtons = skipButtons,
+            pauseButton = pauseButton,
             calendars = cals,
             byCategory = CalendarCategory.entries.associateWith { category ->
                 filters.filter { it.category == category }
@@ -129,6 +133,10 @@ class SettingsViewModel(
             draft.value = settingsRepository.getCalendarFilters()
             calendars.value = calendarRepository.getCalendars()
         }
+    }
+
+    fun setPauseButton(enabled: Boolean) {
+        applicationScope.launch { settingsRepository.setPauseButton(enabled) }
     }
 
     fun setSkipButtons(enabled: Boolean) {

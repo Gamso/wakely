@@ -40,6 +40,13 @@
     <string name="skip_tag">Ignorée : %1$s</string>
     <string name="skip_undo">Annuler</string>
     <string name="skip_notif_action">Sauter %1$s</string>
+    <string name="pause_button_title">Bouton « Pause »</string>
+    <string name="pause_button_description">Affiche « Mettre les alarmes en pause » en haut de la liste, pour couper toutes les alarmes jusqu\'à une date. Une pause déjà en cours peut toujours être terminée.</string>
+    <string name="pause_button">Mettre les alarmes en pause</string>
+    <string name="pause_pick_title">Dernier jour sans alarme</string>
+    <string name="pause_banner">Alarmes en pause jusqu\'au %1$s</string>
+    <string name="pause_resume">Reprendre maintenant</string>
+    <string name="summary_paused">Alarmes en pause jusqu\'au %1$s</string>
     <string name="no_next_ring">Aucune sonnerie prévue</string>
     <string name="day_off_default">Jour non travaillé</string>
     <string name="minutes_before">%1$s avant</string>

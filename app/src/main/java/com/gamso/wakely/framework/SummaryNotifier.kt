@@ -38,9 +38,17 @@ object SummaryNotifier {
         val title = context.getString(R.string.summary_notif_title, plan.date.format(dateFormat))
         val firstTime = plan.rings.firstOrNull()?.at?.format(timeFormat).orEmpty()
         val summary = when {
+            plan.pausedUntil != null -> context.getString(
+                R.string.summary_paused,
+                plan.pausedUntil.format(DatePatterns.formatter("EEEdMMM", "EEE d MMM")),
+            )
+
             plan.rings.isEmpty() && plan.skipped.isEmpty() -> context.getString(R.string.summary_none)
+
             plan.rings.isEmpty() -> context.getString(R.string.summary_none_ring)
+
             plan.rings.size == 1 -> context.getString(R.string.summary_one, firstTime)
+
             else -> context.getString(R.string.summary_many, plan.rings.size, firstTime)
         }
         val open = PendingIntent.getActivity(

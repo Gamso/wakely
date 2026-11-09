@@ -23,12 +23,15 @@ import com.gamso.wakely.domain.usecase.CalendarLogic
 import com.gamso.wakely.domain.usecase.ComputeNextRingUseCase
 import com.gamso.wakely.domain.usecase.GetDaysOffUseCase
 import com.gamso.wakely.domain.usecase.GetRuleEventsUseCase
+import com.gamso.wakely.domain.usecase.Pause
 import com.gamso.wakely.domain.usecase.RescheduleAlarmsUseCase
 import com.gamso.wakely.domain.usecase.SetAlarmEnabledUseCase
 import com.gamso.wakely.domain.usecase.SetEventAlarmEnabledUseCase
+import com.gamso.wakely.domain.usecase.SetPauseUseCase
 import com.gamso.wakely.domain.usecase.SkipNextRingUseCase
 import com.gamso.wakely.domain.usecase.UndoSkipUseCase
 import com.gamso.wakely.domain.usecase.timesOf
+import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,6 +70,10 @@ data class AlarmListUiState(
     val hasCalendarSelected: Boolean = true,
     /** The "Skip" buttons are on (Settings). A skip already made can always be undone. */
     val showSkipButtons: Boolean = true,
+    /** The "Pause alarms" button is on (Settings). A pause already running can always be ended. */
+    val showPauseButton: Boolean = true,
+    /** Last day of the pause of every alarm, while it runs. */
+    val pausedUntil: LocalDate? = null,
     val canScheduleExactAlarms: Boolean = true,
     val loading: Boolean = true,
 )
@@ -75,7 +82,14 @@ data class AlarmListUiState(
 fun AppContainer.alarmListViewModel() = AlarmListViewModel(
     alarmRepository, eventAlarmRepository, settingsRepository, calendarRepository, alarmScheduler, getDaysOff,
     getRuleEvents, computeNextRing, setAlarmEnabled, setEventAlarmEnabled, rescheduleAlarms, timeProvider,
-    skippedOccurrences, skipNextRing, undoSkip,
+    skippedOccurrences, skipNextRing, undoSkip, setPause,
+)
+
+private data class Extras(
+    val skipped: Set<SkippedOccurrence>,
+    val skipButtons: Boolean,
+    val pause: LocalDate?,
+    val pauseButton: Boolean,
 )
 
 private data class Listing(
@@ -84,6 +98,8 @@ private data class Listing(
     val filters: List<CalendarFilter>,
     val skipped: Set<SkippedOccurrence>,
     val skipButtons: Boolean,
+    val pause: LocalDate?,
+    val pauseButton: Boolean,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -103,6 +119,7 @@ class AlarmListViewModel(
     skippedOccurrences: SkippedOccurrences,
     private val skipNextRing: SkipNextRingUseCase,
     private val undoSkip: UndoSkipUseCase,
+    private val setPause: SetPauseUseCase,
 ) : ViewModel() {
 
     private val refreshTrigger = MutableStateFlow(0)
@@ -114,18 +131,22 @@ class AlarmListViewModel(
         // Changing the country or the holidays the user works on changes the next rings.
         settingsRepository.observeHolidaySettings(),
         // A skipped ring changes the next ones, like a refresh does.
-        combine(refreshTrigger, skippedOccurrences.observe(), settingsRepository.observeSkipButtons()) {
-                _,
-                skipped,
-                buttons,
-            ->
-            skipped to buttons
-        },
-    ) { alarms, rules, filters, _, (skipped, buttons) -> Listing(alarms, rules, filters, skipped, buttons) }
+        combine(
+            refreshTrigger,
+            skippedOccurrences.observe(),
+            settingsRepository.observeSkipButtons(),
+            settingsRepository.observePause(),
+            settingsRepository.observePauseButton(),
+        ) { _, skipped, buttons, pause, pauseButton -> Extras(skipped, buttons, pause, pauseButton) },
+    ) { alarms, rules, filters, _, extras ->
+        Listing(alarms, rules, filters, extras.skipped, extras.skipButtons, extras.pause, extras.pauseButton)
+    }
         .mapLatest { listing ->
             val (alarms, rules, filters) = listing
             val skipped = listing.skipped
             val now = time.now()
+            val pausedUntil = Pause.active(listing.pause, now.toLocalDate())
+            val from = Pause.clamp(now, pausedUntil)
             fun skippedAt(key: RingKey) = skipped.filter { it.key == key && it.at.isAfter(now) }.minOfOrNull { it.at }
             val daysOff = getDaysOff(now.toLocalDate(), filters = filters)
             val ruleData = getRuleEvents(now.toLocalDate(), extraSourceKeys = rules.flatMap { it.sourceKeys }.toSet())
@@ -135,7 +156,7 @@ class AlarmListViewModel(
                 items = alarms.map { alarm ->
                     val key = RingKey(RingKind.ALARM, alarm.id)
                     val next = if (alarm.enabled) {
-                        computeNextRing(alarm, now, daysOff, skipped = skipped.timesOf(key))
+                        computeNextRing(alarm, from, daysOff, skipped = skipped.timesOf(key))
                     } else {
                         null
                     }
@@ -148,7 +169,7 @@ class AlarmListViewModel(
                         next = if (rule.enabled) {
                             CalendarLogic.nextEventRing(
                                 rule,
-                                now,
+                                from,
                                 ruleData.events,
                                 ruleData.eventFilters,
                                 skipped.timesOf(key),
@@ -164,6 +185,8 @@ class AlarmListViewModel(
                 hasCalendarPermission = calendarRepository.hasPermission(),
                 hasCalendarSelected = filters.any { it.category.isDayOff },
                 showSkipButtons = listing.skipButtons,
+                pausedUntil = pausedUntil,
+                showPauseButton = listing.pauseButton,
                 canScheduleExactAlarms = scheduler.canScheduleExactAlarms(),
                 loading = false,
             )
@@ -177,6 +200,15 @@ class AlarmListViewModel(
 
     fun undoSkip(key: RingKey) {
         viewModelScope.launch { undoSkip.invoke(key) }
+    }
+
+    /** Pauses every alarm up to [until] (inclusive). */
+    fun pauseUntil(until: LocalDate) {
+        viewModelScope.launch { setPause(until) }
+    }
+
+    fun resume() {
+        viewModelScope.launch { setPause(null) }
     }
 
     fun onToggle(alarm: Alarm, enabled: Boolean) {
