@@ -167,6 +167,7 @@ private fun WakelyNavigation() {
                         it.updateCalendarFilters,
                         it.updateSummarySettings,
                         it.getUpcomingHolidays,
+                        it.getLeavePreview,
                         it.updateHolidaySettings,
                         it.deviceRegion,
                         it.applicationScope,

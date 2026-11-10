@@ -144,6 +144,17 @@
     <string name="cat_events_desc">Calendars used by “alarm before an event” rules.</string>
     <string name="cat_events_hint">e.g. meeting, client</string>
     <string name="calendars_none">No calendar</string>
+    <string name="leave_preview_title">Detected days off</string>
+    <string name="leave_preview_empty">No event found in the next 12 months.</string>
+    <string name="leave_preview_more">+%1$d more</string>
+    <string name="leave_preview_hint">Every all-day event of this calendar counts. Add keywords to keep only some.</string>
+    <string name="leave_range">%1$s to %2$s</string>
+    <string name="leave_counted">counts</string>
+    <string name="leave_ignored">ignored</string>
+    <plurals name="leave_preview_days">
+        <item quantity="one">%1$d day detected</item>
+        <item quantity="other">%1$d days detected</item>
+    </plurals>
     <plurals name="calendars_count">
         <item quantity="one">%d calendar</item>
         <item quantity="other">%d calendars</item>

@@ -34,6 +34,7 @@ import com.gamso.wakely.domain.usecase.DeleteAlarmUseCase
 import com.gamso.wakely.domain.usecase.DeleteEventAlarmUseCase
 import com.gamso.wakely.domain.usecase.GetDayPlanUseCase
 import com.gamso.wakely.domain.usecase.GetDaysOffUseCase
+import com.gamso.wakely.domain.usecase.GetLeavePreviewUseCase
 import com.gamso.wakely.domain.usecase.GetRingInfoUseCase
 import com.gamso.wakely.domain.usecase.GetRuleEventsUseCase
 import com.gamso.wakely.domain.usecase.GetUpcomingHolidaysUseCase
@@ -88,6 +89,7 @@ class AppContainer(context: Context) {
     val computeNextRing = ComputeNextRingUseCase()
     val dayOffSources = DayOffSources(settingsRepository, deviceRegion, holidayRepository)
     val getDaysOff = GetDaysOffUseCase(calendarRepository, holidayRepository, dayOffSources)
+    val getLeavePreview = GetLeavePreviewUseCase(calendarRepository)
     val getUpcomingHolidays = GetUpcomingHolidaysUseCase(holidayRepository, dayOffSources)
     val getRuleEvents = GetRuleEventsUseCase(calendarRepository, settingsRepository)
     val rescheduleAlarms = RescheduleAlarmsUseCase(

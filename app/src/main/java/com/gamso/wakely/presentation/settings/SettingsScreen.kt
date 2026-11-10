@@ -46,12 +46,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.gamso.wakely.R
 import com.gamso.wakely.domain.holiday.HolidayRegion
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.DeviceCalendar
 import com.gamso.wakely.domain.model.HolidayItem
+import com.gamso.wakely.domain.usecase.LeaveItem
+import com.gamso.wakely.domain.usecase.LeavePreview
 import com.gamso.wakely.presentation.common.BackButton
 import com.gamso.wakely.presentation.common.ColorDot
 import com.gamso.wakely.presentation.common.Format
@@ -60,6 +63,8 @@ import com.gamso.wakely.presentation.common.dayOffReasonText
 import java.util.Locale
 
 private const val CHEVRON_OPEN_DEGREES = 180f
+private const val MAX_COUNTED_SHOWN = 8
+private const val MAX_IGNORED_SHOWN = 3
 
 private data class CategoryText(
     @StringRes val title: Int,
@@ -187,6 +192,11 @@ fun SettingsScreen(
                         onAdd = { addTo = category },
                         onRemove = { viewModel.removeCalendar(it, category) },
                         onKeywords = { cal, kw -> viewModel.setKeywords(cal, category, kw) },
+                        extra = if (category == CalendarCategory.LEAVE) {
+                            { LeavePreviewSection(state.leavePreview, state.byCategory[category].orEmpty()) }
+                        } else {
+                            null
+                        },
                     )
                 }
             }
@@ -242,6 +252,74 @@ fun SettingsScreen(
     }
 }
 
+/** What the leave calendars give as days off, with their keywords, so a mixed calendar can be tuned by eye. */
+@Composable
+private fun LeavePreviewSection(preview: LeavePreview?, assigned: List<AssignedCalendar>) {
+    if (assigned.isEmpty()) return
+    HorizontalDivider(Modifier.padding(vertical = 4.dp))
+    Text(stringResource(R.string.leave_preview_title), style = MaterialTheme.typography.titleSmall)
+    when {
+        preview == null -> Text(stringResource(R.string.loading))
+
+        preview.counted.isEmpty() && preview.ignored.isEmpty() -> Text(
+            stringResource(R.string.leave_preview_empty),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        else -> {
+            Text(
+                pluralStringResource(R.plurals.leave_preview_days, preview.days, preview.days),
+                style = MaterialTheme.typography.bodySmall,
+            )
+            preview.counted.take(MAX_COUNTED_SHOWN).forEach { LeaveRow(it, counted = true) }
+            preview.ignored.take(MAX_IGNORED_SHOWN).forEach { LeaveRow(it, counted = false) }
+            val hidden = preview.counted.size - MAX_COUNTED_SHOWN.coerceAtMost(preview.counted.size) +
+                preview.ignored.size - MAX_IGNORED_SHOWN.coerceAtMost(preview.ignored.size)
+            if (hidden > 0) {
+                Text(
+                    stringResource(R.string.leave_preview_more, hidden),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (preview.counted.isNotEmpty() && assigned.any { it.keywords.isBlank() }) {
+                Text(
+                    stringResource(R.string.leave_preview_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LeaveRow(item: LeaveItem, counted: Boolean) {
+    val dates = if (item.last == item.first) {
+        Format.dayDate(item.first)
+    } else {
+        stringResource(R.string.leave_range, Format.dayDate(item.first), Format.dayDate(item.last))
+    }
+    val color = if (counted) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(1f)) {
+            Text(
+                dayOffReasonText(item.title),
+                style = MaterialTheme.typography.bodyMedium,
+                color = color,
+                textDecoration = if (counted) null else TextDecoration.LineThrough,
+            )
+            Text(dates, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Text(
+            stringResource(if (counted) R.string.leave_counted else R.string.leave_ignored),
+            style = MaterialTheme.typography.labelSmall,
+            color = if (counted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
 /** A card with a title, a description and one switch. */
 @Composable
 private fun SwitchCard(title: String, description: String, checked: Boolean, onChange: (Boolean) -> Unit) {
@@ -263,6 +341,8 @@ private fun CategoryCard(
     onAdd: () -> Unit,
     onRemove: (DeviceCalendar) -> Unit,
     onKeywords: (DeviceCalendar, String) -> Unit,
+    /** Extra content shown after the "add a calendar" button. */
+    extra: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
     val text = CATEGORY_TEXTS.getValue(category)
     val calendarsText = if (assigned.isEmpty()) {
@@ -294,6 +374,7 @@ private fun CategoryCard(
             )
         }
         OutlinedButton(onClick = onAdd) { Text(stringResource(R.string.add_calendar)) }
+        extra?.invoke(this)
     }
 }
 
