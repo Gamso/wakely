@@ -430,13 +430,37 @@ private fun LeavePreviewSection(preview: LeavePreview?, assigned: List<AssignedC
     }
 }
 
+/** "Mon 23 Nov to Fri 27 Nov", or with the hours for a part of a day: "Mon 23 Nov, 07:00 to 12:00". */
+@Composable
+private fun leaveDates(item: LeaveItem): String {
+    val from = item.from
+    val to = item.to
+    val sameDay = item.last == item.first
+    return when {
+        from == null || to == null -> if (sameDay) {
+            Format.dayDate(item.first)
+        } else {
+            stringResource(R.string.leave_range, Format.dayDate(item.first), Format.dayDate(item.last))
+        }
+
+        sameDay -> stringResource(
+            R.string.leave_day_hours,
+            Format.dayDate(item.first),
+            Format.time(from),
+            Format.time(to),
+        )
+
+        else -> stringResource(
+            R.string.leave_range,
+            stringResource(R.string.leave_day_time, Format.dayDate(item.first), Format.time(from)),
+            stringResource(R.string.leave_day_time, Format.dayDate(item.last), Format.time(to)),
+        )
+    }
+}
+
 @Composable
 private fun LeaveRow(item: LeaveItem, counted: Boolean) {
-    val dates = if (item.last == item.first) {
-        Format.dayDate(item.first)
-    } else {
-        stringResource(R.string.leave_range, Format.dayDate(item.first), Format.dayDate(item.last))
-    }
+    val dates = leaveDates(item)
     val color = if (counted) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(1f)) {

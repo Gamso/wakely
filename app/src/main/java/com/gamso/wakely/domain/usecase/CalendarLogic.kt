@@ -5,10 +5,12 @@ import com.gamso.wakely.domain.model.CalendarFilter
 import com.gamso.wakely.domain.model.DayOff
 import com.gamso.wakely.domain.model.EventAlarm
 import com.gamso.wakely.domain.model.EventRing
+import com.gamso.wakely.domain.model.TimeRange
 import com.gamso.wakely.domain.model.parseKeywords
 import java.text.Normalizer
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 /** Pure calendar helpers shared by the use cases. */
 object CalendarLogic {
@@ -45,11 +47,34 @@ object CalendarLogic {
     }
 
     /**
-     * The days an event gives as days off: none unless one of the [filters] of its calendar accepts it (keywords),
-     * then every day it covers. The real days off and the preview in Settings both use this rule.
+     * The days off an event gives, whole or partial. The real days off and the preview in Settings both use this rule.
+     *  - An event accepted by the keywords gives every day it covers entirely (all-day events, or a leave entered from
+     *    midnight to midnight).
+     *  - A timed event that covers only part of a day gives a partial day off (a morning off, 07:00 to 12:00), but only
+     *    when a calendar keyword is set and matches: without keywords, a meeting would cancel alarms.
      */
-    fun countedDays(event: CalendarEvent, filters: List<CalendarFilter>): List<LocalDate> =
-        if (filters.any { matches(event, it.keywordList()) }) coveredDates(event) else emptyList()
+    fun dayOffsOf(event: CalendarEvent, filters: List<CalendarFilter>): List<DayOff> {
+        if (filters.none { matches(event, it.keywordList()) }) return emptyList()
+        val whole = coveredDates(event)
+        val result = whole.map { DayOff(it, event.title) }.toMutableList()
+        val explicit = filters.any { it.keywordList().isNotEmpty() && matches(event, it.keywordList()) }
+        if (!event.allDay && explicit) {
+            val lastDate = event.end.minusNanos(1).toLocalDate()
+            generateSequence(event.start.toLocalDate()) { it.plusDays(1) }
+                .takeWhile { it <= lastDate }
+                .filter { it !in whole }
+                .forEach { date ->
+                    val start = if (date == event.start.toLocalDate()) event.start.toLocalTime() else LocalTime.MIN
+                    val end = if (date == lastDate && event.end.toLocalTime() != LocalTime.MIN) {
+                        event.end.toLocalTime()
+                    } else {
+                        LocalTime.MAX
+                    }
+                    if (start < end) result += DayOff(date, event.title, listOf(TimeRange(start, end)))
+                }
+        }
+        return result
+    }
 
     /** Days off from events of the day-off calendars ([filters] of the leave category). */
     fun daysOff(
@@ -62,11 +87,19 @@ object CalendarLogic {
         val result = sortedMapOf<LocalDate, DayOff>()
         for (event in events.sortedBy { it.start }) {
             // The title may be blank: the UI shows a localized default.
-            countedDays(event, bySource[event.sourceKey].orEmpty()).filter { it in from..to }.forEach { date ->
-                result.putIfAbsent(date, DayOff(date, event.title))
+            dayOffsOf(event, bySource[event.sourceKey].orEmpty()).filter { it.date in from..to }.forEach { off ->
+                result[off.date] = merge(result[off.date], off)
             }
         }
         return result
+    }
+
+    /** A whole day wins over partial ones, partial ranges add up, and the first event gives the reason. */
+    private fun merge(existing: DayOff?, added: DayOff): DayOff = when {
+        existing == null -> added
+        existing.ranges.isEmpty() -> existing
+        added.ranges.isEmpty() -> added
+        else -> existing.copy(ranges = existing.ranges + added.ranges)
     }
 
     /** Calendars an event rule watches: its own selection, or every "events" calendar. */

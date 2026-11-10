@@ -148,7 +148,17 @@ data class CalendarEvent(
     val allDay: Boolean,
 )
 
-data class DayOff(val date: LocalDate, val reason: String)
+/** A part of a day, from [start] (included) to [end] (excluded). */
+data class TimeRange(val start: LocalTime, val end: LocalTime)
+
+/**
+ * A day off. Without [ranges] it is the whole day. With ranges (a leave entered with a time, such as a morning off) it
+ * only concerns the alarms whose normal ring time falls inside one of them, see [covers].
+ */
+data class DayOff(val date: LocalDate, val reason: String, val ranges: List<TimeRange> = emptyList()) {
+    /** True when an alarm that would normally ring at [time] is off: all day, or [time] is inside a range. */
+    fun covers(time: LocalTime): Boolean = ranges.isEmpty() || ranges.any { time >= it.start && time < it.end }
+}
 
 data class NextRing(
     val alarmId: Long,

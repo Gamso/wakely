@@ -33,7 +33,7 @@ object AwakeCheck {
         when (alarm.skipIfAwake) {
             SkipIfAwake.OFF -> false
             SkipIfAwake.ALWAYS -> true
-            SkipIfAwake.DAYS_OFF_ONLY -> ringDate in daysOff
+            SkipIfAwake.DAYS_OFF_ONLY -> daysOff[ringDate]?.covers(alarm.time) == true
         }
 
     fun shouldSkip(baseline: StepBaseline?, current: Long?, ringAt: LocalDateTime): Boolean {

@@ -3,16 +3,24 @@ package com.gamso.wakely.domain.usecase
 import com.gamso.wakely.domain.model.CalendarFilter
 import com.gamso.wakely.domain.repository.CalendarRepository
 import java.time.LocalDate
+import java.time.LocalTime
 
 /** An event of a leave calendar, from [first] to [last] (inclusive), and whether it gives days off. */
-data class LeaveItem(val title: String, val first: LocalDate, val last: LocalDate)
+data class LeaveItem(
+    val title: String,
+    val first: LocalDate,
+    val last: LocalDate,
+    /** Start time on the first day and end time on the last, for an event that does not cover whole days. */
+    val from: LocalTime? = null,
+    val to: LocalTime? = null,
+)
 
 /** What the leave calendars give: the events that count, the ones the keywords left out, and the days counted. */
 data class LeavePreview(val counted: List<LeaveItem>, val ignored: List<LeaveItem>, val days: Int)
 
 /**
  * Shows, for the leave calendars and their keywords as typed, which events become days off, so a mixed calendar
- * can be tuned by eye. It applies the same rule as the real days off ([CalendarLogic.countedDays]).
+ * can be tuned by eye. It applies the same rule as the real days off ([CalendarLogic.dayOffsOf]).
  */
 class GetLeavePreviewUseCase(private val calendarRepository: CalendarRepository) {
 
@@ -32,12 +40,21 @@ class GetLeavePreviewUseCase(private val calendarRepository: CalendarRepository)
         val ignored = mutableListOf<LeaveItem>()
         val countedDays = sortedSetOf<LocalDate>()
         for (event in events.sortedBy { it.start }) {
-            val covered = CalendarLogic.countedDays(event, bySource[event.sourceKey].orEmpty()).filter {
-                it in from..to
+            val covered = CalendarLogic.dayOffsOf(event, bySource[event.sourceKey].orEmpty()).filter {
+                it.date in from..to
             }
             if (covered.isNotEmpty()) {
-                counted += LeaveItem(event.title, covered.min(), covered.max())
-                countedDays += covered
+                val dates = covered.map { it.date }
+                // A timed event that does not cover whole days keeps its hours, so a morning off reads as such.
+                val partial = covered.any { it.ranges.isNotEmpty() }
+                counted += LeaveItem(
+                    event.title,
+                    dates.min(),
+                    dates.max(),
+                    from = event.start.toLocalTime().takeIf { partial },
+                    to = event.end.toLocalTime().takeIf { partial },
+                )
+                countedDays += dates
             } else {
                 val last = if (event.allDay) event.end.toLocalDate().minusDays(1) else event.end.toLocalDate()
                 val first = event.start.toLocalDate()

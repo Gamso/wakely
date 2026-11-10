@@ -366,7 +366,7 @@ class GetDayPlanUseCase(
             if (next != null && next.at.toLocalDate() == date) {
                 rings += PlannedRing(next.at, alarm.label, dayOffReason = next.dayOffReason, key = key)
             } else {
-                val off = daysOff[date]
+                val off = daysOff[date]?.takeIf { it.covers(alarm.time) }
                 val normallyRings = !alarm.isRepeating || date.dayOfWeek in alarm.days
                 if (off != null && normallyRings && alarm.dayOffMode == DayOffMode.SKIP) {
                     skipped += SkippedRing(alarm.label, alarm.time, off.reason)
