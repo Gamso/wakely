@@ -44,6 +44,13 @@ object CalendarLogic {
             .toList()
     }
 
+    /**
+     * The days an event gives as days off: none unless one of the [filters] of its calendar accepts it (keywords),
+     * then every day it covers. The real days off and the preview in Settings both use this rule.
+     */
+    fun countedDays(event: CalendarEvent, filters: List<CalendarFilter>): List<LocalDate> =
+        if (filters.any { matches(event, it.keywordList()) }) coveredDates(event) else emptyList()
+
     /** Days off from events of the day-off calendars ([filters] of the leave category). */
     fun daysOff(
         events: List<CalendarEvent>,
@@ -54,12 +61,9 @@ object CalendarLogic {
         val bySource = filters.filter { it.category.isDayOff }.groupBy { it.sourceKey }
         val result = sortedMapOf<LocalDate, DayOff>()
         for (event in events.sortedBy { it.start }) {
-            for (filter in bySource[event.sourceKey].orEmpty()) {
-                if (!matches(event, filter.keywordList())) continue
-                // The title may be blank: the UI shows a localized default.
-                coveredDates(event).filter { it in from..to }.forEach { date ->
-                    result.putIfAbsent(date, DayOff(date, event.title))
-                }
+            // The title may be blank: the UI shows a localized default.
+            countedDays(event, bySource[event.sourceKey].orEmpty()).filter { it in from..to }.forEach { date ->
+                result.putIfAbsent(date, DayOff(date, event.title))
             }
         }
         return result

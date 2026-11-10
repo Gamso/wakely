@@ -14,19 +14,23 @@ import com.gamso.wakely.domain.repository.CalendarRepository
 import com.gamso.wakely.domain.repository.DeviceRegion
 import com.gamso.wakely.domain.repository.HolidayRepository
 import com.gamso.wakely.domain.repository.SettingsRepository
+import com.gamso.wakely.domain.usecase.GetLeavePreviewUseCase
 import com.gamso.wakely.domain.usecase.GetUpcomingHolidaysUseCase
+import com.gamso.wakely.domain.usecase.LeavePreview
 import com.gamso.wakely.domain.usecase.UpdateCalendarFiltersUseCase
 import com.gamso.wakely.domain.usecase.UpdateHolidaySettingsUseCase
 import com.gamso.wakely.domain.usecase.UpdateSummarySettingsUseCase
 import java.time.LocalDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onStart
@@ -41,6 +45,8 @@ data class SettingsUiState(
     val hasPermission: Boolean = true,
     val summary: SummarySettings = SummarySettings(),
     val skipButtons: Boolean = true,
+    /** The days off the leave calendars give with their keywords; null while loading. */
+    val leavePreview: LeavePreview? = null,
     val pauseButton: Boolean = true,
     val calendars: List<DeviceCalendar> = emptyList(),
     val byCategory: Map<CalendarCategory, List<AssignedCalendar>> = emptyMap(),
@@ -65,7 +71,7 @@ data class SettingsUiState(
     }
 }
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class SettingsViewModel(
     private val calendarRepository: CalendarRepository,
     private val holidayRepository: HolidayRepository,
@@ -73,6 +79,7 @@ class SettingsViewModel(
     private val updateCalendarFilters: UpdateCalendarFiltersUseCase,
     private val updateSummarySettings: UpdateSummarySettingsUseCase,
     private val getUpcomingHolidays: GetUpcomingHolidaysUseCase,
+    private val getLeavePreview: GetLeavePreviewUseCase,
     private val updateHolidaySettings: UpdateHolidaySettingsUseCase,
     private val deviceRegion: DeviceRegion,
     private val applicationScope: CoroutineScope,
@@ -86,6 +93,12 @@ class SettingsViewModel(
         .mapLatest<HolidaySettings, List<HolidayItem>?> { getUpcomingHolidays(LocalDate.now()) }
         .onStart { emit(null) }
 
+    // The preview follows the keywords as they are typed, before they are saved.
+    private val leavePreview = draft.filterNotNull()
+        .debounce(PREVIEW_DEBOUNCE_MS)
+        .mapLatest<List<CalendarFilter>, LeavePreview?> { getLeavePreview(it, LocalDate.now()) }
+        .onStart { emit(null) }
+
     val uiState: StateFlow<SettingsUiState> = combine(
         calendars,
         draft,
@@ -95,8 +108,8 @@ class SettingsViewModel(
             settingsRepository.observePauseButton(),
         ) { summary, skip, pause -> Triple(summary, skip, pause) },
         settingsRepository.observeHolidaySettings(),
-        upcoming,
-    ) { cals, filters, (summary, skipButtons, pauseButton), holiday, upcomingHolidays ->
+        combine(upcoming, leavePreview) { holidays, leave -> holidays to leave },
+    ) { cals, filters, (summary, skipButtons, pauseButton), holiday, (upcomingHolidays, leave) ->
         if (cals == null ||
             filters == null
         ) {
@@ -125,6 +138,7 @@ class SettingsViewModel(
             holidayDetectedCountry = candidates.map { it.uppercase() }.firstOrNull { it in supported },
             supportedCountries = supported,
             upcomingHolidays = upcomingHolidays,
+            leavePreview = leave,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsUiState())
 
@@ -205,6 +219,10 @@ class SettingsViewModel(
                 it
             }
         }
+    }
+
+    private companion object {
+        const val PREVIEW_DEBOUNCE_MS = 300L
     }
 
     private fun editFilters(block: (List<CalendarFilter>) -> List<CalendarFilter>) {
