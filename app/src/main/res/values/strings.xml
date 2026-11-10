@@ -123,7 +123,7 @@
     <string name="which_events">Which events?</string>
     <string name="specific_event">Specific event</string>
     <string name="calendars">Calendars</string>
-    <string name="calendars_hint">None checked = calendars of the “Events” category (%1$s).</string>
+    <string name="calendars_hint">None checked = every calendar used for events (%1$s).</string>
     <string name="none_lower">none</string>
     <string name="keywords_optional">Keywords (optional)</string>
     <string name="keywords_help">Separated by commas. Empty = all events.</string>
@@ -146,6 +146,24 @@
     <string name="cat_leave_title">Leave and vacations</string>
     <string name="cat_leave_desc">Your leave, vacations, time off…: days off.</string>
     <string name="cat_leave_hint">e.g. leave, vacation, time off</string>
+    <string name="calendars_pick_description">Choose the calendars Wakely uses, and what each one is used for. Touch a calendar to set its keywords.</string>
+    <string name="calendars_none_used">No calendar used yet. Add one so your alarms adapt to your leave and your events.</string>
+    <string name="add_calendar_title">Add a calendar</string>
+    <string name="add_account">Add an account</string>
+    <string name="calendar_missing_help">Your calendar is not listed? Add its account in Android and turn on calendar sync.</string>
+    <string name="calendar_remove">Remove this calendar</string>
+    <string name="calendar_remove_title">Remove this calendar?</string>
+    <string name="calendar_unused_warning">No alarm uses this calendar. Choose what it is used for, or remove it.</string>
+    <string name="calendars_summary_none">No calendar used</string>
+    <string name="calendars_summary_leave">Leave: %1$d</string>
+    <string name="calendars_summary_events">Events: %1$d</string>
+    <string name="use_leave">Leave</string>
+    <string name="use_events">Events</string>
+    <string name="use_none">Not used</string>
+    <string name="calendar_not_found">Calendar not found.</string>
+    <string name="calendar_unused_by">No alarm uses it yet.</string>
+    <string name="calendar_stop_events_title">Stop using it for events?</string>
+    <string name="calendars_pool_empty">No calendar is used for events. Choose some in Settings, Calendars.</string>
     <string name="cat_events_title">Events</string>
     <string name="cat_events_desc">Calendars used by “alarm before an event” rules.</string>
     <string name="cat_events_hint">e.g. meeting, client</string>
@@ -162,6 +180,14 @@
     <plurals name="leave_preview_days">
         <item quantity="one">%1$d day detected</item>
         <item quantity="other">%1$d days detected</item>
+    </plurals>
+    <plurals name="calendar_used_by">
+        <item quantity="one">Used by %1$d alarm</item>
+        <item quantity="other">Used by %1$d alarms</item>
+    </plurals>
+    <plurals name="calendar_stop_events_body">
+        <item quantity="one">%1$d alarm uses it. It will stop watching this calendar.</item>
+        <item quantity="other">%1$d alarms use it. They will stop watching this calendar.</item>
     </plurals>
     <plurals name="calendars_count">
         <item quantity="one">%d calendar</item>

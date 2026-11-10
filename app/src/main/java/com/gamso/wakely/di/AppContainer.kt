@@ -32,6 +32,7 @@ import com.gamso.wakely.domain.usecase.ComputeNextRingUseCase
 import com.gamso.wakely.domain.usecase.DayOffSources
 import com.gamso.wakely.domain.usecase.DeleteAlarmUseCase
 import com.gamso.wakely.domain.usecase.DeleteEventAlarmUseCase
+import com.gamso.wakely.domain.usecase.ForgetEventCalendarUseCase
 import com.gamso.wakely.domain.usecase.GetDayPlanUseCase
 import com.gamso.wakely.domain.usecase.GetDaysOffUseCase
 import com.gamso.wakely.domain.usecase.GetLeavePreviewUseCase
@@ -40,6 +41,7 @@ import com.gamso.wakely.domain.usecase.GetRuleEventsUseCase
 import com.gamso.wakely.domain.usecase.GetUpcomingHolidaysUseCase
 import com.gamso.wakely.domain.usecase.HandleRingFiredUseCase
 import com.gamso.wakely.domain.usecase.HandleSnoozeFiredUseCase
+import com.gamso.wakely.domain.usecase.MigrateEventCalendarsUseCase
 import com.gamso.wakely.domain.usecase.RecordStepBaselineUseCase
 import com.gamso.wakely.domain.usecase.RescheduleAlarmsUseCase
 import com.gamso.wakely.domain.usecase.SaveAlarmUseCase
@@ -89,6 +91,8 @@ class AppContainer(context: Context) {
     val computeNextRing = ComputeNextRingUseCase()
     val dayOffSources = DayOffSources(settingsRepository, deviceRegion, holidayRepository)
     val getDaysOff = GetDaysOffUseCase(calendarRepository, holidayRepository, dayOffSources)
+    val forgetEventCalendar = ForgetEventCalendarUseCase(eventAlarmRepository)
+    val migrateEventCalendars = MigrateEventCalendarsUseCase(settingsRepository, eventAlarmRepository)
     val getLeavePreview = GetLeavePreviewUseCase(calendarRepository)
     val getUpcomingHolidays = GetUpcomingHolidaysUseCase(holidayRepository, dayOffSources)
     val getRuleEvents = GetRuleEventsUseCase(calendarRepository, settingsRepository)

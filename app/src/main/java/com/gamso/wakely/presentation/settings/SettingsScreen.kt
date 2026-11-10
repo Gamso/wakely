@@ -96,22 +96,35 @@ private val CATEGORY_TEXTS = mapOf(
 @Composable
 fun SettingsScreen(
     page: SettingsPage,
+    calendarKey: String?,
     state: SettingsUiState,
     viewModel: SettingsViewModel,
     onBack: () -> Unit,
     onOpenPage: (SettingsPage) -> Unit,
+    onOpenCalendar: (String) -> Unit,
     onRequestPermission: () -> Unit,
     onOpenAbout: () -> Unit,
 ) {
     var pickSummaryTime by remember { mutableStateOf(false) }
-    var addTo by remember { mutableStateOf<CalendarCategory?>(null) }
     var pickCountry by remember { mutableStateOf(false) }
     var pickRegion by remember { mutableStateOf(false) }
+    val calendar = state.calendars.firstOrNull { it.key == calendarKey }
+    val calendars = rememberCalendarActions(state, viewModel, page, onBack)
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(page.title)) },
+                title = {
+                    Text(
+                        if (page ==
+                            SettingsPage.CALENDAR
+                        ) {
+                            calendar?.name.orEmpty()
+                        } else {
+                            stringResource(page.title)
+                        },
+                    )
+                },
                 navigationIcon = { BackButton(onBack) },
             )
         },
@@ -139,12 +152,24 @@ fun SettingsScreen(
                     )
                 }
 
-                SettingsPage.LEAVE, SettingsPage.EVENTS -> calendarItems(
-                    category = if (page == SettingsPage.LEAVE) CalendarCategory.LEAVE else CalendarCategory.EVENTS,
-                    state = state,
-                    viewModel = viewModel,
-                    onAdd = { addTo = it },
-                    onRequestPermission = onRequestPermission,
+                SettingsPage.CALENDARS -> calendarsItems(
+                    state,
+                    calendars.added,
+                    onOpenCalendar,
+                    calendars.onLeave,
+                    calendars.onEvents,
+                    calendars.onRemove,
+                    calendars.onAdd,
+                    onRequestPermission,
+                )
+
+                SettingsPage.CALENDAR -> calendarDetailItems(
+                    calendar,
+                    state,
+                    calendars.onLeave,
+                    calendars.onEvents,
+                    viewModel::setKeywords,
+                    calendars.onRemove,
                 )
             }
         }
@@ -153,6 +178,7 @@ fun SettingsScreen(
     if (pickSummaryTime) {
         TimePickerDialog(state.summary.time, { pickSummaryTime = false }, viewModel::setSummaryTime)
     }
+    calendars.Dialogs()
     if (pickCountry) {
         CountryDialog(
             auto = state.holidayCountryAuto,
@@ -181,17 +207,6 @@ fun SettingsScreen(
             onDismiss = { pickRegion = false },
         )
     }
-    addTo?.let { category ->
-        AddCalendarDialog(
-            title = stringResource(R.string.add_to_category, stringResource(CATEGORY_TEXTS.getValue(category).title)),
-            calendars = state.available(category),
-            onDismiss = { addTo = null },
-            onPick = {
-                viewModel.addCalendar(it, category)
-                addTo = null
-            },
-        )
-    }
 }
 
 /** The short menu: a few grouped rows, each with an icon, a title and a summary of its current state. */
@@ -216,20 +231,17 @@ private fun LazyListScope.menuItems(
             }
         }
     }
-    item(key = "menu-days-off") {
+    item(key = "menu-holidays") {
         MenuGroup {
             MenuRow(R.drawable.ic_flag, R.string.holidays_title, holidaysSummary(state)) {
                 onOpenPage(SettingsPage.HOLIDAYS)
             }
-            MenuRow(R.drawable.ic_sun, R.string.cat_leave_title, leaveSummary(state)) {
-                onOpenPage(SettingsPage.LEAVE)
-            }
         }
     }
-    item(key = "menu-events") {
+    item(key = "menu-calendars") {
         MenuGroup {
-            MenuRow(R.drawable.ic_event, R.string.cat_events_title, calendarsSummary(state, CalendarCategory.EVENTS)) {
-                onOpenPage(SettingsPage.EVENTS)
+            MenuRow(R.drawable.ic_event, R.string.calendars_title, calendarsSummary(state)) {
+                onOpenPage(SettingsPage.CALENDARS)
             }
         }
     }
@@ -259,25 +271,24 @@ private fun holidaysSummary(state: SettingsUiState): String =
     listOfNotNull(state.holidayCountry?.let(::countryName), state.holidayRegion?.name).joinToString(" · ")
         .ifEmpty { stringResource(R.string.holidays_country_none) }
 
+/** How many calendars are used for leave and for events, and the days the leave calendars give. */
 @Composable
-private fun calendarsSummary(state: SettingsUiState, category: CalendarCategory): String {
-    val count = state.byCategory[category].orEmpty().size
-    return if (count == 0) {
-        stringResource(R.string.calendars_none)
-    } else {
-        pluralStringResource(R.plurals.calendars_count, count, count)
-    }
-}
-
-/** The leave summary prefers the number of days detected, once it is known. */
-@Composable
-private fun leaveSummary(state: SettingsUiState): String {
+private fun calendarsSummary(state: SettingsUiState): String {
+    val leave = state.byCategory[CalendarCategory.LEAVE].orEmpty().size
+    val events = state.byCategory[CalendarCategory.EVENTS].orEmpty().size
+    if (leave == 0 && events == 0) return stringResource(R.string.calendars_summary_none)
     val preview = state.leavePreview
-    return if (state.byCategory[CalendarCategory.LEAVE].orEmpty().isNotEmpty() && preview != null) {
-        pluralStringResource(R.plurals.leave_preview_days, preview.days, preview.days)
-    } else {
-        calendarsSummary(state, CalendarCategory.LEAVE)
-    }
+    val parts = listOfNotNull(
+        if (leave > 0 && preview != null) {
+            pluralStringResource(R.plurals.leave_preview_days, preview.days, preview.days)
+        } else if (leave > 0) {
+            stringResource(R.string.calendars_summary_leave, leave)
+        } else {
+            null
+        },
+        if (events > 0) stringResource(R.string.calendars_summary_events, events) else null,
+    )
+    return parts.joinToString(" · ")
 }
 
 @Composable
@@ -356,41 +367,9 @@ private fun LazyListScope.quickItems(state: SettingsUiState, viewModel: Settings
     }
 }
 
-/** A calendar category on its own screen: its calendars, their keywords and, for leave, the detected days. */
-private fun LazyListScope.calendarItems(
-    category: CalendarCategory,
-    state: SettingsUiState,
-    viewModel: SettingsViewModel,
-    onAdd: (CalendarCategory) -> Unit,
-    onRequestPermission: () -> Unit,
-) {
-    if (!state.loading && !state.hasPermission) {
-        item(key = "permission") {
-            Button(onClick = onRequestPermission) { Text(stringResource(R.string.allow_calendar_access)) }
-        }
-    }
-    item(key = "calendars-description") {
-        Text(stringResource(R.string.calendars_description), style = MaterialTheme.typography.bodySmall)
-    }
-    item(key = "cat-$category") {
-        CategoryContent(
-            category = category,
-            assigned = state.byCategory[category].orEmpty(),
-            onAdd = { onAdd(category) },
-            onRemove = { viewModel.removeCalendar(it, category) },
-            onKeywords = { cal, kw -> viewModel.setKeywords(cal, category, kw) },
-            extra = if (category == CalendarCategory.LEAVE) {
-                { LeavePreviewSection(state.leavePreview, state.byCategory[category].orEmpty()) }
-            } else {
-                null
-            },
-        )
-    }
-}
-
 /** What the leave calendars give as days off, with their keywords, so a mixed calendar can be tuned by eye. */
 @Composable
-private fun LeavePreviewSection(preview: LeavePreview?, assigned: List<AssignedCalendar>) {
+internal fun LeavePreviewSection(preview: LeavePreview?, assigned: List<AssignedCalendar>) {
     if (assigned.isEmpty()) return
     HorizontalDivider(Modifier.padding(vertical = 4.dp))
     Text(stringResource(R.string.leave_preview_title), style = MaterialTheme.typography.titleSmall)
@@ -492,87 +471,6 @@ private fun SwitchCard(title: String, description: String, checked: Boolean, onC
             Switch(checked = checked, onCheckedChange = onChange)
         }
     }
-}
-
-@Composable
-private fun CategoryContent(
-    category: CalendarCategory,
-    assigned: List<AssignedCalendar>,
-    onAdd: () -> Unit,
-    onRemove: (DeviceCalendar) -> Unit,
-    onKeywords: (DeviceCalendar, String) -> Unit,
-    /** Extra content shown after the "add a calendar" button. */
-    extra: (@Composable ColumnScope.() -> Unit)? = null,
-) {
-    val text = CATEGORY_TEXTS.getValue(category)
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(stringResource(text.description), style = MaterialTheme.typography.bodyMedium)
-        assigned.forEach { item ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                ColorDot(item.calendar.color)
-                Column(Modifier.weight(1f).padding(start = 12.dp)) {
-                    Text(item.calendar.name)
-                    Text(item.calendar.account, style = MaterialTheme.typography.bodySmall)
-                }
-                TextButton(onClick = { onRemove(item.calendar) }) {
-                    Text(stringResource(R.string.action_remove))
-                }
-            }
-            OutlinedTextField(
-                value = item.keywords,
-                onValueChange = { onKeywords(item.calendar, it) },
-                label = { Text(stringResource(R.string.keywords_optional)) },
-                placeholder = { Text(stringResource(text.keywordHint)) },
-                supportingText = { Text(stringResource(R.string.keywords_help)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
-        OutlinedButton(onClick = onAdd) { Text(stringResource(R.string.add_calendar)) }
-        extra?.invoke(this)
-    }
-}
-
-@Composable
-private fun AddCalendarDialog(
-    title: String,
-    calendars: List<DeviceCalendar>,
-    onDismiss: () -> Unit,
-    onPick: (DeviceCalendar) -> Unit,
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {},
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) } },
-        title = { Text(title) },
-        text = {
-            if (calendars.isEmpty()) {
-                Text(
-                    stringResource(R.string.no_other_calendar),
-                )
-            } else {
-                Column(Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState())) {
-                    calendars.groupBy { it.account }.forEach { (account, list) ->
-                        Text(
-                            account,
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(top = 12.dp, bottom = 4.dp),
-                        )
-                        list.forEach { cal ->
-                            Row(
-                                Modifier.fillMaxWidth().clickable { onPick(cal) }.padding(vertical = 10.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                ColorDot(cal.color)
-                                Text(cal.name, modifier = Modifier.padding(start = 12.dp))
-                            }
-                        }
-                    }
-                }
-            }
-        },
-    )
 }
 
 private fun countryName(code: String): String =

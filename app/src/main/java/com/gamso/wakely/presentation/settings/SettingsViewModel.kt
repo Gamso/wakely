@@ -7,13 +7,17 @@ import com.gamso.wakely.domain.holiday.HolidayRegion
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.CalendarFilter
 import com.gamso.wakely.domain.model.DeviceCalendar
+import com.gamso.wakely.domain.model.EventAlarm
 import com.gamso.wakely.domain.model.HolidayItem
 import com.gamso.wakely.domain.model.HolidaySettings
 import com.gamso.wakely.domain.model.SummarySettings
 import com.gamso.wakely.domain.repository.CalendarRepository
 import com.gamso.wakely.domain.repository.DeviceRegion
+import com.gamso.wakely.domain.repository.EventAlarmRepository
 import com.gamso.wakely.domain.repository.HolidayRepository
 import com.gamso.wakely.domain.repository.SettingsRepository
+import com.gamso.wakely.domain.usecase.CalendarLogic
+import com.gamso.wakely.domain.usecase.ForgetEventCalendarUseCase
 import com.gamso.wakely.domain.usecase.GetLeavePreviewUseCase
 import com.gamso.wakely.domain.usecase.GetUpcomingHolidaysUseCase
 import com.gamso.wakely.domain.usecase.LeavePreview
@@ -36,6 +40,14 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+/** What the Settings state combines from several flows beyond the main settings. */
+private data class Extras(
+    val upcomingHolidays: List<HolidayItem>?,
+    val leave: LeavePreview?,
+    val calendar: LeavePreview?,
+    val rules: List<EventAlarm>,
+)
 
 /** A calendar assigned to a category, with its keyword filter. */
 data class AssignedCalendar(val calendar: DeviceCalendar, val keywords: String)
@@ -63,12 +75,21 @@ data class SettingsUiState(
     val supportedCountries: List<String> = emptyList(),
     /** Upcoming public holidays; null while loading. */
     val upcomingHolidays: List<HolidayItem>? = null,
+    /** Event alarms that use each calendar of the pool, by calendar key. */
+    val eventAlarmUse: Map<String, Int> = emptyMap(),
+    /** The days off the calendar open in Settings gives with its keywords; null while loading. */
+    val calendarPreview: LeavePreview? = null,
 ) {
-    /** Calendars not yet in [category], for the "add" dialog. */
-    fun available(category: CalendarCategory): List<DeviceCalendar> {
-        val assigned = byCategory[category].orEmpty().map { it.calendar.key }.toSet()
-        return calendars.filterNot { it.key in assigned }
+    fun usedBy(calendar: DeviceCalendar): Int = eventAlarmUse[calendar.key] ?: 0
+
+    fun isLeave(calendar: DeviceCalendar) = byCategory[CalendarCategory.LEAVE].orEmpty().any { it.calendar == calendar }
+
+    fun isEvents(calendar: DeviceCalendar) = byCategory[CalendarCategory.EVENTS].orEmpty().any {
+        it.calendar == calendar
     }
+
+    fun assigned(calendar: DeviceCalendar, category: CalendarCategory): AssignedCalendar? =
+        byCategory[category].orEmpty().firstOrNull { it.calendar == calendar }
 }
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -80,6 +101,8 @@ class SettingsViewModel(
     private val updateSummarySettings: UpdateSummarySettingsUseCase,
     private val getUpcomingHolidays: GetUpcomingHolidaysUseCase,
     private val getLeavePreview: GetLeavePreviewUseCase,
+    private val eventAlarmRepository: EventAlarmRepository,
+    private val forgetEventCalendar: ForgetEventCalendarUseCase,
     private val updateHolidaySettings: UpdateHolidaySettingsUseCase,
     private val deviceRegion: DeviceRegion,
     private val applicationScope: CoroutineScope,
@@ -94,6 +117,16 @@ class SettingsViewModel(
         .onStart { emit(null) }
 
     // The preview follows the keywords as they are typed, before they are saved.
+    private val openCalendar = MutableStateFlow<String?>(null)
+
+    // The preview of the calendar open on its own screen, with only its own keywords.
+    private val calendarPreview = combine(draft.filterNotNull(), openCalendar) { filters, key -> filters to key }
+        .debounce(PREVIEW_DEBOUNCE_MS)
+        .mapLatest<Pair<List<CalendarFilter>, String?>, LeavePreview?> { (filters, key) ->
+            key?.let { getLeavePreview(filters.filter { f -> f.sourceKey == it }, LocalDate.now()) }
+        }
+        .onStart { emit(null) }
+
     private val leavePreview = draft.filterNotNull()
         .debounce(PREVIEW_DEBOUNCE_MS)
         .mapLatest<List<CalendarFilter>, LeavePreview?> { getLeavePreview(it, LocalDate.now()) }
@@ -108,8 +141,10 @@ class SettingsViewModel(
             settingsRepository.observePauseButton(),
         ) { summary, skip, pause -> Triple(summary, skip, pause) },
         settingsRepository.observeHolidaySettings(),
-        combine(upcoming, leavePreview) { holidays, leave -> holidays to leave },
-    ) { cals, filters, (summary, skipButtons, pauseButton), holiday, (upcomingHolidays, leave) ->
+        combine(upcoming, leavePreview, calendarPreview, eventAlarmRepository.observeEventAlarms()) { h, l, c, r ->
+            Extras(h, l, c, r)
+        },
+    ) { cals, filters, (summary, skipButtons, pauseButton), holiday, extras ->
         if (cals == null ||
             filters == null
         ) {
@@ -137,8 +172,12 @@ class SettingsViewModel(
             holidayCountryAuto = !holiday.countryChosen,
             holidayDetectedCountry = candidates.map { it.uppercase() }.firstOrNull { it in supported },
             supportedCountries = supported,
-            upcomingHolidays = upcomingHolidays,
-            leavePreview = leave,
+            upcomingHolidays = extras.upcomingHolidays,
+            leavePreview = extras.leave,
+            calendarPreview = extras.calendar,
+            eventAlarmUse = filters.filter { it.category == CalendarCategory.EVENTS }.associate { pool ->
+                pool.sourceKey to CalendarLogic.rulesUsing(pool.sourceKey, extras.rules, filters).size
+            },
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SettingsUiState())
 
@@ -198,6 +237,38 @@ class SettingsViewModel(
             val current = settingsRepository.getHolidaySettings()
             val ids = if (excluded) current.excludedIds + item.id else current.excludedIds - item.id
             updateHolidaySettings(current.copy(excludedIds = ids))
+        }
+    }
+
+    /** The calendar whose screen is open, so its own preview is computed. */
+    fun showCalendar(key: String?) {
+        openCalendar.value = key
+    }
+
+    fun setLeave(calendar: DeviceCalendar, on: Boolean) =
+        if (on) addCalendar(calendar, CalendarCategory.LEAVE) else removeCalendar(calendar, CalendarCategory.LEAVE)
+
+    /**
+     * Uses the calendar for the event alarms (it joins their pool), or stops: the alarms that chose it forget it first,
+     * then it leaves the pool.
+     */
+    fun setEvents(calendar: DeviceCalendar, on: Boolean) {
+        if (on) {
+            addCalendar(calendar, CalendarCategory.EVENTS)
+        } else {
+            viewModelScope.launch {
+                forgetEventCalendar(calendar.key)
+                removeCalendar(calendar, CalendarCategory.EVENTS)
+            }
+        }
+    }
+
+    /** Stops every use of the calendar: alarms that watched it forget it. The phone's calendar is not touched. */
+    fun removeFromApp(calendar: DeviceCalendar) {
+        viewModelScope.launch {
+            forgetEventCalendar(calendar.key)
+            removeCalendar(calendar, CalendarCategory.LEAVE)
+            removeCalendar(calendar, CalendarCategory.EVENTS)
         }
     }
 

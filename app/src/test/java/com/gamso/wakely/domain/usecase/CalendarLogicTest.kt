@@ -3,12 +3,15 @@ package com.gamso.wakely.domain.usecase
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.CalendarEvent
 import com.gamso.wakely.domain.model.CalendarFilter
+import com.gamso.wakely.domain.model.DeviceCalendar
 import com.gamso.wakely.domain.model.EventAlarm
 import com.gamso.wakely.domain.model.EventRef
 import java.time.LocalDate
 import java.time.LocalDateTime
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CalendarLogicTest {
@@ -76,5 +79,14 @@ class CalendarLogicTest {
             CalendarLogic.upcomingEventRings(single, nov10.atStartOfDay(), events, filters).map { it.at },
         )
         assertNull(CalendarLogic.nextEventRing(single, nov10.plusDays(8).atStartOfDay(), events, filters))
+    }
+
+    @Test
+    fun `google holiday calendars are recognised by their owner, never by their name`() {
+        assertTrue(DeviceCalendar.isHolidayOwner("fr.french#holiday@group.v.calendar.google.com"))
+        assertFalse(DeviceCalendar.isHolidayOwner("me@gmail.com"))
+        assertFalse(DeviceCalendar.isHolidayOwner(null))
+        // A calendar the user calls "Holidays" is not a holiday calendar.
+        assertFalse(DeviceCalendar(1, "Holidays", "me@gmail.com", 0).isHolidays)
     }
 }

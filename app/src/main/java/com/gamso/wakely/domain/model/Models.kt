@@ -120,11 +120,24 @@ enum class CalendarCategory {
 }
 
 /** A calendar synced on the device (Google, Outlook/Exchange, Samsung... any Android account). */
-data class DeviceCalendar(val calendarId: Long, val name: String, val account: String, val color: Int) {
+data class DeviceCalendar(
+    val calendarId: Long,
+    val name: String,
+    val account: String,
+    val color: Int,
+    /** A calendar of public holidays (Google's "Holidays in ..."): the app already has them built in. */
+    val isHolidays: Boolean = false,
+) {
     val key: String get() = keyOf(calendarId)
 
     companion object {
         fun keyOf(calendarId: Long) = "device:$calendarId"
+
+        /**
+         * Google's holiday calendars belong to an account like "en.french#holiday@group.v.calendar.google.com". Only
+         * this is looked at, never the name: a calendar called "Holidays" can well be the user's own vacation.
+         */
+        fun isHolidayOwner(owner: String?): Boolean = owner != null && owner.contains("#holiday@")
     }
 }
 

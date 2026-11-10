@@ -68,7 +68,9 @@ internal class FakeSettings(initial: List<CalendarFilter> = emptyList()) : Setti
     private val summary = MutableStateFlow(SummarySettings(enabled = false))
     override fun observeCalendarFilters(): Flow<List<CalendarFilter>> = filters
     override suspend fun getCalendarFilters() = filters.value
-    override suspend fun setCalendarFilters(filters: List<CalendarFilter>) = Unit
+    override suspend fun setCalendarFilters(filters: List<CalendarFilter>) {
+        this.filters.value = filters
+    }
     override fun observeSummarySettings(): Flow<SummarySettings> = summary
     override suspend fun getSummarySettings() = summary.value
     override suspend fun setSummarySettings(settings: SummarySettings) = Unit
@@ -214,5 +216,21 @@ internal class FakeSkips : SkippedOccurrences {
 
     override suspend fun prune(limit: LocalDateTime) {
         state.value = state.value.filter { !it.at.isBefore(limit) }.toSet()
+    }
+}
+
+/** Event alarms kept in memory, to check what the use cases save. */
+internal class FakeEventAlarms(vararg initial: EventAlarm) : EventAlarmRepository {
+    var rules: List<EventAlarm> = initial.toList()
+    override fun observeEventAlarms(): Flow<List<EventAlarm>> = flowOf(rules)
+    override suspend fun getEventAlarms() = rules
+    override suspend fun getEventAlarm(id: Long) = rules.firstOrNull { it.id == id }
+    override suspend fun save(alarm: EventAlarm): EventAlarm {
+        rules = rules.filterNot { it.id == alarm.id } + alarm
+        return alarm
+    }
+
+    override suspend fun delete(id: Long) {
+        rules = rules.filterNot { it.id == id }
     }
 }

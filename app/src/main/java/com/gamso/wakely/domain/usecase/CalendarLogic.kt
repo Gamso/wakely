@@ -102,9 +102,18 @@ object CalendarLogic {
         else -> existing.copy(ranges = existing.ranges + added.ranges)
     }
 
-    /** Calendars an event rule watches: its own selection, or every "events" calendar. */
-    fun ruleSources(rule: EventAlarm, eventFilters: List<CalendarFilter>): Set<String> =
-        rule.sourceKeys.ifEmpty { eventFilters.map { it.sourceKey }.toSet() }
+    /**
+     * Calendars an event rule watches. The "events" calendars are the pool the rules choose from: the rule's own
+     * selection (every calendar of the pool when it has none), limited to the pool.
+     */
+    fun ruleSources(rule: EventAlarm, eventFilters: List<CalendarFilter>): Set<String> {
+        val pool = eventFilters.map { it.sourceKey }.toSet()
+        return rule.sourceKeys.ifEmpty { pool }.intersect(pool)
+    }
+
+    /** The rules that watch the calendar [key], for "used by N alarms". */
+    fun rulesUsing(key: String, rules: List<EventAlarm>, eventFilters: List<CalendarFilter>): List<EventAlarm> =
+        rules.filter { key in ruleSources(it, eventFilters) }
 
     /** Timed events matching the rule (calendar keywords AND rule keywords). */
     fun matchingEvents(
