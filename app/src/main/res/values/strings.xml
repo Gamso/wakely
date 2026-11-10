@@ -155,6 +155,8 @@
     <string name="leave_preview_more">+%1$d more</string>
     <string name="leave_preview_hint">Every all-day event of this calendar counts. Add keywords to keep only some.</string>
     <string name="leave_range">%1$s to %2$s</string>
+    <string name="leave_day_hours">%1$s, %2$s to %3$s</string>
+    <string name="leave_day_time">%1$s %2$s</string>
     <string name="leave_counted">counts</string>
     <string name="leave_ignored">ignored</string>
     <plurals name="leave_preview_days">

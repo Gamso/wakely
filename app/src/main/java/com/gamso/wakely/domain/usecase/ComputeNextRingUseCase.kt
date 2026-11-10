@@ -22,7 +22,12 @@ class ComputeNextRingUseCase {
         var date = after.toLocalDate()
         repeat(horizonDays) {
             if (!alarm.isRepeating || date.dayOfWeek in alarm.days) {
-                val off = if (alarm.dayOffMode == DayOffMode.IGNORE) null else daysOff[date]
+                // A partial day off only replaces the ring when it is already running at the alarm's normal time.
+                val off = if (alarm.dayOffMode == DayOffMode.IGNORE) {
+                    null
+                } else {
+                    daysOff[date]?.takeIf { it.covers(alarm.time) }
+                }
                 when {
                     off == null -> {
                         val at = date.atTime(alarm.time)

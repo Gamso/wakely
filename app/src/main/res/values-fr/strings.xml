@@ -141,6 +141,8 @@
     <string name="leave_preview_more">+%1$d autres</string>
     <string name="leave_preview_hint">Tout événement sur la journée entière de cet agenda compte. Ajoutez des mots-clés pour n\'en garder que certains.</string>
     <string name="leave_range">%1$s au %2$s</string>
+    <string name="leave_day_hours">%1$s, de %2$s à %3$s</string>
+    <string name="leave_day_time">%1$s %2$s</string>
     <string name="leave_counted">compte</string>
     <string name="leave_ignored">ignoré</string>
     <plurals name="leave_preview_days">
