@@ -188,14 +188,17 @@ private fun EventSelection(state: EventAlarmEditUiState, viewModel: EventAlarmEd
         return
     }
     Text(stringResource(R.string.calendars), style = MaterialTheme.typography.labelLarge)
-    val fallback = state.eventCategoryKeys.joinToString {
-        state.calendarName(it)
-    }.ifBlank { stringResource(R.string.none_lower) }
-    Text(
-        stringResource(R.string.calendars_hint, fallback),
-        style = MaterialTheme.typography.bodySmall,
-    )
-    state.calendars.forEach { cal ->
+    // The calendars of the "Events" category are the pool the rule chooses from.
+    val pool = state.calendars.filter { it.key in state.eventCategoryKeys }
+    if (pool.isEmpty()) {
+        Text(stringResource(R.string.calendars_pool_empty), style = MaterialTheme.typography.bodySmall)
+    } else {
+        Text(
+            stringResource(R.string.calendars_hint, pool.joinToString { it.name }),
+            style = MaterialTheme.typography.bodySmall,
+        )
+    }
+    pool.forEach { cal ->
         Row(
             Modifier.fillMaxWidth().toggleable(cal.key in rule.sourceKeys, role = Role.Checkbox) {
                 viewModel.toggleSource(cal.key)

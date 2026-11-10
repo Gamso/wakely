@@ -9,13 +9,28 @@ enum class SettingsPage(val route: String, @StringRes val title: Int) {
     NOTIFICATION("settings/notification", R.string.summary_title),
     QUICK("settings/quick", R.string.quick_buttons_title),
     HOLIDAYS("settings/holidays", R.string.holidays_title),
-    LEAVE("settings/leave", R.string.cat_leave_title),
-    EVENTS("settings/events", R.string.cat_events_title),
+    CALENDARS("settings/calendars", R.string.calendars_title),
+
+    /** One calendar: its route is [CALENDAR_PREFIX] followed by the calendar key. The title is the calendar name. */
+    CALENDAR("settings/calendar", R.string.calendars_title),
     ;
 
     companion object {
+        const val CALENDAR_PREFIX = "settings/calendar/"
+
         /** The page of a navigation route, or null when the route is not a Settings one. */
         fun fromRoute(route: String): SettingsPage? = entries.firstOrNull { it.route == route }
+            ?: CALENDAR.takeIf { route.startsWith(CALENDAR_PREFIX) }
+
+        fun calendarRoute(key: String) = CALENDAR_PREFIX + key
+
+        /** The calendar key of a [CALENDAR] route. */
+        fun calendarKeyOf(route: String): String? = route.removePrefix(CALENDAR_PREFIX).takeIf {
+            route.startsWith(CALENDAR_PREFIX) && it.isNotEmpty()
+        }
+
+        /** Where Back goes from [route]: a calendar to the list of calendars, any other topic to the menu. */
+        fun parentOf(route: String): String = if (fromRoute(route) == CALENDAR) CALENDARS.route else MENU.route
     }
 }
 

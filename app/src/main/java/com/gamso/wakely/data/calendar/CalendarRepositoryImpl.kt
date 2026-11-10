@@ -35,6 +35,7 @@ class CalendarRepositoryImpl(private val context: Context) : CalendarRepository 
             Calendars.CALENDAR_DISPLAY_NAME,
             Calendars.ACCOUNT_NAME,
             Calendars.CALENDAR_COLOR,
+            Calendars.OWNER_ACCOUNT,
         )
         buildList {
             context.contentResolver.query(
@@ -48,6 +49,7 @@ class CalendarRepositoryImpl(private val context: Context) : CalendarRepository 
                 val name = c.getColumnIndexOrThrow(Calendars.CALENDAR_DISPLAY_NAME)
                 val account = c.getColumnIndexOrThrow(Calendars.ACCOUNT_NAME)
                 val color = c.getColumnIndexOrThrow(Calendars.CALENDAR_COLOR)
+                val owner = c.getColumnIndexOrThrow(Calendars.OWNER_ACCOUNT)
                 while (c.moveToNext()) {
                     add(
                         DeviceCalendar(
@@ -55,6 +57,7 @@ class CalendarRepositoryImpl(private val context: Context) : CalendarRepository 
                             c.getString(name).orEmpty(),
                             c.getString(account).orEmpty(),
                             c.getInt(color),
+                            DeviceCalendar.isHolidayOwner(c.getString(owner)),
                         ),
                     )
                 }

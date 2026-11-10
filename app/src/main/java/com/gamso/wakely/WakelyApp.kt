@@ -5,6 +5,7 @@ import android.content.Context
 import com.gamso.wakely.di.AppContainer
 import com.gamso.wakely.framework.CalendarWatchJob
 import com.gamso.wakely.framework.Notifications
+import kotlinx.coroutines.launch
 
 class WakelyApp : Application() {
     lateinit var container: AppContainer
@@ -15,6 +16,7 @@ class WakelyApp : Application() {
         container = AppContainer(this)
         Notifications.createChannels(this)
         CalendarWatchJob.schedule(this)
+        container.applicationScope.launch { container.migrateEventCalendars() }
     }
 }
 

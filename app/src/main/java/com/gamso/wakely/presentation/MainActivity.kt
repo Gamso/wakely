@@ -159,6 +159,7 @@ private fun WakelyNavigation() {
 
         SettingsPage.fromRoute(route) != null -> SettingsRoute(
             page = checkNotNull(SettingsPage.fromRoute(route)),
+            calendarKey = SettingsPage.calendarKeyOf(route),
             permissionsTick = permissionsTick,
             onNavigate = { route = it },
             onRequestPermission = requestCalendar,
@@ -209,13 +210,18 @@ private fun WakelyNavigation() {
 /** Back goes up one level: a topic or About to the Settings menu, then to the alarm list. */
 private fun parentRoute(route: String): String {
     val page = SettingsPage.fromRoute(route)
-    return if (route == Routes.ABOUT || (page != null && page != SettingsPage.MENU)) Routes.SETTINGS else Routes.LIST
+    return when {
+        route == Routes.ABOUT -> Routes.SETTINGS
+        page != null && page != SettingsPage.MENU -> SettingsPage.parentOf(route)
+        else -> Routes.LIST
+    }
 }
 
 /** One Settings screen. All of them share the view model of the menu, so a change shows everywhere at once. */
 @Composable
 private fun SettingsRoute(
     page: SettingsPage,
+    calendarKey: String?,
     permissionsTick: Int,
     onNavigate: (String) -> Unit,
     onRequestPermission: () -> Unit,
@@ -231,6 +237,8 @@ private fun SettingsRoute(
                 it.updateSummarySettings,
                 it.getUpcomingHolidays,
                 it.getLeavePreview,
+                it.eventAlarmRepository,
+                it.forgetEventCalendar,
                 it.updateHolidaySettings,
                 it.deviceRegion,
                 it.applicationScope,
@@ -238,13 +246,17 @@ private fun SettingsRoute(
         },
     )
     LaunchedEffect(Unit) { vm.reload() }
+    // Only the calendar open on its own screen gets a preview.
+    LaunchedEffect(calendarKey) { vm.showCalendar(calendarKey) }
     val state by vm.uiState.collectAsStateWithLifecycle()
     SettingsScreen(
         page = page,
+        calendarKey = calendarKey,
         state = state,
         viewModel = vm,
-        onBack = { onNavigate(if (page == SettingsPage.MENU) Routes.LIST else Routes.SETTINGS) },
+        onBack = { onNavigate(if (page == SettingsPage.MENU) Routes.LIST else SettingsPage.parentOf(page.route)) },
         onOpenPage = { onNavigate(it.route) },
+        onOpenCalendar = { onNavigate(SettingsPage.calendarRoute(it)) },
         onRequestPermission = onRequestPermission,
         onOpenAbout = { onNavigate(Routes.ABOUT) },
     )

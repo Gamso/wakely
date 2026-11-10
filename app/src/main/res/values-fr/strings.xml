@@ -109,7 +109,7 @@
     <string name="which_events">Quels événements ?</string>
     <string name="specific_event">Événement précis</string>
     <string name="calendars">Agendas</string>
-    <string name="calendars_hint">Aucun coché = agendas de la catégorie « Événements » (%1$s).</string>
+    <string name="calendars_hint">Aucun coché = tous les agendas utilisés pour les événements (%1$s).</string>
     <string name="none_lower">aucun</string>
     <string name="keywords_optional">Mots-clés (facultatif)</string>
     <string name="keywords_help">Séparés par des virgules. Vide = tous les événements.</string>
@@ -132,6 +132,24 @@
     <string name="cat_leave_title">Congés et vacances</string>
     <string name="cat_leave_desc">Vos jours de congé, vacances, RTT… : jours non travaillés.</string>
     <string name="cat_leave_hint">ex. congé, vacances, RTT</string>
+    <string name="calendars_pick_description">Choisissez les agendas que Wakely utilise, et à quoi sert chacun. Touchez un agenda pour régler ses mots-clés.</string>
+    <string name="calendars_none_used">Aucun agenda utilisé pour l\'instant. Ajoutez-en un pour que vos alarmes s\'adaptent à vos congés et à vos événements.</string>
+    <string name="add_calendar_title">Ajouter un agenda</string>
+    <string name="add_account">Ajouter un compte</string>
+    <string name="calendar_missing_help">Votre agenda n\'apparaît pas ? Ajoutez son compte dans Android et activez la synchronisation de l\'agenda.</string>
+    <string name="calendar_remove">Retirer cet agenda</string>
+    <string name="calendar_remove_title">Retirer cet agenda ?</string>
+    <string name="calendar_unused_warning">Aucune alarme n\'utilise cet agenda. Choisissez à quoi il sert, ou retirez-le.</string>
+    <string name="calendars_summary_none">Aucun agenda utilisé</string>
+    <string name="calendars_summary_leave">Congés : %1$d</string>
+    <string name="calendars_summary_events">Événements : %1$d</string>
+    <string name="use_leave">Congés</string>
+    <string name="use_events">Événements</string>
+    <string name="use_none">Non utilisé</string>
+    <string name="calendar_not_found">Agenda introuvable.</string>
+    <string name="calendar_unused_by">Aucune alarme ne l\'utilise pour l\'instant.</string>
+    <string name="calendar_stop_events_title">Ne plus l\'utiliser pour les événements ?</string>
+    <string name="calendars_pool_empty">Aucun agenda n\'est utilisé pour les événements. Choisissez-en dans Réglages, Agendas.</string>
     <string name="cat_events_title">Événements</string>
     <string name="cat_events_desc">Agendas utilisés par les réveils « avant un événement ».</string>
     <string name="cat_events_hint">ex. réunion, client</string>
@@ -148,6 +166,14 @@
     <plurals name="leave_preview_days">
         <item quantity="one">%1$d jour détecté</item>
         <item quantity="other">%1$d jours détectés</item>
+    </plurals>
+    <plurals name="calendar_used_by">
+        <item quantity="one">Utilisé par %1$d alarme</item>
+        <item quantity="other">Utilisé par %1$d alarmes</item>
+    </plurals>
+    <plurals name="calendar_stop_events_body">
+        <item quantity="one">%1$d alarme l\'utilise. Elle ne surveillera plus cet agenda.</item>
+        <item quantity="other">%1$d alarmes l\'utilisent. Elles ne surveilleront plus cet agenda.</item>
     </plurals>
     <plurals name="calendars_count">
         <item quantity="one">%d agenda</item>
