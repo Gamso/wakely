@@ -1,10 +1,13 @@
 package com.gamso.wakely.presentation.settings
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,10 +16,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -53,6 +59,7 @@ import com.gamso.wakely.domain.holiday.HolidayRegion
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.DeviceCalendar
 import com.gamso.wakely.domain.model.HolidayItem
+import com.gamso.wakely.domain.model.SummarySettings
 import com.gamso.wakely.domain.usecase.LeaveItem
 import com.gamso.wakely.domain.usecase.LeavePreview
 import com.gamso.wakely.presentation.common.BackButton
@@ -88,9 +95,11 @@ private val CATEGORY_TEXTS = mapOf(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
+    page: SettingsPage,
     state: SettingsUiState,
     viewModel: SettingsViewModel,
     onBack: () -> Unit,
+    onOpenPage: (SettingsPage) -> Unit,
     onRequestPermission: () -> Unit,
     onOpenAbout: () -> Unit,
 ) {
@@ -102,7 +111,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.settings_title)) },
+                title = { Text(stringResource(page.title)) },
                 navigationIcon = { BackButton(onBack) },
             )
         },
@@ -112,98 +121,31 @@ fun SettingsScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item(key = "summary") {
-                Card(Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(16.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Column(Modifier.weight(1f)) {
-                                Text(
-                                    stringResource(R.string.summary_title),
-                                    style = MaterialTheme.typography.titleMedium,
-                                )
-                                Text(
-                                    stringResource(R.string.summary_description),
-                                    style = MaterialTheme.typography.bodySmall,
-                                )
-                            }
-                            Switch(checked = state.summary.enabled, onCheckedChange = viewModel::setSummaryEnabled)
-                        }
-                        if (state.summary.enabled) {
-                            OutlinedButton(onClick = {
-                                pickSummaryTime = true
-                            }, modifier = Modifier.padding(top = 8.dp)) {
-                                Text(stringResource(R.string.summary_time, Format.time(state.summary.time)))
-                            }
-                        }
-                    }
+            when (page) {
+                SettingsPage.MENU -> menuItems(state, onOpenPage, onOpenAbout, onRequestPermission)
+
+                SettingsPage.NOTIFICATION -> item(key = "notification") {
+                    NotificationCard(state.summary, viewModel::setSummaryEnabled) { pickSummaryTime = true }
                 }
-            }
 
-            item(key = "skip-buttons") {
-                SwitchCard(
-                    stringResource(R.string.skip_buttons_title),
-                    stringResource(R.string.skip_buttons_description),
-                    state.skipButtons,
-                    viewModel::setSkipButtons,
-                )
-            }
+                SettingsPage.QUICK -> quickItems(state, viewModel)
 
-            item(key = "pause-button") {
-                SwitchCard(
-                    stringResource(R.string.pause_button_title),
-                    stringResource(R.string.pause_button_description),
-                    state.pauseButton,
-                    viewModel::setPauseButton,
-                )
-            }
-
-            if (!state.loading && !state.hasPermission) {
-                item(key = "permission") {
-                    Button(onClick = onRequestPermission) { Text(stringResource(R.string.allow_calendar_access)) }
-                }
-            }
-
-            item(key = "holidays") {
-                HolidaysCard(
-                    state = state,
-                    onPickCountry = { pickCountry = true },
-                    onPickRegion = { pickRegion = true },
-                    onToggle = viewModel::setHolidayExcluded,
-                )
-            }
-
-            item(key = "calendars-title") {
-                Text(
-                    stringResource(R.string.calendars_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(top = 8.dp),
-                )
-                Text(
-                    stringResource(R.string.calendars_description),
-                    style = MaterialTheme.typography.bodySmall,
-                )
-            }
-
-            CalendarCategory.entries.forEach { category ->
-                item(key = "cat-$category") {
-                    CategoryCard(
-                        category = category,
-                        assigned = state.byCategory[category].orEmpty(),
-                        onAdd = { addTo = category },
-                        onRemove = { viewModel.removeCalendar(it, category) },
-                        onKeywords = { cal, kw -> viewModel.setKeywords(cal, category, kw) },
-                        extra = if (category == CalendarCategory.LEAVE) {
-                            { LeavePreviewSection(state.leavePreview, state.byCategory[category].orEmpty()) }
-                        } else {
-                            null
-                        },
+                SettingsPage.HOLIDAYS -> item(key = "holidays") {
+                    HolidaysContent(
+                        state = state,
+                        onPickCountry = { pickCountry = true },
+                        onPickRegion = { pickRegion = true },
+                        onToggle = viewModel::setHolidayExcluded,
                     )
                 }
-            }
 
-            item(key = "about") {
-                HorizontalDivider(Modifier.padding(vertical = 8.dp))
-                TextButton(onClick = onOpenAbout) { Text(stringResource(R.string.about_link)) }
+                SettingsPage.LEAVE, SettingsPage.EVENTS -> calendarItems(
+                    category = if (page == SettingsPage.LEAVE) CalendarCategory.LEAVE else CalendarCategory.EVENTS,
+                    state = state,
+                    viewModel = viewModel,
+                    onAdd = { addTo = it },
+                    onRequestPermission = onRequestPermission,
+                )
             }
         }
     }
@@ -247,6 +189,200 @@ fun SettingsScreen(
             onPick = {
                 viewModel.addCalendar(it, category)
                 addTo = null
+            },
+        )
+    }
+}
+
+/** The short menu: a few grouped rows, each with an icon, a title and a summary of its current state. */
+private fun LazyListScope.menuItems(
+    state: SettingsUiState,
+    onOpenPage: (SettingsPage) -> Unit,
+    onOpenAbout: () -> Unit,
+    onRequestPermission: () -> Unit,
+) {
+    if (!state.loading && !state.hasPermission) {
+        item(key = "permission") {
+            Button(onClick = onRequestPermission) { Text(stringResource(R.string.allow_calendar_access)) }
+        }
+    }
+    item(key = "menu-features") {
+        MenuGroup {
+            MenuRow(R.drawable.ic_notifications, R.string.summary_title, notificationSummary(state)) {
+                onOpenPage(SettingsPage.NOTIFICATION)
+            }
+            MenuRow(R.drawable.ic_skip_next, R.string.quick_buttons_title, quickSummary(state)) {
+                onOpenPage(SettingsPage.QUICK)
+            }
+        }
+    }
+    item(key = "menu-days-off") {
+        MenuGroup {
+            MenuRow(R.drawable.ic_flag, R.string.holidays_title, holidaysSummary(state)) {
+                onOpenPage(SettingsPage.HOLIDAYS)
+            }
+            MenuRow(R.drawable.ic_sun, R.string.cat_leave_title, leaveSummary(state)) {
+                onOpenPage(SettingsPage.LEAVE)
+            }
+        }
+    }
+    item(key = "menu-events") {
+        MenuGroup {
+            MenuRow(R.drawable.ic_event, R.string.cat_events_title, calendarsSummary(state, CalendarCategory.EVENTS)) {
+                onOpenPage(SettingsPage.EVENTS)
+            }
+        }
+    }
+    item(key = "menu-about") {
+        MenuGroup { MenuRow(R.drawable.ic_info, R.string.about_link, null, onOpenAbout) }
+    }
+}
+
+@Composable
+private fun notificationSummary(state: SettingsUiState): String = if (state.summary.enabled) {
+    stringResource(R.string.menu_notification_on, Format.time(state.summary.time))
+} else {
+    stringResource(R.string.menu_notification_off)
+}
+
+@Composable
+private fun quickSummary(state: SettingsUiState): String {
+    val on = quickButtonsOn(state.skipButtons, state.pauseButton)
+    if (on.isEmpty()) return stringResource(R.string.menu_none)
+    val skip = stringResource(R.string.quick_skip)
+    val pause = stringResource(R.string.quick_pause)
+    return on.joinToString(", ") { if (it == QuickButton.SKIP) skip else pause }
+}
+
+@Composable
+private fun holidaysSummary(state: SettingsUiState): String =
+    listOfNotNull(state.holidayCountry?.let(::countryName), state.holidayRegion?.name).joinToString(" · ")
+        .ifEmpty { stringResource(R.string.holidays_country_none) }
+
+@Composable
+private fun calendarsSummary(state: SettingsUiState, category: CalendarCategory): String {
+    val count = state.byCategory[category].orEmpty().size
+    return if (count == 0) {
+        stringResource(R.string.calendars_none)
+    } else {
+        pluralStringResource(R.plurals.calendars_count, count, count)
+    }
+}
+
+/** The leave summary prefers the number of days detected, once it is known. */
+@Composable
+private fun leaveSummary(state: SettingsUiState): String {
+    val preview = state.leavePreview
+    return if (state.byCategory[CalendarCategory.LEAVE].orEmpty().isNotEmpty() && preview != null) {
+        pluralStringResource(R.plurals.leave_preview_days, preview.days, preview.days)
+    } else {
+        calendarsSummary(state, CalendarCategory.LEAVE)
+    }
+}
+
+@Composable
+private fun MenuGroup(content: @Composable ColumnScope.() -> Unit) {
+    Card(Modifier.fillMaxWidth()) { Column(content = content) }
+}
+
+/** A row of the menu: icon, title, an optional one-line summary, and a chevron. */
+@Composable
+private fun MenuRow(@DrawableRes icon: Int, @StringRes title: Int, summary: String?, onClick: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().clickable(role = Role.Button, onClick = onClick).padding(16.dp, 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            Modifier.size(36.dp).background(MaterialTheme.colorScheme.secondaryContainer, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                painterResource(icon),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
+        }
+        Column(Modifier.weight(1f).padding(horizontal = 16.dp)) {
+            Text(stringResource(title), style = MaterialTheme.typography.titleMedium)
+            if (summary != null) {
+                Text(
+                    summary,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        Icon(painterResource(R.drawable.ic_chevron_right), contentDescription = null)
+    }
+}
+
+@Composable
+private fun NotificationCard(summary: SummarySettings, onEnabled: (Boolean) -> Unit, onPickTime: () -> Unit) {
+    Card(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(stringResource(R.string.summary_title), style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.summary_description), style = MaterialTheme.typography.bodySmall)
+                }
+                Switch(checked = summary.enabled, onCheckedChange = onEnabled)
+            }
+            if (summary.enabled) {
+                OutlinedButton(onClick = onPickTime, modifier = Modifier.padding(top = 8.dp)) {
+                    Text(stringResource(R.string.summary_time, Format.time(summary.time)))
+                }
+            }
+        }
+    }
+}
+
+private fun LazyListScope.quickItems(state: SettingsUiState, viewModel: SettingsViewModel) {
+    item(key = "skip-buttons") {
+        SwitchCard(
+            stringResource(R.string.skip_buttons_title),
+            stringResource(R.string.skip_buttons_description),
+            state.skipButtons,
+            viewModel::setSkipButtons,
+        )
+    }
+    item(key = "pause-button") {
+        SwitchCard(
+            stringResource(R.string.pause_button_title),
+            stringResource(R.string.pause_button_description),
+            state.pauseButton,
+            viewModel::setPauseButton,
+        )
+    }
+}
+
+/** A calendar category on its own screen: its calendars, their keywords and, for leave, the detected days. */
+private fun LazyListScope.calendarItems(
+    category: CalendarCategory,
+    state: SettingsUiState,
+    viewModel: SettingsViewModel,
+    onAdd: (CalendarCategory) -> Unit,
+    onRequestPermission: () -> Unit,
+) {
+    if (!state.loading && !state.hasPermission) {
+        item(key = "permission") {
+            Button(onClick = onRequestPermission) { Text(stringResource(R.string.allow_calendar_access)) }
+        }
+    }
+    item(key = "calendars-description") {
+        Text(stringResource(R.string.calendars_description), style = MaterialTheme.typography.bodySmall)
+    }
+    item(key = "cat-$category") {
+        CategoryContent(
+            category = category,
+            assigned = state.byCategory[category].orEmpty(),
+            onAdd = { onAdd(category) },
+            onRemove = { viewModel.removeCalendar(it, category) },
+            onKeywords = { cal, kw -> viewModel.setKeywords(cal, category, kw) },
+            extra = if (category == CalendarCategory.LEAVE) {
+                { LeavePreviewSection(state.leavePreview, state.byCategory[category].orEmpty()) }
+            } else {
+                null
             },
         )
     }
@@ -335,7 +471,7 @@ private fun SwitchCard(title: String, description: String, checked: Boolean, onC
 }
 
 @Composable
-private fun CategoryCard(
+private fun CategoryContent(
     category: CalendarCategory,
     assigned: List<AssignedCalendar>,
     onAdd: () -> Unit,
@@ -345,13 +481,8 @@ private fun CategoryCard(
     extra: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
     val text = CATEGORY_TEXTS.getValue(category)
-    val calendarsText = if (assigned.isEmpty()) {
-        stringResource(R.string.calendars_none)
-    } else {
-        pluralStringResource(R.plurals.calendars_count, assigned.size, assigned.size)
-    }
-    SectionCard(key = category.name, title = stringResource(text.title), subtitle = calendarsText) {
-        Text(stringResource(text.description), style = MaterialTheme.typography.bodySmall)
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(stringResource(text.description), style = MaterialTheme.typography.bodyMedium)
         assigned.forEach { item ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ColorDot(item.calendar.color)
@@ -375,49 +506,6 @@ private fun CategoryCard(
         }
         OutlinedButton(onClick = onAdd) { Text(stringResource(R.string.add_calendar)) }
         extra?.invoke(this)
-    }
-}
-
-/** A card of Settings that opens and closes: collapsed by default, and kept across screen rotation. */
-@Composable
-private fun SectionCard(key: String, title: String, subtitle: String, content: @Composable ColumnScope.() -> Unit) {
-    var expanded by rememberSaveable(key) { mutableStateOf(false) }
-    Card(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(16.dp)) {
-            CategoryHeader(title, subtitle, expanded) { expanded = !expanded }
-            AnimatedVisibility(visible = expanded) {
-                Column(
-                    Modifier.padding(top = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    content = content,
-                )
-            }
-        }
-    }
-}
-
-/** Tappable header of a category: title, a short summary and a chevron. */
-@Composable
-private fun CategoryHeader(title: String, subtitle: String, expanded: Boolean, onToggle: () -> Unit) {
-    val rotation by animateFloatAsState(if (expanded) CHEVRON_OPEN_DEGREES else 0f, label = "chevron")
-    val actionLabel = stringResource(if (expanded) R.string.action_collapse else R.string.action_expand)
-    Row(
-        Modifier.fillMaxWidth().clickable(onClickLabel = actionLabel, role = Role.Button, onClick = onToggle),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(Modifier.weight(1f)) {
-            Text(title, style = MaterialTheme.typography.titleMedium)
-            Text(
-                subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        Icon(
-            painterResource(R.drawable.ic_expand_more),
-            contentDescription = null,
-            modifier = Modifier.rotate(rotation),
-        )
     }
 }
 
@@ -468,17 +556,15 @@ private fun countryName(code: String): String =
 
 /** Public holidays: country, region, and the upcoming holidays one can switch off. */
 @Composable
-private fun HolidaysCard(
+private fun HolidaysContent(
     state: SettingsUiState,
     onPickCountry: () -> Unit,
     onPickRegion: () -> Unit,
     onToggle: (HolidayItem, Boolean) -> Unit,
 ) {
     val country = state.holidayCountry?.let(::countryName)
-    val subtitle = listOfNotNull(country, state.holidayRegion?.name).joinToString(" · ")
-        .ifEmpty { stringResource(R.string.holidays_country_none) }
-    SectionCard(key = "holidays", title = stringResource(R.string.holidays_title), subtitle = subtitle) {
-        Text(stringResource(R.string.holidays_desc), style = MaterialTheme.typography.bodySmall)
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(stringResource(R.string.holidays_desc), style = MaterialTheme.typography.bodyMedium)
         val name = country ?: stringResource(R.string.holidays_country_none)
         val label = if (state.holidayCountryAuto) {
             R.string.holidays_country_label_auto
