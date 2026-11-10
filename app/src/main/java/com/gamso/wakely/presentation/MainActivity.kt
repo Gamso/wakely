@@ -41,6 +41,7 @@ import com.gamso.wakely.presentation.edit.AlarmEditScreen
 import com.gamso.wakely.presentation.edit.AlarmEditViewModel
 import com.gamso.wakely.presentation.events.EventAlarmEditScreen
 import com.gamso.wakely.presentation.events.EventAlarmEditViewModel
+import com.gamso.wakely.presentation.settings.SettingsPage
 import com.gamso.wakely.presentation.settings.SettingsScreen
 import com.gamso.wakely.presentation.settings.SettingsViewModel
 import com.gamso.wakely.presentation.theme.WakelyTheme
@@ -55,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
 private object Routes {
     const val LIST = "list"
-    const val SETTINGS = "settings"
+    val SETTINGS = SettingsPage.MENU.route
     const val ABOUT = "about"
 
     /** The unique suffix guarantees a fresh ViewModel each time an editor opens. */
@@ -70,7 +71,7 @@ private fun WakelyNavigation() {
     val context = LocalContext.current
     var route by rememberSaveable { mutableStateOf(Routes.LIST) }
     BackHandler(enabled = route != Routes.LIST) {
-        route = if (route == Routes.ABOUT) Routes.SETTINGS else Routes.LIST
+        route = parentRoute(route)
     }
 
     // Read through a State so the pre-filled keyword follows the language of the phone.
@@ -156,34 +157,12 @@ private fun WakelyNavigation() {
             )
         }
 
-        route == Routes.SETTINGS -> {
-            val vm: SettingsViewModel = viewModel(
-                key = "settings-$permissionsTick",
-                factory = appViewModelFactory {
-                    SettingsViewModel(
-                        it.calendarRepository,
-                        it.holidayRepository,
-                        it.settingsRepository,
-                        it.updateCalendarFilters,
-                        it.updateSummarySettings,
-                        it.getUpcomingHolidays,
-                        it.getLeavePreview,
-                        it.updateHolidaySettings,
-                        it.deviceRegion,
-                        it.applicationScope,
-                    )
-                },
-            )
-            LaunchedEffect(Unit) { vm.reload() }
-            val state by vm.uiState.collectAsStateWithLifecycle()
-            SettingsScreen(
-                state = state,
-                viewModel = vm,
-                onBack = { route = Routes.LIST },
-                onRequestPermission = requestCalendar,
-                onOpenAbout = { route = Routes.ABOUT },
-            )
-        }
+        SettingsPage.fromRoute(route) != null -> SettingsRoute(
+            page = checkNotNull(SettingsPage.fromRoute(route)),
+            permissionsTick = permissionsTick,
+            onNavigate = { route = it },
+            onRequestPermission = requestCalendar,
+        )
 
         route.startsWith("event/") -> {
             val ruleId = route.split('/').getOrNull(1)?.toLongOrNull()
@@ -225,6 +204,50 @@ private fun WakelyNavigation() {
             AlarmEditScreen(vm, state, onClose = { route = Routes.LIST })
         }
     }
+}
+
+/** Back goes up one level: a topic or About to the Settings menu, then to the alarm list. */
+private fun parentRoute(route: String): String {
+    val page = SettingsPage.fromRoute(route)
+    return if (route == Routes.ABOUT || (page != null && page != SettingsPage.MENU)) Routes.SETTINGS else Routes.LIST
+}
+
+/** One Settings screen. All of them share the view model of the menu, so a change shows everywhere at once. */
+@Composable
+private fun SettingsRoute(
+    page: SettingsPage,
+    permissionsTick: Int,
+    onNavigate: (String) -> Unit,
+    onRequestPermission: () -> Unit,
+) {
+    val vm: SettingsViewModel = viewModel(
+        key = "settings-$permissionsTick",
+        factory = appViewModelFactory {
+            SettingsViewModel(
+                it.calendarRepository,
+                it.holidayRepository,
+                it.settingsRepository,
+                it.updateCalendarFilters,
+                it.updateSummarySettings,
+                it.getUpcomingHolidays,
+                it.getLeavePreview,
+                it.updateHolidaySettings,
+                it.deviceRegion,
+                it.applicationScope,
+            )
+        },
+    )
+    LaunchedEffect(Unit) { vm.reload() }
+    val state by vm.uiState.collectAsStateWithLifecycle()
+    SettingsScreen(
+        page = page,
+        state = state,
+        viewModel = vm,
+        onBack = { onNavigate(if (page == SettingsPage.MENU) Routes.LIST else Routes.SETTINGS) },
+        onOpenPage = { onNavigate(it.route) },
+        onRequestPermission = onRequestPermission,
+        onOpenAbout = { onNavigate(Routes.ABOUT) },
+    )
 }
 
 private fun Context.isGranted(permission: String) =

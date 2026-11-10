@@ -48,6 +48,12 @@
     <string name="tomorrow">tomorrow</string>
     <string name="adapted_time">Adapted time: %1$s</string>
     <string name="skipped_days">Skipped: %1$s</string>
+    <string name="quick_buttons_title">Quick buttons</string>
+    <string name="quick_skip">Skip</string>
+    <string name="quick_pause">Pause</string>
+    <string name="menu_notification_on">On · %1$s</string>
+    <string name="menu_notification_off">Off</string>
+    <string name="menu_none">None</string>
     <string name="skip_buttons_title">“Skip” buttons</string>
     <string name="skip_buttons_description">Show “Skip tomorrow” on your alarms and in the evening notification, to skip a single ring. A ring already skipped can always be undone.</string>
     <string name="skip_next">Skip %1$s</string>
@@ -159,8 +165,6 @@
         <item quantity="one">%d calendar</item>
         <item quantity="other">%d calendars</item>
     </plurals>
-    <string name="action_expand">Expand</string>
-    <string name="action_collapse">Collapse</string>
     <string name="add_calendar">+  Add a calendar</string>
     <string name="add_to_category">Add to “%1$s”</string>
     <string name="no_other_calendar">No other calendar available. Add an account (Google, Outlook…) in Android settings, and turn on its calendar sync.</string>

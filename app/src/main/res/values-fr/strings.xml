@@ -34,6 +34,12 @@
     <string name="tomorrow">demain</string>
     <string name="adapted_time">Heure adaptée : %1$s</string>
     <string name="skipped_days">Ignoré : %1$s</string>
+    <string name="quick_buttons_title">Boutons rapides</string>
+    <string name="quick_skip">Sauter</string>
+    <string name="quick_pause">Pause</string>
+    <string name="menu_notification_on">Activée · %1$s</string>
+    <string name="menu_notification_off">Désactivée</string>
+    <string name="menu_none">Aucun</string>
     <string name="skip_buttons_title">Boutons « Sauter »</string>
     <string name="skip_buttons_description">Affiche « Sauter demain » sur vos réveils et dans la notification du soir, pour ignorer une seule sonnerie. Une sonnerie déjà ignorée peut toujours être rétablie.</string>
     <string name="skip_next">Sauter %1$s</string>
@@ -145,8 +151,6 @@
         <item quantity="one">%d agenda</item>
         <item quantity="other">%d agendas</item>
     </plurals>
-    <string name="action_expand">Développer</string>
-    <string name="action_collapse">Réduire</string>
     <string name="add_calendar">+  Ajouter un agenda</string>
     <string name="add_to_category">Ajouter à « %1$s »</string>
     <string name="no_other_calendar">Aucun autre agenda disponible. Ajoutez un compte (Google, Outlook…) dans les paramètres Android, et activez la synchronisation de son agenda.</string>
