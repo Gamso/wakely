@@ -1,7 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A whole calendar page with the alarm icon (Material Design "alarm", Apache 2.0) inside it, kept well
+     inside the safe zone so no launcher mask cuts it. The white background is a separate layer. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp" android:height="108dp"
     android:viewportWidth="108" android:viewportHeight="108">
-    <group android:translateX="30" android:translateY="30" android:scaleX="2" android:scaleY="2">
+    <path android:fillColor="#FF1E5AA8"
+        android:pathData="M39,31h30a7,7 0 0 1 7,7v34a7,7 0 0 1 -7,7H39a7,7 0 0 1 -7,-7V38a7,7 0 0 1 7,-7z" />
+    <path android:fillColor="#FFF2A33A"
+        android:pathData="M32,38a7,7 0 0 1 7,-7h30a7,7 0 0 1 7,7v4H32z" />
+    <path android:fillColor="#FF1E5AA8" android:strokeColor="#FFFFFFFF" android:strokeWidth="1.6"
+        android:pathData="M41,28.5a2.5,2.5 0 0 1 5,0v5.5a2.5,2.5 0 0 1 -5,0z" />
+    <path android:fillColor="#FF1E5AA8" android:strokeColor="#FFFFFFFF" android:strokeWidth="1.6"
+        android:pathData="M62,28.5a2.5,2.5 0 0 1 5,0v5.5a2.5,2.5 0 0 1 -5,0z" />
+    <group android:translateX="37.2" android:translateY="44.2" android:scaleX="1.4" android:scaleY="1.4">
         <path android:fillColor="#FFFFFFFF"
             android:pathData="M22,5.72l-4.6,-3.86 -1.29,1.53 4.6,3.86L22,5.72zM7.88,3.39L6.6,1.86 2,5.71l1.29,1.53 4.59,-3.85zM12.5,8L11,8v6l4.75,2.85 0.75,-1.23 -4,-2.37L12.5,8zM12,4c-4.97,0 -9,4.03 -9,9s4.02,9 9,9c4.97,0 9,-4.03 9,-9s-4.03,-9 -9,-9zM12,20c-3.87,0 -7,-3.13 -7,-7s3.13,-7 7,-7 7,3.13 7,7 -3.13,7 -7,7z" />
     </group>

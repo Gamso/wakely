@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Themed icon: the calendar page with the alarm cut out of it (one colour, the system tints it). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#FF000000" android:fillType="evenOdd"
+        android:pathData="M39,31h30a7,7 0 0 1 7,7v34a7,7 0 0 1 -7,7H39a7,7 0 0 1 -7,-7V38a7,7 0 0 1 7,-7zM68 52.21l-6.44 -5.4l-1.81 2.14l6.44 5.4L68 52.21zM48.23 48.95L46.44 46.8L40 52.19l1.81 2.14l6.43 -5.39zM54.7 55.4L52.6 55.4v8.4l6.65 3.99l1.05 -1.72l-5.6 -3.32L54.7 55.4zM54 49.8c-6.96 0 -12.6 5.64 -12.6 12.6s5.63 12.6 12.6 12.6c6.96 0 12.6 -5.64 12.6 -12.6s-5.64 -12.6 -12.6 -12.6zM54 72.2c-5.42 0 -9.8 -4.38 -9.8 -9.8s4.38 -9.8 9.8 -9.8s9.8 4.38 9.8 9.8s-4.38 9.8 -9.8 9.8z" />
+    <path android:fillColor="#FF000000"
+        android:pathData="M41,28.5a2.5,2.5 0 0 1 5,0v5.5a2.5,2.5 0 0 1 -5,0zM62,28.5a2.5,2.5 0 0 1 5,0v5.5a2.5,2.5 0 0 1 -5,0z" />
+</vector>
