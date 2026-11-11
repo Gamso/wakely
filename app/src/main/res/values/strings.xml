@@ -151,6 +151,10 @@
     <string name="keywords_from_calendars">Keywords of your calendars</string>
     <string name="keywords_from_calendars_help">Tick the ones this alarm is for. None ticked: every event your calendars accept.</string>
     <string name="calendar_events_keywords_note">These keywords apply to every alarm that uses this calendar.</string>
+    <string name="events_preview_title">Upcoming events</string>
+    <string name="events_preview_empty">No upcoming event with a time in the next 60 days.</string>
+    <string name="events_preview_tasks">Tasks (for example Google Tasks) are not calendar events: they cannot be listed here.</string>
+    <string name="events_preview_hint">Every event with a time of this calendar counts. Add keywords to keep only some.</string>
     <string name="calendars_summary_none">No calendar used</string>
     <string name="calendars_summary_leave">Leave: %1$d</string>
     <string name="calendars_summary_events">Events: %1$d</string>

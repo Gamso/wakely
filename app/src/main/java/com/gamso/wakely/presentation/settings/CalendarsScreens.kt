@@ -38,11 +38,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.gamso.wakely.R
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.DeviceCalendar
+import com.gamso.wakely.domain.usecase.EventPreview
+import com.gamso.wakely.domain.usecase.EventPreviewItem
 import com.gamso.wakely.presentation.common.ColorDot
+import com.gamso.wakely.presentation.common.Format
 
 /**
  * The "Calendars" screen: the calendars the user chose to use, once each, grouped by account, with what each is used
@@ -221,6 +225,7 @@ internal fun LazyListScope.calendarDetailItems(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            EventPreviewSection(state.eventPreview, assigned.keywords.isBlank())
         }
     }
     item(key = "remove-calendar") {
@@ -420,4 +425,77 @@ internal fun rememberCalendarActions(
             }
         },
     )
+}
+
+private const val MAX_EVENTS_SHOWN = 8
+private const val MAX_EVENTS_IGNORED = 3
+
+/** The upcoming events with a time that the event alarms see in this calendar, to check its keywords by eye. */
+@Composable
+private fun EventPreviewSection(preview: EventPreview?, noKeywords: Boolean) {
+    HorizontalDivider(Modifier.padding(vertical = 4.dp))
+    Text(stringResource(R.string.events_preview_title), style = MaterialTheme.typography.titleSmall)
+    when {
+        preview == null -> Text(stringResource(R.string.loading))
+
+        preview.counted.isEmpty() && preview.ignored.isEmpty() -> {
+            Text(
+                stringResource(R.string.events_preview_empty),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(stringResource(R.string.events_preview_tasks), style = MaterialTheme.typography.bodySmall)
+        }
+
+        else -> {
+            preview.counted.take(MAX_EVENTS_SHOWN).forEach { EventRow(it, counted = true) }
+            preview.ignored.take(MAX_EVENTS_IGNORED).forEach { EventRow(it, counted = false) }
+            val hidden = (preview.counted.size - MAX_EVENTS_SHOWN).coerceAtLeast(0) +
+                (preview.ignored.size - MAX_EVENTS_IGNORED).coerceAtLeast(0)
+            if (hidden > 0) {
+                Text(
+                    stringResource(R.string.leave_preview_more, hidden),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (noKeywords && preview.counted.isNotEmpty()) {
+                Text(
+                    stringResource(R.string.events_preview_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun EventRow(item: EventPreviewItem, counted: Boolean) {
+    val color = if (counted) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(1f)) {
+            Text(
+                item.title.ifBlank { stringResource(R.string.ring_default_label) },
+                style = MaterialTheme.typography.bodyMedium,
+                color = color,
+                textDecoration = if (counted) null else TextDecoration.LineThrough,
+            )
+            Text(
+                stringResource(
+                    R.string.leave_day_hours,
+                    Format.dayDate(item.start.toLocalDate()),
+                    Format.time(item.start.toLocalTime()),
+                    Format.time(item.end.toLocalTime()),
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Text(
+            stringResource(if (counted) R.string.leave_counted else R.string.leave_ignored),
+            style = MaterialTheme.typography.labelSmall,
+            color = if (counted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
 }
