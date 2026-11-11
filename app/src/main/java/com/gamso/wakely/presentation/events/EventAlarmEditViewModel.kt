@@ -15,6 +15,7 @@ import com.gamso.wakely.domain.repository.CalendarRepository
 import com.gamso.wakely.domain.repository.EventAlarmRepository
 import com.gamso.wakely.domain.repository.SettingsRepository
 import com.gamso.wakely.domain.repository.TimeProvider
+import com.gamso.wakely.domain.usecase.AlarmKeywords
 import com.gamso.wakely.domain.usecase.CalendarLogic
 import com.gamso.wakely.domain.usecase.DeleteEventAlarmUseCase
 import com.gamso.wakely.domain.usecase.GetRuleEventsUseCase
@@ -33,6 +34,8 @@ data class EventAlarmEditUiState(
     val calendars: List<DeviceCalendar> = emptyList(),
     /** Calendars of the "events" category, used when the rule selects none. */
     val eventCategoryKeys: Set<String> = emptySet(),
+    /** Keywords of the calendars the rule watches (and its own), to tick in a list instead of retyping them. */
+    val keywordOptions: List<String> = emptyList(),
     /** Next rings of the rule as currently edited. */
     val upcoming: List<EventRing> = emptyList(),
     /** Upcoming timed events the user can bind the rule to. */
@@ -95,6 +98,7 @@ class EventAlarmEditViewModel(
         val keywords = parseKeywords(rule.keywords)
         _uiState.update {
             it.copy(
+                keywordOptions = AlarmKeywords.options(rule, eventFilters),
                 upcoming = CalendarLogic.upcomingEventRings(rule, now, events, eventFilters).take(PREVIEW_COUNT),
                 candidates = events.filter { e ->
                     !e.allDay && e.sourceKey in sources && e.start.isAfter(now) && CalendarLogic.matches(e, keywords)
@@ -109,6 +113,7 @@ class EventAlarmEditViewModel(
         it.copy(sourceKeys = if (key in it.sourceKeys) it.sourceKeys - key else it.sourceKeys + key)
     }
     fun setKeywords(keywords: String) = edit { it.copy(keywords = keywords) }
+    fun toggleKeyword(word: String) = edit { it.copy(keywords = AlarmKeywords.toggle(it.keywords, word)) }
     fun setFirstEventOfDayOnly(value: Boolean) = edit { it.copy(firstEventOfDayOnly = value) }
     fun setSingleEvent(event: CalendarEvent?) = edit {
         it.copy(singleEvent = event?.let { e -> EventRef(e.sourceKey, e.title, e.start) })

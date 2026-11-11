@@ -154,6 +154,10 @@
     <string name="calendar_remove">Remove this calendar</string>
     <string name="calendar_remove_title">Remove this calendar?</string>
     <string name="calendar_unused_warning">No alarm uses this calendar. Choose what it is used for, or remove it.</string>
+    <string name="keywords_all_events">All events</string>
+    <string name="keywords_from_calendars">Keywords of your calendars</string>
+    <string name="keywords_from_calendars_help">Tick the ones this alarm is for. None ticked: every event your calendars accept.</string>
+    <string name="calendar_events_keywords_note">These keywords apply to every alarm that uses this calendar.</string>
     <string name="calendars_summary_none">No calendar used</string>
     <string name="calendars_summary_leave">Leave: %1$d</string>
     <string name="calendars_summary_events">Events: %1$d</string>

@@ -140,6 +140,10 @@
     <string name="calendar_remove">Retirer cet agenda</string>
     <string name="calendar_remove_title">Retirer cet agenda ?</string>
     <string name="calendar_unused_warning">Aucune alarme n\'utilise cet agenda. Choisissez à quoi il sert, ou retirez-le.</string>
+    <string name="keywords_all_events">Tous les événements</string>
+    <string name="keywords_from_calendars">Mots-clés de vos agendas</string>
+    <string name="keywords_from_calendars_help">Cochez ceux de cette alarme. Aucun coché : tous les événements acceptés par vos agendas.</string>
+    <string name="calendar_events_keywords_note">Ces mots-clés s\'appliquent à toutes les alarmes qui utilisent cet agenda.</string>
     <string name="calendars_summary_none">Aucun agenda utilisé</string>
     <string name="calendars_summary_leave">Congés : %1$d</string>
     <string name="calendars_summary_events">Événements : %1$d</string>
