@@ -60,7 +60,7 @@ data class EventAlarmItemUi(
     val calendarNames: List<String>,
     val skippedAt: LocalDateTime? = null,
 ) {
-    val canSkip: Boolean get() = rule.enabled && rule.singleEvent == null
+    val canSkip: Boolean get() = rule.enabled
 }
 
 data class AlarmListUiState(

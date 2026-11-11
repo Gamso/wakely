@@ -68,7 +68,6 @@ import com.gamso.wakely.presentation.sound.SoundPickerDialog
 fun EventAlarmEditScreen(viewModel: EventAlarmEditViewModel, state: EventAlarmEditUiState, onClose: () -> Unit) {
     LaunchedEffect(state.done) { if (state.done) onClose() }
     var pickSound by remember { mutableStateOf(false) }
-    var pickEvent by remember { mutableStateOf(false) }
     val rule = state.alarm
 
     Scaffold(
@@ -112,7 +111,7 @@ fun EventAlarmEditScreen(viewModel: EventAlarmEditViewModel, state: EventAlarmEd
 
             HorizontalDivider()
             Text(stringResource(R.string.which_events), style = MaterialTheme.typography.titleMedium)
-            EventSelection(state, viewModel, onPickEvent = { pickEvent = true })
+            EventSelection(state, viewModel)
 
             HorizontalDivider()
             UpcomingRings(state)
@@ -145,16 +144,6 @@ fun EventAlarmEditScreen(viewModel: EventAlarmEditViewModel, state: EventAlarmEd
             onConfirm = viewModel::setSound,
         )
     }
-    if (pickEvent) {
-        EventPickerDialog(
-            state = state,
-            onPick = {
-                viewModel.setSingleEvent(it)
-                pickEvent = false
-            },
-            onDismiss = { pickEvent = false },
-        )
-    }
 }
 
 @Composable
@@ -173,30 +162,10 @@ private fun MinutesField(minutes: Int, onChange: (Int) -> Unit) {
     )
 }
 
+/** The calendars the rule watches and, among their keywords, the ones it is for. */
 @Composable
-private fun dateTime(at: java.time.LocalDateTime) =
-    stringResource(R.string.at_time, Format.dayDate(at.toLocalDate()), Format.time(at.toLocalTime()))
-
-/** Either the single bound event, or the calendar / keyword filters. */
-@Composable
-private fun EventSelection(state: EventAlarmEditUiState, viewModel: EventAlarmEditViewModel, onPickEvent: () -> Unit) {
+private fun EventSelection(state: EventAlarmEditUiState, viewModel: EventAlarmEditViewModel) {
     val rule = state.alarm
-    val single = rule.singleEvent
-    if (single != null) {
-        Card(Modifier.fillMaxWidth()) {
-            Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text(stringResource(R.string.specific_event), style = MaterialTheme.typography.labelMedium)
-                    Text(single.title, fontWeight = FontWeight.SemiBold)
-                    Text(dateTime(single.start))
-                }
-                TextButton(onClick = {
-                    viewModel.setSingleEvent(null)
-                }) { Text(stringResource(R.string.action_remove)) }
-            }
-        }
-        return
-    }
     Text(stringResource(R.string.calendars), style = MaterialTheme.typography.labelLarge)
     // The calendars of the "Events" category are the pool the rule chooses from.
     val pool = state.calendars.filter { it.key in state.eventCategoryKeys }
@@ -224,11 +193,6 @@ private fun EventSelection(state: EventAlarmEditUiState, viewModel: EventAlarmEd
         }
     }
     KeywordDropdown(state, viewModel)
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(stringResource(R.string.first_event_only), modifier = Modifier.weight(1f))
-        Switch(checked = rule.firstEventOfDayOnly, onCheckedChange = viewModel::setFirstEventOfDayOnly)
-    }
-    OutlinedButton(onClick = onPickEvent) { Text(stringResource(R.string.pick_specific_event)) }
 }
 
 /**
@@ -286,40 +250,4 @@ private fun UpcomingRings(state: EventAlarmEditUiState) {
             Text(stringResource(R.string.fmt_paren, ring.event.title, Format.time(ring.event.start.toLocalTime())))
         }
     }
-}
-
-@Composable
-private fun EventPickerDialog(state: EventAlarmEditUiState, onPick: (CalendarEvent) -> Unit, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {},
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) } },
-        title = { Text(stringResource(R.string.pick_event_title)) },
-        text = {
-            if (state.candidates.isEmpty()) {
-                Text(stringResource(R.string.no_events_in_calendars))
-            } else {
-                Column(Modifier.heightIn(max = 440.dp).verticalScroll(rememberScrollState())) {
-                    state.candidates.forEach { event ->
-                        Column(Modifier.fillMaxWidth().clickable { onPick(event) }.padding(vertical = 10.dp)) {
-                            Text(
-                                event.title.ifBlank {
-                                    stringResource(R.string.untitled)
-                                },
-                                fontWeight = FontWeight.SemiBold,
-                            )
-                            Text(
-                                stringResource(
-                                    R.string.fmt_dot,
-                                    dateTime(event.start),
-                                    state.calendarName(event.sourceKey),
-                                ),
-                                style = MaterialTheme.typography.bodySmall,
-                            )
-                        }
-                    }
-                }
-            }
-        },
-    )
 }

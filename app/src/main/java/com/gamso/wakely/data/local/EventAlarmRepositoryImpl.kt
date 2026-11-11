@@ -3,9 +3,7 @@ package com.gamso.wakely.data.local
 import android.content.Context
 import com.gamso.wakely.domain.model.Alarm
 import com.gamso.wakely.domain.model.EventAlarm
-import com.gamso.wakely.domain.model.EventRef
 import com.gamso.wakely.domain.repository.EventAlarmRepository
-import java.time.LocalDateTime
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,13 +62,6 @@ class EventAlarmRepositoryImpl(context: Context) : EventAlarmRepository {
         .put("minutesBefore", minutesBefore)
         .put("sources", JSONArray(sourceKeys.toList()))
         .put("keywords", keywords)
-        .put("firstOfDay", firstEventOfDayOnly)
-        .put(
-            "single",
-            singleEvent?.let {
-                JSONObject().put("source", it.sourceKey).put("title", it.title).put("start", it.start.toString())
-            },
-        )
         .put("sound", sound?.toJson())
         .put("snoozeMinutes", snoozeMinutes)
         .put("volumeRampSeconds", volumeRampSeconds)
@@ -78,17 +69,21 @@ class EventAlarmRepositoryImpl(context: Context) : EventAlarmRepository {
 
     private fun JSONObject.toEventAlarm(): EventAlarm {
         val sources = optJSONArray("sources")
+        var sourceKeys = (0 until (sources?.length() ?: 0)).map { sources!!.getString(it) }.toSet()
+        var keywords = optString("keywords")
+        // Alarms saved with the removed "specific event" option: keep them on that calendar and that title, rather
+        // than letting them ring before every event.
+        optJSONObject("single")?.let {
+            sourceKeys = setOf(it.getString("source"))
+            keywords = it.getString("title").replace(",", " ")
+        }
         return EventAlarm(
             id = getLong("id"),
             label = optString("label"),
             enabled = optBoolean("enabled", true),
             minutesBefore = optInt("minutesBefore", EventAlarm.DEFAULT_MINUTES_BEFORE),
-            sourceKeys = (0 until (sources?.length() ?: 0)).map { sources!!.getString(it) }.toSet(),
-            keywords = optString("keywords"),
-            firstEventOfDayOnly = optBoolean("firstOfDay", true),
-            singleEvent = optJSONObject("single")?.let {
-                EventRef(it.getString("source"), it.getString("title"), LocalDateTime.parse(it.getString("start")))
-            },
+            sourceKeys = sourceKeys,
+            keywords = keywords,
             sound = optJSONObject("sound")?.toAlarmSound(),
             snoozeMinutes = optInt("snoozeMinutes", Alarm.DEFAULT_SNOOZE_MINUTES),
             volumeRampSeconds = optInt("volumeRampSeconds", 0),

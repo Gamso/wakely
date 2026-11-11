@@ -40,9 +40,7 @@ class SkipNextRingUseCase(
 
     private suspend fun canSkip(key: RingKey): Boolean = when (key.kind) {
         RingKind.ALARM -> alarmRepository.getAlarm(key.id)?.let { it.enabled && it.isRepeating } == true
-
-        RingKind.EVENT -> eventAlarmRepository.getEventAlarm(key.id)?.let { it.enabled && it.singleEvent == null } ==
-            true
+        RingKind.EVENT -> eventAlarmRepository.getEventAlarm(key.id)?.let { it.enabled } == true
     }
 
     private suspend fun nextRing(key: RingKey, now: LocalDateTime): LocalDateTime? {

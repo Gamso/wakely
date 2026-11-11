@@ -124,22 +124,11 @@ object CalendarLogic {
         val sources = ruleSources(rule, eventFilters)
         val calendarKeywords = eventFilters.associate { it.sourceKey to it.keywordList() }
         val ruleKeywords = parseKeywords(rule.keywords)
-        val single = rule.singleEvent
-        val candidates = events.filter { e ->
+        return events.filter { e ->
             !e.allDay && e.sourceKey in sources &&
                 matches(e, calendarKeywords[e.sourceKey].orEmpty()) &&
-                matches(e, ruleKeywords) &&
-                (
-                    single == null ||
-                        (e.sourceKey == single.sourceKey && e.start == single.start && e.title == single.title)
-                    )
-        }
-        val selected = if (rule.firstEventOfDayOnly && single == null) {
-            candidates.groupBy { it.start.toLocalDate() }.values.map { day -> day.minBy { it.start } }
-        } else {
-            candidates
-        }
-        return selected.sortedBy { it.start }
+                matches(e, ruleKeywords)
+        }.sortedBy { it.start }
     }
 
     /** Next ring of an event rule strictly after [after]. */

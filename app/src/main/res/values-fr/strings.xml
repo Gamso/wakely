@@ -56,8 +56,6 @@
     <string name="no_next_ring">Aucune sonnerie prévue</string>
     <string name="day_off_default">Jour non travaillé</string>
     <string name="minutes_before">%1$s avant</string>
-    <string name="event_what_single">« %1$s » du %2$s</string>
-    <string name="event_what_first">le premier événement de la journée</string>
     <string name="event_what_each">chaque événement</string>
     <string name="no_calendar">aucun agenda</string>
     <string name="keywords_summary">mots-clés : %1$s</string>
@@ -107,19 +105,14 @@
     <string name="how_long_before">Sonner combien de temps avant ?</string>
     <string name="minutes_field">Ou un nombre de minutes</string>
     <string name="which_events">Quels événements ?</string>
-    <string name="specific_event">Événement précis</string>
     <string name="calendars">Agendas</string>
     <string name="calendars_hint">Aucun coché = tous les agendas utilisés pour les événements (%1$s).</string>
     <string name="none_lower">aucun</string>
     <string name="keywords_optional">Mots-clés (facultatif)</string>
     <string name="keywords_help">Séparés par des virgules. Vide = tous les événements.</string>
-    <string name="first_event_only">Seulement le premier événement de la journée</string>
-    <string name="pick_specific_event">Choisir un événement précis…</string>
     <string name="upcoming_rings">Prochaines sonneries</string>
     <string name="no_matching_events">Aucun événement correspondant dans les 60 prochains jours.</string>
     <string name="delete_rule">Supprimer cette règle</string>
-    <string name="pick_event_title">Choisir un événement</string>
-    <string name="no_events_in_calendars">Aucun événement à venir dans les agendas sélectionnés.</string>
     <string name="untitled">(sans titre)</string>
 
     <!-- Settings -->
