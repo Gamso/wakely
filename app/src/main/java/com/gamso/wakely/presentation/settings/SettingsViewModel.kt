@@ -24,6 +24,7 @@ import com.gamso.wakely.domain.usecase.GetEventPreviewUseCase
 import com.gamso.wakely.domain.usecase.GetLeavePreviewUseCase
 import com.gamso.wakely.domain.usecase.GetUpcomingHolidaysUseCase
 import com.gamso.wakely.domain.usecase.LeavePreview
+import com.gamso.wakely.domain.usecase.PatternLock
 import com.gamso.wakely.domain.usecase.UpdateCalendarFiltersUseCase
 import com.gamso.wakely.domain.usecase.UpdateHolidaySettingsUseCase
 import com.gamso.wakely.domain.usecase.UpdateSummarySettingsUseCase
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -53,6 +55,14 @@ private data class Extras(
     val events: EventPreview?,
 )
 
+/** The simple switches and the summary settings, read together. */
+data class Flags(
+    val summary: SummarySettings,
+    val skipButtons: Boolean,
+    val pauseButton: Boolean,
+    val unlockToStop: Boolean,
+)
+
 /** A calendar assigned to a category, with its keyword filter. */
 data class AssignedCalendar(val calendar: DeviceCalendar, val keywords: String)
 
@@ -61,6 +71,8 @@ data class SettingsUiState(
     val hasPermission: Boolean = true,
     val summary: SummarySettings = SummarySettings(),
     val skipButtons: Boolean = true,
+    /** Stopping or snoozing a ringing alarm asks for the pattern. */
+    val unlockToStop: Boolean = false,
     /** The days off the leave calendars give with their keywords; null while loading. */
     val leavePreview: LeavePreview? = null,
     val pauseButton: Boolean = true,
@@ -160,7 +172,8 @@ class SettingsViewModel(
             settingsRepository.observeSummarySettings(),
             settingsRepository.observeSkipButtons(),
             settingsRepository.observePauseButton(),
-        ) { summary, skip, pause -> Triple(summary, skip, pause) },
+            settingsRepository.observeUnlockPattern().map { it != null },
+        ) { summary, skip, pause, unlock -> Flags(summary, skip, pause, unlock) },
         settingsRepository.observeHolidaySettings(),
         combine(
             upcoming,
@@ -169,11 +182,18 @@ class SettingsViewModel(
             eventAlarmRepository.observeEventAlarms(),
             eventPreview,
         ) { h, l, c, r, e -> Extras(h, l, c, r, e) },
-    ) { cals, filters, (summary, skipButtons, pauseButton), holiday, extras ->
+    ) { cals, filters, flags, holiday, extras ->
+        val (summary, skipButtons, pauseButton) = flags
+        val unlockToStop = flags.unlockToStop
         if (cals == null ||
             filters == null
         ) {
-            return@combine SettingsUiState(summary = summary, skipButtons = skipButtons, pauseButton = pauseButton)
+            return@combine SettingsUiState(
+                summary = summary,
+                skipButtons = skipButtons,
+                pauseButton = pauseButton,
+                unlockToStop = unlockToStop,
+            )
         }
         val byKey = cals.associateBy { it.key }
         val supported = holidayRepository.countries()
@@ -186,6 +206,7 @@ class SettingsViewModel(
             summary = summary,
             skipButtons = skipButtons,
             pauseButton = pauseButton,
+            unlockToStop = unlockToStop,
             calendars = cals,
             byCategory = CalendarCategory.entries.associateWith { category ->
                 filters.filter { it.category == category }
@@ -216,6 +237,11 @@ class SettingsViewModel(
 
     fun setPauseButton(enabled: Boolean) {
         applicationScope.launch { settingsRepository.setPauseButton(enabled) }
+    }
+
+    /** Asks for [dots] to be drawn to stop an alarm from now on, or for nothing when null. */
+    fun setUnlockPattern(dots: List<Int>?) {
+        applicationScope.launch { settingsRepository.setUnlockPattern(dots?.let { PatternLock.create(it) }) }
     }
 
     fun setSkipButtons(enabled: Boolean) {

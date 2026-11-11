@@ -28,6 +28,7 @@ import com.gamso.wakely.domain.usecase.VolumeRamp
 import com.gamso.wakely.presentation.ring.RingActivity
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.runBlocking
 
 /** Foreground service that plays the alarm sound and vibrates. */
 class AlarmService : Service() {
@@ -159,6 +160,9 @@ class AlarmService : Service() {
             .setOngoing(true)
             .setContentIntent(fullScreen)
             .setFullScreenIntent(fullScreen, true)
+        // With a pattern asked, the notification has no buttons: they would get around it, so stopping goes through
+        // the ring screen.
+        if (runBlocking { appContainer.settingsRepository.getUnlockPattern() } != null) return builder.build()
         if (ringing.snoozeMinutes > 0) {
             builder.addAction(
                 0,

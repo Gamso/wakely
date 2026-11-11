@@ -28,6 +28,8 @@ and can wake you a set time before your appointments.
 - **Alarms before an event**: ring "X minutes before" your calendar events, all of them or only those matching
   the keywords you tick.
 - **Skip the next ring** in one tap, from the alarm card or from the evening notification.
+- **Pattern to stop**: an optional setting asks you to draw a pattern of your own, not the one of your phone, before a
+  ringing alarm can be stopped or snoozed, so you cannot switch it off half asleep.
 - **Pause every alarm** until a date, for a trip for example. They resume by themselves.
 - **Skip if I'm already up**: if you have already walked a few dozen steps before the alarm, it does not ring
   that day (the step counter of your phone, nothing leaves it). It can cover every ring, or only the ones of

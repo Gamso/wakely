@@ -9,6 +9,7 @@ import com.gamso.wakely.domain.model.DayOffMode
 import com.gamso.wakely.domain.model.DeviceCalendar
 import com.gamso.wakely.domain.model.EventAlarm
 import com.gamso.wakely.domain.model.HolidaySettings
+import com.gamso.wakely.domain.model.PatternHash
 import com.gamso.wakely.domain.model.RingKey
 import com.gamso.wakely.domain.model.RingKind
 import com.gamso.wakely.domain.model.SkipIfAwake
@@ -83,6 +84,9 @@ internal class FakeSettings(initial: List<CalendarFilter> = emptyList()) : Setti
 
     override fun observePauseButton(): Flow<Boolean> = flowOf(true)
     override suspend fun setPauseButton(enabled: Boolean) = Unit
+    override fun observeUnlockPattern(): Flow<PatternHash?> = flowOf(null)
+    override suspend fun getUnlockPattern(): PatternHash? = null
+    override suspend fun setUnlockPattern(pattern: PatternHash?) = Unit
     override fun observeSkipButtons(): Flow<Boolean> = flowOf(true)
     override suspend fun getSkipButtons() = true
     override suspend fun setSkipButtons(enabled: Boolean) = Unit
