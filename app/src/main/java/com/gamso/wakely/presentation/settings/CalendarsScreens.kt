@@ -206,6 +206,11 @@ internal fun LazyListScope.calendarDetailItems(
             KeywordsField(assigned.keywords, R.string.cat_events_hint) {
                 onKeywords(calendar, CalendarCategory.EVENTS, it)
             }
+            Text(
+                stringResource(R.string.calendar_events_keywords_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
             val used = state.usedBy(calendar)
             Text(
                 if (used == 0) {
