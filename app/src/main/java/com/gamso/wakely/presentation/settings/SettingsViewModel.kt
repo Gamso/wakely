@@ -16,8 +16,11 @@ import com.gamso.wakely.domain.repository.DeviceRegion
 import com.gamso.wakely.domain.repository.EventAlarmRepository
 import com.gamso.wakely.domain.repository.HolidayRepository
 import com.gamso.wakely.domain.repository.SettingsRepository
+import com.gamso.wakely.domain.repository.TimeProvider
 import com.gamso.wakely.domain.usecase.CalendarLogic
+import com.gamso.wakely.domain.usecase.EventPreview
 import com.gamso.wakely.domain.usecase.ForgetEventCalendarUseCase
+import com.gamso.wakely.domain.usecase.GetEventPreviewUseCase
 import com.gamso.wakely.domain.usecase.GetLeavePreviewUseCase
 import com.gamso.wakely.domain.usecase.GetUpcomingHolidaysUseCase
 import com.gamso.wakely.domain.usecase.LeavePreview
@@ -47,6 +50,7 @@ private data class Extras(
     val leave: LeavePreview?,
     val calendar: LeavePreview?,
     val rules: List<EventAlarm>,
+    val events: EventPreview?,
 )
 
 /** A calendar assigned to a category, with its keyword filter. */
@@ -79,6 +83,8 @@ data class SettingsUiState(
     val eventAlarmUse: Map<String, Int> = emptyMap(),
     /** The days off the calendar open in Settings gives with its keywords; null while loading. */
     val calendarPreview: LeavePreview? = null,
+    /** The upcoming events of the calendar open in Settings that its keywords accept; null while loading. */
+    val eventPreview: EventPreview? = null,
 ) {
     fun usedBy(calendar: DeviceCalendar): Int = eventAlarmUse[calendar.key] ?: 0
 
@@ -101,6 +107,8 @@ class SettingsViewModel(
     private val updateSummarySettings: UpdateSummarySettingsUseCase,
     private val getUpcomingHolidays: GetUpcomingHolidaysUseCase,
     private val getLeavePreview: GetLeavePreviewUseCase,
+    private val getEventPreview: GetEventPreviewUseCase,
+    private val time: TimeProvider,
     private val eventAlarmRepository: EventAlarmRepository,
     private val forgetEventCalendar: ForgetEventCalendarUseCase,
     private val updateHolidaySettings: UpdateHolidaySettingsUseCase,
@@ -127,6 +135,19 @@ class SettingsViewModel(
         }
         .onStart { emit(null) }
 
+    // Same for the upcoming events the event alarms see in that calendar.
+    private val eventPreview = combine(draft.filterNotNull(), openCalendar) { filters, key -> filters to key }
+        .debounce(PREVIEW_DEBOUNCE_MS)
+        .mapLatest<Pair<List<CalendarFilter>, String?>, EventPreview?> { (filters, key) ->
+            key?.let {
+                val keywords = filters.firstOrNull { f -> f.sourceKey == it && f.category == CalendarCategory.EVENTS }
+                    ?.keywords
+                // No preview for a calendar that is not used for events.
+                keywords?.let { words -> getEventPreview(key, words, time.now()) }
+            }
+        }
+        .onStart { emit(null) }
+
     private val leavePreview = draft.filterNotNull()
         .debounce(PREVIEW_DEBOUNCE_MS)
         .mapLatest<List<CalendarFilter>, LeavePreview?> { getLeavePreview(it, LocalDate.now()) }
@@ -141,9 +162,13 @@ class SettingsViewModel(
             settingsRepository.observePauseButton(),
         ) { summary, skip, pause -> Triple(summary, skip, pause) },
         settingsRepository.observeHolidaySettings(),
-        combine(upcoming, leavePreview, calendarPreview, eventAlarmRepository.observeEventAlarms()) { h, l, c, r ->
-            Extras(h, l, c, r)
-        },
+        combine(
+            upcoming,
+            leavePreview,
+            calendarPreview,
+            eventAlarmRepository.observeEventAlarms(),
+            eventPreview,
+        ) { h, l, c, r, e -> Extras(h, l, c, r, e) },
     ) { cals, filters, (summary, skipButtons, pauseButton), holiday, extras ->
         if (cals == null ||
             filters == null
@@ -175,6 +200,7 @@ class SettingsViewModel(
             upcomingHolidays = extras.upcomingHolidays,
             leavePreview = extras.leave,
             calendarPreview = extras.calendar,
+            eventPreview = extras.events,
             eventAlarmUse = filters.filter { it.category == CalendarCategory.EVENTS }.associate { pool ->
                 pool.sourceKey to CalendarLogic.rulesUsing(pool.sourceKey, extras.rules, filters).size
             },

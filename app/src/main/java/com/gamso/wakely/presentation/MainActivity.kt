@@ -237,6 +237,8 @@ private fun SettingsRoute(
                 it.updateSummarySettings,
                 it.getUpcomingHolidays,
                 it.getLeavePreview,
+                it.getEventPreview,
+                it.timeProvider,
                 it.eventAlarmRepository,
                 it.forgetEventCalendar,
                 it.updateHolidaySettings,

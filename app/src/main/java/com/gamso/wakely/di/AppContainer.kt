@@ -35,6 +35,7 @@ import com.gamso.wakely.domain.usecase.DeleteEventAlarmUseCase
 import com.gamso.wakely.domain.usecase.ForgetEventCalendarUseCase
 import com.gamso.wakely.domain.usecase.GetDayPlanUseCase
 import com.gamso.wakely.domain.usecase.GetDaysOffUseCase
+import com.gamso.wakely.domain.usecase.GetEventPreviewUseCase
 import com.gamso.wakely.domain.usecase.GetLeavePreviewUseCase
 import com.gamso.wakely.domain.usecase.GetRingInfoUseCase
 import com.gamso.wakely.domain.usecase.GetRuleEventsUseCase
@@ -93,6 +94,7 @@ class AppContainer(context: Context) {
     val getDaysOff = GetDaysOffUseCase(calendarRepository, holidayRepository, dayOffSources)
     val forgetEventCalendar = ForgetEventCalendarUseCase(eventAlarmRepository)
     val migrateEventCalendars = MigrateEventCalendarsUseCase(settingsRepository, eventAlarmRepository)
+    val getEventPreview = GetEventPreviewUseCase(calendarRepository)
     val getLeavePreview = GetLeavePreviewUseCase(calendarRepository)
     val getUpcomingHolidays = GetUpcomingHolidaysUseCase(holidayRepository, dayOffSources)
     val getRuleEvents = GetRuleEventsUseCase(calendarRepository, settingsRepository)
