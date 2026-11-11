@@ -8,6 +8,7 @@ enum class SettingsPage(val route: String, @StringRes val title: Int) {
     MENU("settings", R.string.settings_title),
     NOTIFICATION("settings/notification", R.string.summary_title),
     QUICK("settings/quick", R.string.quick_buttons_title),
+    RING("settings/ring", R.string.ring_settings_title),
     HOLIDAYS("settings/holidays", R.string.holidays_title),
     CALENDARS("settings/calendars", R.string.calendars_title),
 

@@ -65,6 +65,7 @@ import com.gamso.wakely.domain.usecase.LeavePreview
 import com.gamso.wakely.presentation.common.BackButton
 import com.gamso.wakely.presentation.common.ColorDot
 import com.gamso.wakely.presentation.common.Format
+import com.gamso.wakely.presentation.common.PatternSetupDialog
 import com.gamso.wakely.presentation.common.TimePickerDialog
 import com.gamso.wakely.presentation.common.dayOffReasonText
 import java.util.Locale
@@ -142,6 +143,8 @@ fun SettingsScreen(
                 }
 
                 SettingsPage.QUICK -> quickItems(state, viewModel)
+
+                SettingsPage.RING -> ringItems(state, viewModel)
 
                 SettingsPage.HOLIDAYS -> item(key = "holidays") {
                     HolidaysContent(
@@ -229,6 +232,11 @@ private fun LazyListScope.menuItems(
             MenuRow(R.drawable.ic_skip_next, R.string.quick_buttons_title, quickSummary(state)) {
                 onOpenPage(SettingsPage.QUICK)
             }
+            MenuRow(
+                R.drawable.ic_alarm,
+                R.string.ring_settings_title,
+                stringResource(if (state.unlockToStop) R.string.menu_unlock_on else R.string.menu_unlock_off),
+            ) { onOpenPage(SettingsPage.RING) }
         }
     }
     item(key = "menu-holidays") {
@@ -344,6 +352,32 @@ private fun NotificationCard(summary: SummarySettings, onEnabled: (Boolean) -> U
                     Text(stringResource(R.string.summary_time, Format.time(summary.time)))
                 }
             }
+        }
+    }
+}
+
+/** What it takes to stop a ringing alarm: a pattern of the app, chosen here. */
+private fun LazyListScope.ringItems(state: SettingsUiState, viewModel: SettingsViewModel) {
+    item(key = "unlock-to-stop") {
+        var setup by rememberSaveable { mutableStateOf(false) }
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            SwitchCard(
+                stringResource(R.string.unlock_to_stop_title),
+                stringResource(R.string.unlock_to_stop_description),
+                state.unlockToStop,
+            ) { on -> if (on) setup = true else viewModel.setUnlockPattern(null) }
+            if (state.unlockToStop) {
+                OutlinedButton(onClick = { setup = true }) { Text(stringResource(R.string.pattern_change)) }
+            }
+        }
+        if (setup) {
+            PatternSetupDialog(
+                onSave = {
+                    viewModel.setUnlockPattern(it)
+                    setup = false
+                },
+                onDismiss = { setup = false },
+            )
         }
     }
 }

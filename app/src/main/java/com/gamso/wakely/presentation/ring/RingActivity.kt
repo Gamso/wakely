@@ -29,21 +29,32 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gamso.wakely.R
+import com.gamso.wakely.domain.model.PatternHash
+import com.gamso.wakely.domain.repository.SettingsRepository
 import com.gamso.wakely.framework.AlarmService
 import com.gamso.wakely.framework.RingingAlarm
 import com.gamso.wakely.framework.RingingStateHolder
 import com.gamso.wakely.presentation.common.Format
+import com.gamso.wakely.presentation.common.PatternChallengeDialog
 import com.gamso.wakely.presentation.common.appViewModelFactory
 import com.gamso.wakely.presentation.theme.WakelyTheme
 import java.time.LocalTime
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
-class RingViewModel(ringingState: RingingStateHolder) : ViewModel() {
+class RingViewModel(ringingState: RingingStateHolder, private val settings: SettingsRepository) : ViewModel() {
     val ringing: StateFlow<RingingAlarm?> = ringingState.ringing
+
+    /** The pattern to draw before stopping or snoozing, or null when none is asked. */
+    suspend fun pattern(): PatternHash? = settings.getUnlockPattern()
 }
+
+/** A stop or a snooze waiting for the pattern to be drawn. */
+private class Challenge(val stored: PatternHash, val action: () -> Unit)
 
 /** Full-screen UI shown (even when locked) while the alarm rings. */
 class RingActivity : ComponentActivity() {
@@ -64,22 +75,47 @@ class RingActivity : ComponentActivity() {
 
         setContent {
             WakelyTheme {
-                val vm: RingViewModel = viewModel(factory = appViewModelFactory { RingViewModel(it.ringingState) })
+                val vm: RingViewModel = viewModel(
+                    factory = appViewModelFactory { RingViewModel(it.ringingState, it.settingsRepository) },
+                )
                 val ringing by vm.ringing.collectAsStateWithLifecycle()
                 LaunchedEffect(ringing) { if (ringing == null) finish() }
+                var challenge by remember { mutableStateOf<Challenge?>(null) }
+
+                // The pattern is asked first when there is one, otherwise the action runs at once.
+                fun askThen(action: () -> Unit) {
+                    lifecycleScope.launch {
+                        val stored = vm.pattern()
+                        if (stored == null) action() else challenge = Challenge(stored, action)
+                    }
+                }
                 RingScreen(
                     label = ringing?.label.orEmpty(),
                     eventTime = ringing?.eventTime,
                     snoozeMinutes = ringing?.snoozeMinutes ?: 0,
                     onStop = {
-                        AlarmService.stop(this)
-                        finish()
+                        askThen {
+                            AlarmService.stop(this@RingActivity)
+                            finish()
+                        }
                     },
                     onSnooze = {
-                        AlarmService.snooze(this)
-                        finish()
+                        askThen {
+                            AlarmService.snooze(this@RingActivity)
+                            finish()
+                        }
                     },
                 )
+                challenge?.let { pending ->
+                    PatternChallengeDialog(
+                        stored = pending.stored,
+                        onRight = {
+                            challenge = null
+                            pending.action()
+                        },
+                        onDismiss = { challenge = null },
+                    )
+                }
             }
         }
     }

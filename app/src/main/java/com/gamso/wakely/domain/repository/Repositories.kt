@@ -10,6 +10,7 @@ import com.gamso.wakely.domain.model.DeviceCalendar
 import com.gamso.wakely.domain.model.EventAlarm
 import com.gamso.wakely.domain.model.HolidaySettings
 import com.gamso.wakely.domain.model.LicenseId
+import com.gamso.wakely.domain.model.PatternHash
 import com.gamso.wakely.domain.model.RingKey
 import com.gamso.wakely.domain.model.SkippedOccurrence
 import com.gamso.wakely.domain.model.StepBaseline
@@ -55,6 +56,11 @@ interface SettingsRepository {
     fun observeSkipButtons(): Flow<Boolean>
     suspend fun getSkipButtons(): Boolean
     suspend fun setSkipButtons(enabled: Boolean)
+
+    /** The pattern to draw to stop or snooze a ringing alarm, or null when no pattern is asked. */
+    fun observeUnlockPattern(): Flow<PatternHash?>
+    suspend fun getUnlockPattern(): PatternHash?
+    suspend fun setUnlockPattern(pattern: PatternHash?)
 
     /** Last day of the pause of every alarm (nothing rings up to and including it), or null. */
     fun observePause(): Flow<LocalDate?>

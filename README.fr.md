@@ -29,6 +29,8 @@ Français · [English](README.md)
 - **Réveils avant un événement** : sonner « X minutes avant » vos événements d'agenda, tous ou seulement ceux qui
   correspondent aux mots-clés cochés.
 - **Sauter la prochaine sonnerie** en un geste, depuis la carte du réveil ou depuis la notification du soir.
+- **Schéma pour arrêter** : un réglage facultatif demande de dessiner un schéma à vous, pas celui de votre téléphone,
+  avant d'arrêter ou de reporter une alarme qui sonne, pour ne pas l'éteindre à moitié endormi.
 - **Mettre tous les réveils en pause** jusqu'à une date, pour un voyage par exemple. Ils reprennent tout seuls.
 - **Ignorer si je suis déjà levé** : si vous avez déjà marché quelques dizaines de pas avant le réveil, il ne sonne
   pas ce jour-là (le compteur de pas de votre téléphone, rien n'en sort). Cela peut concerner toutes les sonneries,

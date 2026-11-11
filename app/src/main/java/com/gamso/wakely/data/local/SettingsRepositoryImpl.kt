@@ -4,6 +4,7 @@ import android.content.Context
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.CalendarFilter
 import com.gamso.wakely.domain.model.HolidaySettings
+import com.gamso.wakely.domain.model.PatternHash
 import com.gamso.wakely.domain.model.SummarySettings
 import com.gamso.wakely.domain.repository.SettingsRepository
 import java.time.LocalDate
@@ -26,6 +27,11 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         MutableStateFlow(prefs.getString(KEY_PAUSE, null)?.let { runCatching { LocalDate.parse(it) }.getOrNull() })
     private val pauseButton = MutableStateFlow(prefs.getBoolean(KEY_PAUSE_BUTTON, true))
     private val skipButtons = MutableStateFlow(prefs.getBoolean(KEY_SKIP_BUTTONS, true))
+    private val unlockPattern = MutableStateFlow(
+        prefs.getString(KEY_PATTERN_SALT, null)?.let { salt ->
+            prefs.getString(KEY_PATTERN_HASH, null)?.let { PatternHash(salt, it) }
+        },
+    )
 
     override fun observeCalendarFilters(): Flow<List<CalendarFilter>> = filters.asStateFlow()
 
@@ -65,6 +71,17 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
     override suspend fun setPauseButton(enabled: Boolean) {
         pauseButton.value = enabled
         withContext(Dispatchers.IO) { prefs.edit().putBoolean(KEY_PAUSE_BUTTON, enabled).commit() }
+    }
+
+    override fun observeUnlockPattern(): Flow<PatternHash?> = unlockPattern.asStateFlow()
+
+    override suspend fun getUnlockPattern(): PatternHash? = unlockPattern.value
+
+    override suspend fun setUnlockPattern(pattern: PatternHash?) {
+        unlockPattern.value = pattern
+        withContext(Dispatchers.IO) {
+            prefs.edit().putString(KEY_PATTERN_SALT, pattern?.salt).putString(KEY_PATTERN_HASH, pattern?.hash).commit()
+        }
     }
 
     override fun observeSkipButtons(): Flow<Boolean> = skipButtons.asStateFlow()
@@ -160,6 +177,8 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         const val PREFS = "settings"
         const val KEY_FILTERS = "calendar_filters"
         const val KEY_SKIP_BUTTONS = "skip_buttons"
+        const val KEY_PATTERN_SALT = "unlock_pattern_salt"
+        const val KEY_PATTERN_HASH = "unlock_pattern_hash"
         const val KEY_PAUSE = "pause_until"
         const val KEY_PAUSE_BUTTON = "pause_button"
         const val KEY_SUMMARY_ENABLED = "summary_enabled"

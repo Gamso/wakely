@@ -247,3 +247,6 @@ data class HolidaySettings(
 
 /** An upcoming public holiday as listed in Settings; [excluded] means the user works that day. */
 data class HolidayItem(val date: LocalDate, val id: String, val name: String, val excluded: Boolean)
+
+/** The pattern that must be drawn to stop an alarm: only a salted hash is kept, never the pattern. */
+data class PatternHash(val salt: String, val hash: String)
