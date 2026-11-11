@@ -294,7 +294,6 @@ class HandleRingFiredUseCase(
                 }
                 if (rule != null && expected != null && isDue(now, expected.at)) {
                     expectedAt = expected.at
-                    if (rule.singleEvent != null) eventAlarmRepository.save(rule.copy(enabled = false))
                     val title = rule.label.ifBlank { expected.event.title }
                     RingInfo(
                         key,

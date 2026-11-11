@@ -25,8 +25,8 @@ and can wake you a set time before your appointments.
 ### Alarms
 - **Regular alarms**: time, repeat days, label, ringtone, adjustable or disabled snooze.
 - **Days off**: for each alarm, choose "don't ring", "ring at another time" or "ignore the calendar".
-- **Alarms before an event**: ring "X minutes before" the first event of the day, events matching keywords,
-  or one specific event.
+- **Alarms before an event**: ring "X minutes before" your calendar events, all of them or only those matching
+  the keywords you tick.
 - **Skip the next ring** in one tap, from the alarm card or from the evening notification.
 - **Pause every alarm** until a date, for a trip for example. They resume by themselves.
 - **Skip if I'm already up**: if you have already walked a few dozen steps before the alarm, it does not ring

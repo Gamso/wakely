@@ -298,19 +298,7 @@ private fun EventAlarmCard(
                         style = MaterialTheme.typography.headlineMedium,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (rule.enabled) 1f else 0.5f),
                     )
-                    val single = rule.singleEvent
-                    val what = when {
-                        single != null -> stringResource(
-                            R.string.event_what_single,
-                            single.title,
-                            Format.dayDate(single.start.toLocalDate()),
-                        )
-
-                        rule.firstEventOfDayOnly -> stringResource(R.string.event_what_first)
-
-                        else -> stringResource(R.string.event_what_each)
-                    }
-                    Text(listOf(rule.label, what).filter { it.isNotBlank() }.joinToString(" · "))
+                    Text(rule.label.ifBlank { stringResource(R.string.event_what_each) })
                 }
                 Switch(checked = rule.enabled, onCheckedChange = onToggle)
             }

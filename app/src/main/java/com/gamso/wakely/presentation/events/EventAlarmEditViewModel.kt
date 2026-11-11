@@ -8,7 +8,6 @@ import com.gamso.wakely.domain.model.CalendarEvent
 import com.gamso.wakely.domain.model.CalendarFilter
 import com.gamso.wakely.domain.model.DeviceCalendar
 import com.gamso.wakely.domain.model.EventAlarm
-import com.gamso.wakely.domain.model.EventRef
 import com.gamso.wakely.domain.model.EventRing
 import com.gamso.wakely.domain.model.parseKeywords
 import com.gamso.wakely.domain.repository.CalendarRepository
@@ -38,11 +37,7 @@ data class EventAlarmEditUiState(
     val keywordOptions: List<String> = emptyList(),
     /** Next rings of the rule as currently edited. */
     val upcoming: List<EventRing> = emptyList(),
-    /** Upcoming timed events the user can bind the rule to. */
-    val candidates: List<CalendarEvent> = emptyList(),
-) {
-    fun calendarName(key: String) = calendars.find { it.key == key }?.name.orEmpty()
-}
+)
 
 class EventAlarmEditViewModel(
     private val alarmId: Long?,
@@ -94,15 +89,10 @@ class EventAlarmEditViewModel(
     private fun recompute() {
         val rule = _uiState.value.alarm
         val now = time.now()
-        val sources = CalendarLogic.ruleSources(rule, eventFilters)
-        val keywords = parseKeywords(rule.keywords)
         _uiState.update {
             it.copy(
                 keywordOptions = AlarmKeywords.options(rule, eventFilters),
                 upcoming = CalendarLogic.upcomingEventRings(rule, now, events, eventFilters).take(PREVIEW_COUNT),
-                candidates = events.filter { e ->
-                    !e.allDay && e.sourceKey in sources && e.start.isAfter(now) && CalendarLogic.matches(e, keywords)
-                }.take(MAX_CANDIDATES),
             )
         }
     }
@@ -114,10 +104,6 @@ class EventAlarmEditViewModel(
     }
     fun setKeywords(keywords: String) = edit { it.copy(keywords = keywords) }
     fun toggleKeyword(word: String) = edit { it.copy(keywords = AlarmKeywords.toggle(it.keywords, word)) }
-    fun setFirstEventOfDayOnly(value: Boolean) = edit { it.copy(firstEventOfDayOnly = value) }
-    fun setSingleEvent(event: CalendarEvent?) = edit {
-        it.copy(singleEvent = event?.let { e -> EventRef(e.sourceKey, e.title, e.start) })
-    }
     fun setSound(sound: AlarmSound) = edit { it.copy(sound = sound) }
     fun setSnoozeMinutes(minutes: Int) = edit { it.copy(snoozeMinutes = minutes) }
     fun setVolumeRamp(seconds: Int) = edit { it.copy(volumeRampSeconds = seconds) }
@@ -135,7 +121,6 @@ class EventAlarmEditViewModel(
 
     private companion object {
         const val PREVIEW_COUNT = 5
-        const val MAX_CANDIDATES = 100
         const val MAX_MINUTES = 24 * 60
     }
 }

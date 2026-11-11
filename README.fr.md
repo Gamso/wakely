@@ -26,8 +26,8 @@ Français · [English](README.md)
 - **Réveils classiques** : heure, jours de répétition, libellé, sonnerie, snooze réglable ou désactivé.
 - **Jours non travaillés** : pour chaque réveil, choisissez « ne pas sonner », « sonner à une autre heure » ou
   « ignorer l'agenda ».
-- **Réveils avant un événement** : sonner « X minutes avant » le premier événement de la journée, les événements
-  qui contiennent des mots-clés, ou un événement précis.
+- **Réveils avant un événement** : sonner « X minutes avant » vos événements d'agenda, tous ou seulement ceux qui
+  correspondent aux mots-clés cochés.
 - **Sauter la prochaine sonnerie** en un geste, depuis la carte du réveil ou depuis la notification du soir.
 - **Mettre tous les réveils en pause** jusqu'à une date, pour un voyage par exemple. Ils reprennent tout seuls.
 - **Ignorer si je suis déjà levé** : si vous avez déjà marché quelques dizaines de pas avant le réveil, il ne sonne

@@ -65,9 +65,6 @@ data class Alarm(
     }
 }
 
-/** Identifies one occurrence of a calendar event, for alarms bound to a single event. */
-data class EventRef(val sourceKey: String, val title: String, val start: LocalDateTime)
-
 /** Rings [minutesBefore] minutes before calendar events matching its filters. */
 data class EventAlarm(
     val id: Long = 0,
@@ -78,10 +75,6 @@ data class EventAlarm(
     val sourceKeys: Set<String> = emptySet(),
     /** Comma-separated keywords matched against title/description; empty = every event. */
     val keywords: String = "",
-    /** Only the first matching event of each day triggers a ring. */
-    val firstEventOfDayOnly: Boolean = true,
-    /** When set, only this event occurrence triggers the alarm (one-shot). */
-    val singleEvent: EventRef? = null,
     val sound: AlarmSound? = null,
     val snoozeMinutes: Int = Alarm.DEFAULT_SNOOZE_MINUTES,
     val volumeRampSeconds: Int = 0,
