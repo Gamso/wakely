@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -80,6 +81,9 @@ class RingActivity : ComponentActivity() {
                 )
                 val ringing by vm.ringing.collectAsStateWithLifecycle()
                 LaunchedEffect(ringing) { if (ringing == null) finish() }
+                // Back would hide the screen while the alarm keeps ringing: it closes on Stop, Snooze or the timeout.
+                // The pattern dialog has its own window, so back still cancels it.
+                BackHandler {}
                 var challenge by remember { mutableStateOf<Challenge?>(null) }
 
                 // The pattern is asked first when there is one, otherwise the action runs at once.
