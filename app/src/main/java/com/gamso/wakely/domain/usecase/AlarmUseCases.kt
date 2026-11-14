@@ -257,7 +257,7 @@ class HandleRingFiredUseCase(
     suspend operator fun invoke(key: RingKey): RingInfo? {
         val now = time.now()
         // During a pause, the next ring is after it: a ring scheduled earlier does not sound.
-        val windowStart = Pause.clamp(now.minus(TOLERANCE), settingsRepository.getPause())
+        val windowStart = Pause.clamp(now.minus(LATE_TOLERANCE), settingsRepository.getPause())
         // A ring the user skipped is passed over, even if the system still fires it.
         val skipped = skips.get().timesOf(key)
         var expectedAt: LocalDateTime? = null
@@ -288,11 +288,13 @@ class HandleRingFiredUseCase(
 
             RingKind.EVENT -> {
                 val rule = eventAlarmRepository.getEventAlarm(key.id)?.takeIf { it.enabled }
+                // Of the rings in the window, the latest: an earlier one already rang when it was due.
                 val expected = rule?.let {
                     val data = getRuleEvents(now.toLocalDate().minusDays(1), extraSourceKeys = it.sourceKeys)
-                    CalendarLogic.nextEventRing(it, windowStart, data.events, data.eventFilters, skipped)
+                    CalendarLogic.upcomingEventRings(it, windowStart, data.events, data.eventFilters, skipped)
+                        .lastOrNull { ring -> isDue(now, ring.at) }
                 }
-                if (rule != null && expected != null && isDue(now, expected.at)) {
+                if (rule != null && expected != null) {
                     expectedAt = expected.at
                     val title = rule.label.ifBlank { expected.event.title }
                     RingInfo(
@@ -331,10 +333,18 @@ class HandleRingFiredUseCase(
         return AwakeCheck.shouldSkip(baseline, current, ringAt)
     }
 
-    private fun isDue(now: LocalDateTime, at: LocalDateTime) = Duration.between(now, at).abs() <= TOLERANCE
+    /** A ring is due a little early, or late up to [LATE_TOLERANCE]. */
+    private fun isDue(now: LocalDateTime, at: LocalDateTime) =
+        !at.isAfter(now.plus(TOLERANCE)) && !at.isBefore(now.minus(LATE_TOLERANCE))
 
     companion object {
         private val TOLERANCE: Duration = Duration.ofMinutes(5)
+
+        /**
+         * Without the exact alarm permission (Android 12), the system may deliver an alarm late: it still rings, unless
+         * it is so late that the user no longer needs it (the same limit as a snooze).
+         */
+        private val LATE_TOLERANCE: Duration = Duration.ofMinutes(30)
     }
 }
 
