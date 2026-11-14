@@ -15,8 +15,8 @@ android {
         targetSdk = 36
         // Overridden by the CI from the release tag (e.g. -PversionName=1.2.3 -PversionCode=10203).
         // versionCode = major * 10000 + minor * 100 + patch.
-        versionCode = providers.gradleProperty("versionCode").map(String::toInt).getOrElse(10200)
-        versionName = providers.gradleProperty("versionName").getOrElse("1.2.0")
+        versionCode = providers.gradleProperty("versionCode").map(String::toInt).getOrElse(10300)
+        versionName = providers.gradleProperty("versionName").getOrElse("1.3.0")
     }
 
     // The release signing config is only set up when the keystore is provided (CI or local machine).
