@@ -1,5 +1,6 @@
 package com.gamso.wakely.presentation.common
 
+import android.text.format.DateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -33,7 +35,11 @@ import java.time.LocalTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialog(initial: LocalTime, onDismiss: () -> Unit, onConfirm: (LocalTime) -> Unit) {
-    val pickerState = rememberTimePickerState(initial.hour, initial.minute, is24Hour = true)
+    val pickerState = rememberTimePickerState(
+        initial.hour,
+        initial.minute,
+        is24Hour = DateFormat.is24HourFormat(LocalContext.current),
+    )
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {

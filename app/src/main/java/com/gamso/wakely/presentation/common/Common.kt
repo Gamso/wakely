@@ -1,6 +1,7 @@
 package com.gamso.wakely.presentation.common
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -17,7 +18,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -32,15 +32,18 @@ inline fun <reified VM : ViewModel> appViewModelFactory(
 @Composable
 fun dayOffReasonText(reason: String): String = reason.ifBlank { stringResource(R.string.day_off_default) }
 
-/** Dates and texts follow the language of the phone; times are always shown in 24-hour format. */
+/** Dates and texts follow the language of the phone, times its 12/24-hour setting. */
 object Format {
-    private val timeFmt = DateTimeFormatter.ofPattern("HH:mm")
     private const val DAYS_IN_WEEK = 7
     private const val MINUTES_PER_HOUR = 60
 
     val WEEK: List<DayOfWeek> = DayOfWeek.entries
 
-    fun time(t: LocalTime): String = t.format(timeFmt)
+    @Composable
+    fun time(t: LocalTime): String {
+        val context = LocalContext.current
+        return t.format(DatePatterns.timeFormatter(context))
+    }
 
     fun dayDate(d: LocalDate): String = d.format(DatePatterns.formatter("EEEdMMM", "EEE d MMM"))
 

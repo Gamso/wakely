@@ -25,9 +25,9 @@ import com.gamso.wakely.domain.model.RingInfo
 import com.gamso.wakely.domain.model.RingKey
 import com.gamso.wakely.domain.model.RingKind
 import com.gamso.wakely.domain.usecase.VolumeRamp
+import com.gamso.wakely.presentation.common.DatePatterns
 import com.gamso.wakely.presentation.ring.RingActivity
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 /** Foreground service that plays the alarm sound and vibrates. */
 class AlarmService : Service() {
@@ -166,7 +166,7 @@ class AlarmService : Service() {
             Intent(this, RingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
-        val time = LocalTime.now().format(timeFormat)
+        val time = LocalTime.now().format(DatePatterns.timeFormatter(this))
         val builder = NotificationCompat.Builder(this, Notifications.CHANNEL_ALARM)
             .setSmallIcon(R.drawable.ic_alarm)
             .setContentTitle(getString(R.string.notif_ring_title, time))
@@ -195,7 +195,7 @@ class AlarmService : Service() {
     private fun contentText(ringing: RingingAlarm): String {
         val name = ringing.label.ifBlank { getString(R.string.notif_ring_text_default) }
         val eventTime = ringing.eventTime ?: return name
-        return getString(R.string.at_time, name, eventTime.format(timeFormat))
+        return getString(R.string.at_time, name, eventTime.format(DatePatterns.timeFormatter(this)))
     }
 
     private fun servicePendingIntent(action: String, requestCode: Int): PendingIntent = PendingIntent.getService(
@@ -226,7 +226,6 @@ class AlarmService : Service() {
         private const val EXTRA_VIBRATE = "vibrate"
         private const val EXTRA_ASK_PATTERN = "ask_pattern"
         private const val RAMP_STEP_MS = 100L
-        private val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
         private const val EXTRA_SNOOZE_MINUTES = "snooze_minutes"
         private const val NOTIFICATION_ID = 1
         private const val AUTO_STOP_MS = 10 * 60 * 1000L
