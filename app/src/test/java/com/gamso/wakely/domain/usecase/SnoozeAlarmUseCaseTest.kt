@@ -18,6 +18,7 @@ class SnoozeAlarmUseCaseTest {
             snoozes += key to at
         }
         override fun cancel(key: RingKey) = Unit
+        override fun cancelSnooze(key: RingKey) = Unit
         override fun schedulePreCheck(key: RingKey, at: LocalDateTime) = Unit
         override fun cancelPreCheck(key: RingKey) = Unit
         override fun scheduleSummary(at: LocalDateTime?) = Unit
@@ -26,7 +27,7 @@ class SnoozeAlarmUseCaseTest {
 
     private val now = LocalDateTime.of(2026, 11, 9, 7, 0)
     private val scheduler = FakeScheduler()
-    private val snooze = SnoozeAlarmUseCase(scheduler, TimeProvider { now })
+    private val snooze = SnoozeAlarmUseCase(Snoozes(FakePendingSnoozes(), scheduler), TimeProvider { now })
     private val key = RingKey(RingKind.EVENT, 3)
 
     @Test
