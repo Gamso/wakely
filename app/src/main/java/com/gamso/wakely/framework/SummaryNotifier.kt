@@ -22,7 +22,6 @@ import java.util.Locale
 object SummaryNotifier {
     private const val NOTIFICATION_ID = 2
     private const val MAX_ACTIONS = 3
-    private val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
 
     /** [skipActions]: offer a "Skip" action for the first rings (Settings). */
     fun show(context: Context, plan: DayPlan, skipActions: Boolean) {
@@ -33,7 +32,10 @@ object SummaryNotifier {
             return
         }
 
-        val lines = plan.rings.map { ring -> ringLine(context, ring) } + plan.skipped.map { skippedLine(context, it) }
+        val timeFormat = DatePatterns.timeFormatter(context)
+        val lines =
+            plan.rings.map { ring -> ringLine(context, ring, timeFormat) } +
+                plan.skipped.map { skippedLine(context, it, timeFormat) }
         val dateFormat = DatePatterns.formatter("EEEEdMMMM", "EEEE d MMMM")
         val title = context.getString(R.string.summary_notif_title, plan.date.format(dateFormat))
         val firstTime = plan.rings.firstOrNull()?.at?.format(timeFormat).orEmpty()
@@ -98,7 +100,7 @@ object SummaryNotifier {
     }
 
     /** "07:00 · Title (detail)". */
-    private fun ringLine(context: Context, ring: PlannedRing): String {
+    private fun ringLine(context: Context, ring: PlannedRing, timeFormat: DateTimeFormatter): String {
         val event = ring.event
         val fallback = context.getString(R.string.ring_default_label)
         val (title, detail) = when {
@@ -123,10 +125,11 @@ object SummaryNotifier {
         return if (detail == null) head else context.getString(R.string.fmt_paren, head, detail)
     }
 
-    private fun skippedLine(context: Context, skipped: SkippedRing): String = context.getString(
-        R.string.summary_skipped,
-        skipped.label.ifBlank { context.getString(R.string.ring_default_label) },
-        skipped.time.format(timeFormat),
-        skipped.reason.ifBlank { context.getString(R.string.day_off_default) },
-    )
+    private fun skippedLine(context: Context, skipped: SkippedRing, timeFormat: DateTimeFormatter): String =
+        context.getString(
+            R.string.summary_skipped,
+            skipped.label.ifBlank { context.getString(R.string.ring_default_label) },
+            skipped.time.format(timeFormat),
+            skipped.reason.ifBlank { context.getString(R.string.day_off_default) },
+        )
 }

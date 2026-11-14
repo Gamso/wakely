@@ -1,10 +1,14 @@
 package com.gamso.wakely.presentation.common
 
+import android.content.Context
 import android.text.format.DateFormat
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-/** Date formats that follow the conventions of the phone's language (day/month order, separators...). */
+/**
+ * Date and time formats that follow the conventions of the phone's language (day/month order, separators...) and its
+ * 12/24-hour setting.
+ */
 object DatePatterns {
 
     /**
@@ -17,4 +21,14 @@ object DatePatterns {
         return runCatching { DateTimeFormatter.ofPattern(pattern, locale) }
             .getOrElse { DateTimeFormatter.ofPattern(fallback, locale) }
     }
+
+    /** Hours and minutes: "19:30" when the phone is set to 24-hour format, "7:30 PM" otherwise. */
+    fun timeFormatter(context: Context): DateTimeFormatter = if (DateFormat.is24HourFormat(context)) {
+        DateTimeFormatter.ofPattern(TIME_24)
+    } else {
+        formatter("hmm", TIME_12)
+    }
+
+    private const val TIME_24 = "HH:mm"
+    private const val TIME_12 = "h:mm a"
 }
