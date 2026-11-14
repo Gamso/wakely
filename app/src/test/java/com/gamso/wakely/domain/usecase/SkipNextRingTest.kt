@@ -106,7 +106,7 @@ class SkipNextRingTest {
     fun `editing the alarm forgets its skip`() = runBlocking {
         val g = Graph(alarm, now)
         g.skipNext(key)
-        SaveAlarmUseCase(g.alarms, g.reschedule, g.skips)(alarm.copy(label = "Work"))
+        SaveAlarmUseCase(g.alarms, g.reschedule, g.skips, g.snoozes)(alarm.copy(label = "Work"))
         assertTrue(g.skips.get().isEmpty())
         assertEquals(tuesday, g.scheduler.rings[key])
     }

@@ -27,6 +27,11 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
         alarmManager.cancel(firePendingIntent(key, snooze = false))
     }
 
+    // Extras do not tell intents apart: the snooze intent of the key is matched whatever its time.
+    override fun cancelSnooze(key: RingKey) {
+        alarmManager.cancel(firePendingIntent(key, snooze = true))
+    }
+
     override fun schedulePreCheck(key: RingKey, at: LocalDateTime) {
         val operation = preCheckPendingIntent(key)
         val triggerMs = at.toEpochMs()

@@ -34,8 +34,11 @@ class HandleSnoozeFiredUseCaseTest {
     private val key = RingKey(RingKind.ALARM, 7)
     private val scheduled = LocalDateTime.of(2026, 11, 9, 7, 10)
 
-    private fun handler(now: LocalDateTime) =
-        HandleSnoozeFiredUseCase(GetRingInfoUseCase(alarms, rules), TimeProvider { now })
+    private fun handler(now: LocalDateTime) = HandleSnoozeFiredUseCase(
+        GetRingInfoUseCase(alarms, rules),
+        TimeProvider { now },
+        Snoozes(FakePendingSnoozes(), FakeScheduler()),
+    )
 
     @Test
     fun `snooze on time rings`() = runBlocking {

@@ -100,10 +100,12 @@ class SaveAlarmUseCase(
     private val alarmRepository: AlarmRepository,
     private val reschedule: RescheduleAlarmsUseCase,
     private val skips: SkippedOccurrences,
+    private val snoozes: Snoozes,
 ) {
-    /** Editing an alarm forgets its skipped ring: the user decided on the old settings. */
+    /** Editing an alarm forgets its skipped ring and its snooze: the user decided on the old settings. */
     suspend operator fun invoke(alarm: Alarm): Alarm = alarmRepository.save(alarm).also {
         skips.clear(RingKey(RingKind.ALARM, it.id))
+        snoozes.cancel(RingKey(RingKind.ALARM, it.id))
         reschedule()
     }
 }
@@ -111,9 +113,12 @@ class SaveAlarmUseCase(
 class SetAlarmEnabledUseCase(
     private val alarmRepository: AlarmRepository,
     private val reschedule: RescheduleAlarmsUseCase,
+    private val snoozes: Snoozes,
 ) {
+    /** Turning an alarm off also cancels its snooze. */
     suspend operator fun invoke(alarm: Alarm, enabled: Boolean) {
         alarmRepository.save(alarm.copy(enabled = enabled))
+        if (!enabled) snoozes.cancel(RingKey(RingKind.ALARM, alarm.id))
         reschedule()
     }
 }
@@ -122,9 +127,11 @@ class DeleteAlarmUseCase(
     private val alarmRepository: AlarmRepository,
     private val scheduler: AlarmScheduler,
     private val skips: SkippedOccurrences,
+    private val snoozes: Snoozes,
 ) {
     suspend operator fun invoke(id: Long) {
         scheduler.cancel(RingKey(RingKind.ALARM, id))
+        snoozes.cancel(RingKey(RingKind.ALARM, id))
         skips.clear(RingKey(RingKind.ALARM, id))
         alarmRepository.delete(id)
     }
@@ -134,9 +141,11 @@ class SaveEventAlarmUseCase(
     private val repository: EventAlarmRepository,
     private val reschedule: RescheduleAlarmsUseCase,
     private val skips: SkippedOccurrences,
+    private val snoozes: Snoozes,
 ) {
     suspend operator fun invoke(alarm: EventAlarm): EventAlarm = repository.save(alarm).also {
         skips.clear(RingKey(RingKind.EVENT, it.id))
+        snoozes.cancel(RingKey(RingKind.EVENT, it.id))
         reschedule()
     }
 }
@@ -144,9 +153,11 @@ class SaveEventAlarmUseCase(
 class SetEventAlarmEnabledUseCase(
     private val repository: EventAlarmRepository,
     private val reschedule: RescheduleAlarmsUseCase,
+    private val snoozes: Snoozes,
 ) {
     suspend operator fun invoke(alarm: EventAlarm, enabled: Boolean) {
         repository.save(alarm.copy(enabled = enabled))
+        if (!enabled) snoozes.cancel(RingKey(RingKind.EVENT, alarm.id))
         reschedule()
     }
 }
@@ -155,9 +166,11 @@ class DeleteEventAlarmUseCase(
     private val repository: EventAlarmRepository,
     private val scheduler: AlarmScheduler,
     private val skips: SkippedOccurrences,
+    private val snoozes: Snoozes,
 ) {
     suspend operator fun invoke(id: Long) {
         scheduler.cancel(RingKey(RingKind.EVENT, id))
+        snoozes.cancel(RingKey(RingKind.EVENT, id))
         skips.clear(RingKey(RingKind.EVENT, id))
         repository.delete(id)
     }
@@ -183,11 +196,11 @@ class UpdateSummarySettingsUseCase(
     }
 }
 
-class SnoozeAlarmUseCase(private val scheduler: AlarmScheduler, private val time: TimeProvider) {
+class SnoozeAlarmUseCase(private val snoozes: Snoozes, private val time: TimeProvider) {
     /** Schedules a snooze; does nothing when [minutes] is 0 (snooze disabled). */
     operator fun invoke(key: RingKey, minutes: Int) {
         if (minutes <= 0) return
-        scheduler.scheduleSnooze(key, time.now().plusMinutes(minutes.toLong()))
+        snoozes.schedule(key, time.now().plusMinutes(minutes.toLong()))
     }
 }
 
@@ -225,14 +238,19 @@ class GetRingInfoUseCase(
  * Called when a snooze fires. A snooze that is far too late (device off, clock change)
  * is dropped instead of ringing hours or days later.
  */
-class HandleSnoozeFiredUseCase(private val getRingInfo: GetRingInfoUseCase, private val time: TimeProvider) {
+class HandleSnoozeFiredUseCase(
+    private val getRingInfo: GetRingInfoUseCase,
+    private val time: TimeProvider,
+    private val snoozes: Snoozes,
+) {
     suspend operator fun invoke(key: RingKey, scheduledAt: LocalDateTime?): RingInfo? {
+        snoozes.fired(key)
         if (scheduledAt != null && Duration.between(scheduledAt, time.now()) > MAX_DELAY) return null
         return getRingInfo(key)
     }
 
     companion object {
-        private val MAX_DELAY: Duration = Duration.ofMinutes(30)
+        val MAX_DELAY: Duration = Duration.ofMinutes(30)
     }
 }
 
