@@ -8,6 +8,7 @@ import com.gamso.wakely.R
 object Notifications {
     const val CHANNEL_ALARM = "alarm"
     const val CHANNEL_SUMMARY = "summary"
+    const val CHANNEL_MISSED = "missed"
 
     fun createChannels(context: Context) {
         val alarm = NotificationChannel(
@@ -26,6 +27,14 @@ object Notifications {
         ).apply {
             description = context.getString(R.string.notif_channel_summary_desc)
         }
-        context.getSystemService(NotificationManager::class.java).createNotificationChannels(listOf(alarm, summary))
+        val missed = NotificationChannel(
+            CHANNEL_MISSED,
+            context.getString(R.string.notif_channel_missed),
+            NotificationManager.IMPORTANCE_DEFAULT,
+        ).apply {
+            description = context.getString(R.string.notif_channel_missed_desc)
+        }
+        context.getSystemService(NotificationManager::class.java)
+            .createNotificationChannels(listOf(alarm, summary, missed))
     }
 }

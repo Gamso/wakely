@@ -35,7 +35,9 @@ class AlarmService : Service() {
     private var player: MediaPlayer? = null
     private var vibrator: Vibrator? = null
     private val handler = Handler(Looper.getMainLooper())
-    private val timeout = Runnable { stopRinging() }
+    private val timeout = Runnable { ringOut() }
+    private val volumeFloor by lazy { AlarmVolumeFloor(this) }
+    private var ringStartedAt: LocalTime = LocalTime.now()
     private var rampStartedAt = 0L
     private var rampSeconds = 0
     private val rampStep = object : Runnable {
@@ -99,15 +101,24 @@ class AlarmService : Service() {
             },
         )
         appContainer.ringingState.set(ringing)
+        ringStartedAt = LocalTime.now()
+        volumeFloor.start()
         playSound(soundUri, rampSeconds)
         if (vibrate) vibrate()
         handler.removeCallbacks(timeout)
         handler.postDelayed(timeout, AUTO_STOP_MS)
     }
 
+    /** The alarm rang until its timeout without an answer: the user is told, as it stops without a trace otherwise. */
+    private fun ringOut() {
+        appContainer.ringingState.ringing.value?.let { MissedAlarmNotifier.show(this, it, ringStartedAt) }
+        stopRinging()
+    }
+
     private fun stopRinging() {
         handler.removeCallbacks(timeout)
         stopPlayback()
+        volumeFloor.stop()
         appContainer.ringingState.set(null)
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         stopSelf()
@@ -197,6 +208,7 @@ class AlarmService : Service() {
     override fun onDestroy() {
         handler.removeCallbacks(timeout)
         stopPlayback()
+        volumeFloor.stop()
         appContainer.ringingState.set(null)
         super.onDestroy()
     }

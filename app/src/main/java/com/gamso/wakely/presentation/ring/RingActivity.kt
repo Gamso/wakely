@@ -2,6 +2,7 @@ package com.gamso.wakely.presentation.ring
 
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -118,6 +119,17 @@ class RingActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    // The volume keys would silence the alarm without stopping it, around the pattern: they do nothing here.
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean =
+        keyCode in VOLUME_KEYS || super.onKeyDown(keyCode, event)
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean =
+        keyCode in VOLUME_KEYS || super.onKeyUp(keyCode, event)
+
+    private companion object {
+        val VOLUME_KEYS = setOf(KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN, KeyEvent.KEYCODE_VOLUME_MUTE)
     }
 }
 
