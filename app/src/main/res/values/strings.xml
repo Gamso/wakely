@@ -257,6 +257,10 @@
     <string name="notif_ring_title">Alarm · %1$s</string>
     <string name="notif_ring_text_default">It\'s time!</string>
     <string name="notif_snooze">Snooze (%1$d min)</string>
+    <string name="notif_channel_missed">Missed alarms</string>
+    <string name="notif_channel_missed_desc">Tells when an alarm stopped by itself without being stopped or snoozed</string>
+    <string name="notif_missed_title">Missed alarm · %1$s</string>
+    <string name="notif_missed_text">%1$s rang without an answer and stopped by itself</string>
     <string name="summary_notif_title">Tomorrow, %1$s</string>
     <string name="summary_none">No alarm planned</string>
     <string name="summary_none_ring">No alarm will ring</string>
