@@ -11,13 +11,12 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.gamso.wakely.R
 import com.gamso.wakely.presentation.MainActivity
+import com.gamso.wakely.presentation.common.DatePatterns
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 /** Tells the user an alarm stopped by itself, without being stopped or snoozed. */
 object MissedAlarmNotifier {
     private const val NOTIFICATION_ID = 3
-    private val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
 
     fun show(context: Context, ringing: RingingAlarm, rangAt: LocalTime) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) !=
@@ -35,7 +34,9 @@ object MissedAlarmNotifier {
         )
         val notification = NotificationCompat.Builder(context, Notifications.CHANNEL_MISSED)
             .setSmallIcon(R.drawable.ic_alarm)
-            .setContentTitle(context.getString(R.string.notif_missed_title, rangAt.format(timeFormat)))
+            .setContentTitle(
+                context.getString(R.string.notif_missed_title, rangAt.format(DatePatterns.timeFormatter(context))),
+            )
             .setContentText(context.getString(R.string.notif_missed_text, name))
             .setCategory(NotificationCompat.CATEGORY_REMINDER)
             .setContentIntent(open)
