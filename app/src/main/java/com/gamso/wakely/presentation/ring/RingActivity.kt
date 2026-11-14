@@ -46,11 +46,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RingViewModel(ringingState: RingingStateHolder, private val settings: SettingsRepository) : ViewModel() {
+class RingViewModel(private val ringingState: RingingStateHolder, private val settings: SettingsRepository) :
+    ViewModel() {
     val ringing: StateFlow<RingingAlarm?> = ringingState.ringing
 
     /** The pattern to draw before stopping or snoozing, or null when none is asked. */
     suspend fun pattern(): PatternHash? = settings.getUnlockPattern()
+
+    /** Stop or Snooze was chosen: the app no longer opens this screen while the service stops. */
+    fun answer() = ringingState.answer()
 }
 
 /** A stop or a snooze waiting for the pattern to be drawn. */
@@ -95,12 +99,14 @@ class RingActivity : ComponentActivity() {
                     snoozeMinutes = ringing?.snoozeMinutes ?: 0,
                     onStop = {
                         askThen {
+                            vm.answer()
                             AlarmService.stop(this@RingActivity)
                             finish()
                         }
                     },
                     onSnooze = {
                         askThen {
+                            vm.answer()
                             AlarmService.snooze(this@RingActivity)
                             finish()
                         }
