@@ -27,9 +27,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gamso.wakely.R
+import com.gamso.wakely.appContainer
 import com.gamso.wakely.presentation.about.AboutScreen
 import com.gamso.wakely.presentation.about.AboutViewModel
 import com.gamso.wakely.presentation.alarms.AlarmListScreen
@@ -41,10 +44,12 @@ import com.gamso.wakely.presentation.edit.AlarmEditScreen
 import com.gamso.wakely.presentation.edit.AlarmEditViewModel
 import com.gamso.wakely.presentation.events.EventAlarmEditScreen
 import com.gamso.wakely.presentation.events.EventAlarmEditViewModel
+import com.gamso.wakely.presentation.ring.RingActivity
 import com.gamso.wakely.presentation.settings.SettingsPage
 import com.gamso.wakely.presentation.settings.SettingsScreen
 import com.gamso.wakely.presentation.settings.SettingsViewModel
 import com.gamso.wakely.presentation.theme.WakelyTheme
+import kotlinx.coroutines.flow.filterNotNull
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,6 +118,7 @@ private fun WakelyNavigation() {
         warnings = systemWarnings(context)
         listVm.refresh()
     }
+    OpenRingScreenWhileRinging()
 
     when {
         route == Routes.LIST -> {
@@ -203,6 +209,26 @@ private fun WakelyNavigation() {
             )
             val state by vm.uiState.collectAsStateWithLifecycle()
             AlarmEditScreen(vm, state, onClose = { route = Routes.LIST })
+        }
+    }
+}
+
+/**
+ * Opens the ringing screen over the app while an alarm rings: when the app comes to the front, and when an alarm starts
+ * while it is open. Without it, an alarm whose notification cannot be shown (notifications denied) could not be
+ * stopped.
+ */
+@Composable
+private fun OpenRingScreenWhileRinging() {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            context.appContainer.ringingState.unanswered.filterNotNull().collect {
+                context.startActivity(
+                    Intent(context, RingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                )
+            }
         }
     }
 }
