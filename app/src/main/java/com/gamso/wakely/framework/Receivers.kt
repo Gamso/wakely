@@ -75,7 +75,9 @@ class AlarmReceiver : BroadcastReceiver() {
 
                 else -> container.handleRingFired(key)
             }
-            if (info != null) AlarmService.start(context, info)
+            if (info != null) {
+                AlarmService.start(context, info, askPattern = container.settingsRepository.getUnlockPattern() != null)
+            }
         }
     }
 
