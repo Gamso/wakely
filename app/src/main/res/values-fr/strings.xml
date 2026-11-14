@@ -242,6 +242,10 @@
     <string name="notif_ring_title">Réveil · %1$s</string>
     <string name="notif_ring_text_default">C\'est l\'heure !</string>
     <string name="notif_snooze">Répéter (%1$d min)</string>
+    <string name="notif_channel_missed">Réveils manqués</string>
+    <string name="notif_channel_missed_desc">Prévient quand un réveil s\'est arrêté seul, sans être arrêté ni répété</string>
+    <string name="notif_missed_title">Réveil manqué · %1$s</string>
+    <string name="notif_missed_text">%1$s a sonné sans réponse et s\'est arrêté seul</string>
     <string name="summary_notif_title">Demain, %1$s</string>
     <string name="summary_none">Aucun réveil prévu</string>
     <string name="summary_none_ring">Aucun réveil ne sonnera</string>

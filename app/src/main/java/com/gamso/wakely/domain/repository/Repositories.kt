@@ -122,6 +122,7 @@ interface AlarmScheduler {
     fun schedule(key: RingKey, at: LocalDateTime)
     fun scheduleSnooze(key: RingKey, at: LocalDateTime)
     fun cancel(key: RingKey)
+    fun cancelSnooze(key: RingKey)
 
     /** Schedules the step check that precedes a ring of an alarm that can be skipped. */
     fun schedulePreCheck(key: RingKey, at: LocalDateTime)
@@ -153,6 +154,13 @@ interface StepSensor {
 
     /** Steps since the phone booted, or null (no sensor, no permission, no answer in time). */
     suspend fun readSteps(): Long?
+}
+
+/** The time of the snooze waiting to ring for each alarm, kept so it can be cancelled and restored after a reboot. */
+interface PendingSnoozes {
+    fun save(key: RingKey, at: LocalDateTime)
+    fun getAll(): Map<RingKey, LocalDateTime>
+    fun clear(key: RingKey)
 }
 
 /** Remembers the step count taken before each alarm. Only compared, never kept after the ring. */

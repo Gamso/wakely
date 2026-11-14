@@ -22,6 +22,7 @@ import com.gamso.wakely.domain.repository.CalendarRepository
 import com.gamso.wakely.domain.repository.DeviceRegion
 import com.gamso.wakely.domain.repository.EventAlarmRepository
 import com.gamso.wakely.domain.repository.HolidayRepository
+import com.gamso.wakely.domain.repository.PendingSnoozes
 import com.gamso.wakely.domain.repository.PublicHoliday
 import com.gamso.wakely.domain.repository.SettingsRepository
 import com.gamso.wakely.domain.repository.SkippedOccurrences
@@ -115,13 +116,21 @@ internal class FakeCalendar(private val events: List<CalendarEvent> = emptyList(
 internal class FakeScheduler : AlarmScheduler {
     val rings = mutableMapOf<RingKey, LocalDateTime>()
     val preChecks = mutableMapOf<RingKey, LocalDateTime>()
+    val snoozes = mutableMapOf<RingKey, LocalDateTime>()
     override fun schedule(key: RingKey, at: LocalDateTime) {
         rings[key] = at
     }
 
-    override fun scheduleSnooze(key: RingKey, at: LocalDateTime) = Unit
+    override fun scheduleSnooze(key: RingKey, at: LocalDateTime) {
+        snoozes[key] = at
+    }
+
     override fun cancel(key: RingKey) {
         rings.remove(key)
+    }
+
+    override fun cancelSnooze(key: RingKey) {
+        snoozes.remove(key)
     }
 
     override fun schedulePreCheck(key: RingKey, at: LocalDateTime) {
@@ -134,6 +143,18 @@ internal class FakeScheduler : AlarmScheduler {
 
     override fun scheduleSummary(at: LocalDateTime?) = Unit
     override fun canScheduleExactAlarms() = true
+}
+
+internal class FakePendingSnoozes : PendingSnoozes {
+    val map = mutableMapOf<RingKey, LocalDateTime>()
+    override fun save(key: RingKey, at: LocalDateTime) {
+        map[key] = at
+    }
+
+    override fun getAll() = map.toMap()
+    override fun clear(key: RingKey) {
+        map.remove(key)
+    }
 }
 
 internal class FakeSensor(var permission: Boolean = true, var steps: Long? = 0) : StepSensor {
@@ -160,6 +181,8 @@ internal class Graph(alarm: Alarm, now: LocalDateTime, leaveDay: LocalDate? = nu
     val sensor = FakeSensor()
     val store = FakeStore()
     val skips = FakeSkips()
+    val pendingSnoozes = FakePendingSnoozes()
+    val snoozes = Snoozes(pendingSnoozes, scheduler)
     var now: LocalDateTime = now
     private val time = TimeProvider { this.now }
     private val leave = leaveDay?.let {

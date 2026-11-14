@@ -28,7 +28,6 @@ import com.gamso.wakely.domain.usecase.VolumeRamp
 import com.gamso.wakely.presentation.common.DatePatterns
 import com.gamso.wakely.presentation.ring.RingActivity
 import java.time.LocalTime
-import kotlinx.coroutines.runBlocking
 
 /** Foreground service that plays the alarm sound and vibrates. */
 class AlarmService : Service() {
@@ -36,7 +35,9 @@ class AlarmService : Service() {
     private var player: MediaPlayer? = null
     private var vibrator: Vibrator? = null
     private val handler = Handler(Looper.getMainLooper())
-    private val timeout = Runnable { stopRinging() }
+    private val timeout = Runnable { ringOut() }
+    private val volumeFloor by lazy { AlarmVolumeFloor(this) }
+    private var ringStartedAt: LocalTime = LocalTime.now()
     private var rampStartedAt = 0L
     private var rampSeconds = 0
     private val rampStep = object : Runnable {
@@ -67,6 +68,7 @@ class AlarmService : Service() {
                 soundUri = intent.getStringExtra(EXTRA_SOUND_URI),
                 rampSeconds = intent.getIntExtra(EXTRA_RAMP_SECONDS, 0),
                 vibrate = intent.getBooleanExtra(EXTRA_VIBRATE, true),
+                askPattern = intent.getBooleanExtra(EXTRA_ASK_PATTERN, false),
             )
 
             ACTION_SNOOZE -> {
@@ -80,12 +82,18 @@ class AlarmService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun startRinging(ringing: RingingAlarm, soundUri: String?, rampSeconds: Int, vibrate: Boolean) {
+    private fun startRinging(
+        ringing: RingingAlarm,
+        soundUri: String?,
+        rampSeconds: Int,
+        vibrate: Boolean,
+        askPattern: Boolean,
+    ) {
         stopPlayback()
         ServiceCompat.startForeground(
             this,
             NOTIFICATION_ID,
-            buildNotification(ringing),
+            buildNotification(ringing, askPattern),
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
             } else {
@@ -93,15 +101,24 @@ class AlarmService : Service() {
             },
         )
         appContainer.ringingState.set(ringing)
+        ringStartedAt = LocalTime.now()
+        volumeFloor.start()
         playSound(soundUri, rampSeconds)
         if (vibrate) vibrate()
         handler.removeCallbacks(timeout)
         handler.postDelayed(timeout, AUTO_STOP_MS)
     }
 
+    /** The alarm rang until its timeout without an answer: the user is told, as it stops without a trace otherwise. */
+    private fun ringOut() {
+        appContainer.ringingState.ringing.value?.let { MissedAlarmNotifier.show(this, it, ringStartedAt) }
+        stopRinging()
+    }
+
     private fun stopRinging() {
         handler.removeCallbacks(timeout)
         stopPlayback()
+        volumeFloor.stop()
         appContainer.ringingState.set(null)
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         stopSelf()
@@ -142,7 +159,7 @@ class AlarmService : Service() {
         vibrator = null
     }
 
-    private fun buildNotification(ringing: RingingAlarm): Notification {
+    private fun buildNotification(ringing: RingingAlarm, askPattern: Boolean): Notification {
         val fullScreen = PendingIntent.getActivity(
             this,
             0,
@@ -161,8 +178,8 @@ class AlarmService : Service() {
             .setContentIntent(fullScreen)
             .setFullScreenIntent(fullScreen, true)
         // With a pattern asked, the notification has no buttons: they would get around it, so stopping goes through
-        // the ring screen.
-        if (runBlocking { appContainer.settingsRepository.getUnlockPattern() } != null) return builder.build()
+        // the ring screen. The setting is read by the receiver, off the main thread.
+        if (askPattern) return builder.build()
         if (ringing.snoozeMinutes > 0) {
             builder.addAction(
                 0,
@@ -191,6 +208,7 @@ class AlarmService : Service() {
     override fun onDestroy() {
         handler.removeCallbacks(timeout)
         stopPlayback()
+        volumeFloor.stop()
         appContainer.ringingState.set(null)
         super.onDestroy()
     }
@@ -206,6 +224,7 @@ class AlarmService : Service() {
         private const val EXTRA_EVENT_TIME = "event_time"
         private const val EXTRA_RAMP_SECONDS = "ramp_seconds"
         private const val EXTRA_VIBRATE = "vibrate"
+        private const val EXTRA_ASK_PATTERN = "ask_pattern"
         private const val RAMP_STEP_MS = 100L
         private const val EXTRA_SNOOZE_MINUTES = "snooze_minutes"
         private const val NOTIFICATION_ID = 1
@@ -214,7 +233,8 @@ class AlarmService : Service() {
         /** Off / on / off durations (ms), repeated from index 0. */
         private val VIBRATION_PATTERN = longArrayOf(0, 800, 800)
 
-        fun start(context: Context, info: RingInfo) {
+        /** [askPattern]: a pattern is asked to stop the alarm, so the notification gets no buttons. */
+        fun start(context: Context, info: RingInfo, askPattern: Boolean) {
             ContextCompat.startForegroundService(
                 context,
                 Intent(context, AlarmService::class.java)
@@ -226,7 +246,8 @@ class AlarmService : Service() {
                     .putExtra(EXTRA_SOUND_URI, info.sound?.uri)
                     .putExtra(EXTRA_SNOOZE_MINUTES, info.snoozeMinutes)
                     .putExtra(EXTRA_RAMP_SECONDS, info.volumeRampSeconds)
-                    .putExtra(EXTRA_VIBRATE, info.vibrate),
+                    .putExtra(EXTRA_VIBRATE, info.vibrate)
+                    .putExtra(EXTRA_ASK_PATTERN, askPattern),
             )
         }
 

@@ -20,7 +20,21 @@ class RingingStateHolder {
     private val _ringing = MutableStateFlow<RingingAlarm?>(null)
     val ringing: StateFlow<RingingAlarm?> = _ringing.asStateFlow()
 
+    private val _unanswered = MutableStateFlow<RingingAlarm?>(null)
+
+    /**
+     * The ringing alarm as long as the user has not chosen Stop or Snooze on the ringing screen. The service stops a
+     * moment after that choice: in between, the app must not open the ringing screen again.
+     */
+    val unanswered: StateFlow<RingingAlarm?> = _unanswered.asStateFlow()
+
     fun set(value: RingingAlarm?) {
+        _unanswered.value = value
         _ringing.value = value
+    }
+
+    /** Stop or Snooze was chosen on the ringing screen. */
+    fun answer() {
+        _unanswered.value = null
     }
 }

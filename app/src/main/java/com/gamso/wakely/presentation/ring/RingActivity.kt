@@ -2,8 +2,10 @@ package com.gamso.wakely.presentation.ring
 
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,11 +48,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RingViewModel(ringingState: RingingStateHolder, private val settings: SettingsRepository) : ViewModel() {
+class RingViewModel(private val ringingState: RingingStateHolder, private val settings: SettingsRepository) :
+    ViewModel() {
     val ringing: StateFlow<RingingAlarm?> = ringingState.ringing
 
     /** The pattern to draw before stopping or snoozing, or null when none is asked. */
     suspend fun pattern(): PatternHash? = settings.getUnlockPattern()
+
+    /** Stop or Snooze was chosen: the app no longer opens this screen while the service stops. */
+    fun answer() = ringingState.answer()
 }
 
 /** A stop or a snooze waiting for the pattern to be drawn. */
@@ -80,6 +86,9 @@ class RingActivity : ComponentActivity() {
                 )
                 val ringing by vm.ringing.collectAsStateWithLifecycle()
                 LaunchedEffect(ringing) { if (ringing == null) finish() }
+                // Back would hide the screen while the alarm keeps ringing: it closes on Stop, Snooze or the timeout.
+                // The pattern dialog has its own window, so back still cancels it.
+                BackHandler {}
                 var challenge by remember { mutableStateOf<Challenge?>(null) }
 
                 // The pattern is asked first when there is one, otherwise the action runs at once.
@@ -95,12 +104,14 @@ class RingActivity : ComponentActivity() {
                     snoozeMinutes = ringing?.snoozeMinutes ?: 0,
                     onStop = {
                         askThen {
+                            vm.answer()
                             AlarmService.stop(this@RingActivity)
                             finish()
                         }
                     },
                     onSnooze = {
                         askThen {
+                            vm.answer()
                             AlarmService.snooze(this@RingActivity)
                             finish()
                         }
@@ -118,6 +129,17 @@ class RingActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    // The volume keys would silence the alarm without stopping it, around the pattern: they do nothing here.
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean =
+        keyCode in VOLUME_KEYS || super.onKeyDown(keyCode, event)
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean =
+        keyCode in VOLUME_KEYS || super.onKeyUp(keyCode, event)
+
+    private companion object {
+        val VOLUME_KEYS = setOf(KeyEvent.KEYCODE_VOLUME_UP, KeyEvent.KEYCODE_VOLUME_DOWN, KeyEvent.KEYCODE_VOLUME_MUTE)
     }
 }
 

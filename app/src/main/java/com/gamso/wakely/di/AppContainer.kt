@@ -7,6 +7,7 @@ import com.gamso.wakely.data.holiday.AssetHolidayDataSource
 import com.gamso.wakely.data.holiday.HolidayRepositoryImpl
 import com.gamso.wakely.data.local.AlarmRepositoryImpl
 import com.gamso.wakely.data.local.EventAlarmRepositoryImpl
+import com.gamso.wakely.data.local.PendingSnoozesPrefs
 import com.gamso.wakely.data.local.SettingsRepositoryImpl
 import com.gamso.wakely.data.local.SkippedOccurrencesPrefs
 import com.gamso.wakely.data.region.AndroidDeviceRegion
@@ -45,6 +46,7 @@ import com.gamso.wakely.domain.usecase.HandleSnoozeFiredUseCase
 import com.gamso.wakely.domain.usecase.MigrateEventCalendarsUseCase
 import com.gamso.wakely.domain.usecase.RecordStepBaselineUseCase
 import com.gamso.wakely.domain.usecase.RescheduleAlarmsUseCase
+import com.gamso.wakely.domain.usecase.RestoreSnoozesUseCase
 import com.gamso.wakely.domain.usecase.SaveAlarmUseCase
 import com.gamso.wakely.domain.usecase.SaveEventAlarmUseCase
 import com.gamso.wakely.domain.usecase.SetAlarmEnabledUseCase
@@ -52,6 +54,7 @@ import com.gamso.wakely.domain.usecase.SetEventAlarmEnabledUseCase
 import com.gamso.wakely.domain.usecase.SetPauseUseCase
 import com.gamso.wakely.domain.usecase.SkipNextRingUseCase
 import com.gamso.wakely.domain.usecase.SnoozeAlarmUseCase
+import com.gamso.wakely.domain.usecase.Snoozes
 import com.gamso.wakely.domain.usecase.UndoSkipUseCase
 import com.gamso.wakely.domain.usecase.UpdateCalendarFiltersUseCase
 import com.gamso.wakely.domain.usecase.UpdateHolidaySettingsUseCase
@@ -98,6 +101,7 @@ class AppContainer(context: Context) {
     val getLeavePreview = GetLeavePreviewUseCase(calendarRepository)
     val getUpcomingHolidays = GetUpcomingHolidaysUseCase(holidayRepository, dayOffSources)
     val getRuleEvents = GetRuleEventsUseCase(calendarRepository, settingsRepository)
+    val snoozes = Snoozes(PendingSnoozesPrefs(appContext), alarmScheduler)
     val rescheduleAlarms = RescheduleAlarmsUseCase(
         alarmRepository,
         eventAlarmRepository,
@@ -109,19 +113,20 @@ class AppContainer(context: Context) {
         timeProvider,
         skippedOccurrences,
     )
-    val saveAlarm = SaveAlarmUseCase(alarmRepository, rescheduleAlarms, skippedOccurrences)
-    val setAlarmEnabled = SetAlarmEnabledUseCase(alarmRepository, rescheduleAlarms)
-    val deleteAlarm = DeleteAlarmUseCase(alarmRepository, alarmScheduler, skippedOccurrences)
-    val saveEventAlarm = SaveEventAlarmUseCase(eventAlarmRepository, rescheduleAlarms, skippedOccurrences)
-    val setEventAlarmEnabled = SetEventAlarmEnabledUseCase(eventAlarmRepository, rescheduleAlarms)
-    val deleteEventAlarm = DeleteEventAlarmUseCase(eventAlarmRepository, alarmScheduler, skippedOccurrences)
+    val saveAlarm = SaveAlarmUseCase(alarmRepository, rescheduleAlarms, skippedOccurrences, snoozes)
+    val setAlarmEnabled = SetAlarmEnabledUseCase(alarmRepository, rescheduleAlarms, snoozes)
+    val deleteAlarm = DeleteAlarmUseCase(alarmRepository, alarmScheduler, skippedOccurrences, snoozes)
+    val saveEventAlarm = SaveEventAlarmUseCase(eventAlarmRepository, rescheduleAlarms, skippedOccurrences, snoozes)
+    val setEventAlarmEnabled = SetEventAlarmEnabledUseCase(eventAlarmRepository, rescheduleAlarms, snoozes)
+    val deleteEventAlarm = DeleteEventAlarmUseCase(eventAlarmRepository, alarmScheduler, skippedOccurrences, snoozes)
     val updateCalendarFilters = UpdateCalendarFiltersUseCase(settingsRepository, rescheduleAlarms)
     val updateSummarySettings = UpdateSummarySettingsUseCase(settingsRepository, rescheduleAlarms)
     val setPause = SetPauseUseCase(settingsRepository, rescheduleAlarms)
     val updateHolidaySettings = UpdateHolidaySettingsUseCase(settingsRepository, rescheduleAlarms)
-    val snoozeAlarm = SnoozeAlarmUseCase(alarmScheduler, timeProvider)
+    val snoozeAlarm = SnoozeAlarmUseCase(snoozes, timeProvider)
     val getRingInfo = GetRingInfoUseCase(alarmRepository, eventAlarmRepository)
-    val handleSnoozeFired = HandleSnoozeFiredUseCase(getRingInfo, timeProvider)
+    val handleSnoozeFired = HandleSnoozeFiredUseCase(getRingInfo, timeProvider, snoozes)
+    val restoreSnoozes = RestoreSnoozesUseCase(snoozes, alarmRepository, eventAlarmRepository, timeProvider)
     val handleRingFired = HandleRingFiredUseCase(
         alarmRepository,
         eventAlarmRepository,

@@ -75,7 +75,9 @@ class AlarmReceiver : BroadcastReceiver() {
 
                 else -> container.handleRingFired(key)
             }
-            if (info != null) AlarmService.start(context, info)
+            if (info != null) {
+                AlarmService.start(context, info, askPattern = container.settingsRepository.getUnlockPattern() != null)
+            }
         }
     }
 
@@ -91,10 +93,13 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 }
 
-/** Boot, app update, time or time-zone change: reschedule everything. */
+/** Boot, app update, time or time-zone change: reschedule everything, pending snoozes included. */
 class SystemEventsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         CalendarWatchJob.schedule(context)
-        launchAsync { context.appContainer.rescheduleAlarms() }
+        launchAsync {
+            context.appContainer.rescheduleAlarms()
+            context.appContainer.restoreSnoozes()
+        }
     }
 }
