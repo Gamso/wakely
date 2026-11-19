@@ -1,6 +1,7 @@
 package com.gamso.wakely.data.local
 
 import android.content.Context
+import com.gamso.wakely.domain.model.AwakeSensitivity
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.CalendarFilter
 import com.gamso.wakely.domain.model.HolidaySettings
@@ -27,6 +28,10 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         MutableStateFlow(prefs.getString(KEY_PAUSE, null)?.let { runCatching { LocalDate.parse(it) }.getOrNull() })
     private val pauseButton = MutableStateFlow(prefs.getBoolean(KEY_PAUSE_BUTTON, true))
     private val skipButtons = MutableStateFlow(prefs.getBoolean(KEY_SKIP_BUTTONS, true))
+    private val awakeSensitivity = MutableStateFlow(
+        AwakeSensitivity.entries.firstOrNull { it.name == prefs.getString(KEY_AWAKE_SENSITIVITY, null) }
+            ?: AwakeSensitivity.NORMAL,
+    )
     private val unlockPattern = MutableStateFlow(
         prefs.getString(KEY_PATTERN_SALT, null)?.let { salt ->
             prefs.getString(KEY_PATTERN_HASH, null)?.let { PatternHash(salt, it) }
@@ -91,6 +96,15 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
     override suspend fun setSkipButtons(enabled: Boolean) {
         skipButtons.value = enabled
         withContext(Dispatchers.IO) { prefs.edit().putBoolean(KEY_SKIP_BUTTONS, enabled).commit() }
+    }
+
+    override fun observeAwakeSensitivity(): Flow<AwakeSensitivity> = awakeSensitivity.asStateFlow()
+
+    override suspend fun getAwakeSensitivity(): AwakeSensitivity = awakeSensitivity.value
+
+    override suspend fun setAwakeSensitivity(sensitivity: AwakeSensitivity) {
+        awakeSensitivity.value = sensitivity
+        withContext(Dispatchers.IO) { prefs.edit().putString(KEY_AWAKE_SENSITIVITY, sensitivity.name).commit() }
     }
 
     override fun observePause(): Flow<LocalDate?> = pause.asStateFlow()
@@ -177,6 +191,7 @@ class SettingsRepositoryImpl(context: Context) : SettingsRepository {
         const val PREFS = "settings"
         const val KEY_FILTERS = "calendar_filters"
         const val KEY_SKIP_BUTTONS = "skip_buttons"
+        const val KEY_AWAKE_SENSITIVITY = "awake_sensitivity"
         const val KEY_PATTERN_SALT = "unlock_pattern_salt"
         const val KEY_PATTERN_HASH = "unlock_pattern_hash"
         const val KEY_PAUSE = "pause_until"

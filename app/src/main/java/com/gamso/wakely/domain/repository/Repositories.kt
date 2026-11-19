@@ -4,6 +4,7 @@ import com.gamso.wakely.domain.holiday.HolidayRegion
 import com.gamso.wakely.domain.model.Alarm
 import com.gamso.wakely.domain.model.AlarmSound
 import com.gamso.wakely.domain.model.AppInfo
+import com.gamso.wakely.domain.model.AwakeSensitivity
 import com.gamso.wakely.domain.model.CalendarEvent
 import com.gamso.wakely.domain.model.CalendarFilter
 import com.gamso.wakely.domain.model.DeviceCalendar
@@ -72,6 +73,11 @@ interface SettingsRepository {
     fun observePause(): Flow<LocalDate?>
     suspend fun getPause(): LocalDate?
     suspend fun setPause(until: LocalDate?)
+
+    /** How many steps before an alarm tell that the user is up. [AwakeSensitivity.NORMAL] by default. */
+    fun observeAwakeSensitivity(): Flow<AwakeSensitivity>
+    suspend fun getAwakeSensitivity(): AwakeSensitivity
+    suspend fun setAwakeSensitivity(sensitivity: AwakeSensitivity)
 
     fun observeHolidaySettings(): Flow<HolidaySettings>
     suspend fun getHolidaySettings(): HolidaySettings

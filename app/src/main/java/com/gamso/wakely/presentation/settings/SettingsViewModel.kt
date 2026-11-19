@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gamso.wakely.domain.holiday.HolidayConfig
 import com.gamso.wakely.domain.holiday.HolidayRegion
+import com.gamso.wakely.domain.model.AwakeSensitivity
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.CalendarFilter
 import com.gamso.wakely.domain.model.DeviceCalendar
@@ -61,6 +62,7 @@ data class Flags(
     val skipButtons: Boolean,
     val pauseButton: Boolean,
     val unlockToStop: Boolean,
+    val awakeSensitivity: AwakeSensitivity,
 )
 
 /** A calendar assigned to a category, with its keyword filter. */
@@ -73,6 +75,8 @@ data class SettingsUiState(
     val skipButtons: Boolean = true,
     /** Stopping or snoozing a ringing alarm asks for the pattern. */
     val unlockToStop: Boolean = false,
+    /** How many steps before an alarm tell that the user is up. */
+    val awakeSensitivity: AwakeSensitivity = AwakeSensitivity.NORMAL,
     /** The days off the leave calendars give with their keywords; null while loading. */
     val leavePreview: LeavePreview? = null,
     val pauseButton: Boolean = true,
@@ -173,7 +177,8 @@ class SettingsViewModel(
             settingsRepository.observeSkipButtons(),
             settingsRepository.observePauseButton(),
             settingsRepository.observeUnlockPattern().map { it != null },
-        ) { summary, skip, pause, unlock -> Flags(summary, skip, pause, unlock) },
+            settingsRepository.observeAwakeSensitivity(),
+        ) { summary, skip, pause, unlock, awake -> Flags(summary, skip, pause, unlock, awake) },
         settingsRepository.observeHolidaySettings(),
         combine(
             upcoming,
@@ -193,6 +198,7 @@ class SettingsViewModel(
                 skipButtons = skipButtons,
                 pauseButton = pauseButton,
                 unlockToStop = unlockToStop,
+                awakeSensitivity = flags.awakeSensitivity,
             )
         }
         val byKey = cals.associateBy { it.key }
@@ -207,6 +213,7 @@ class SettingsViewModel(
             skipButtons = skipButtons,
             pauseButton = pauseButton,
             unlockToStop = unlockToStop,
+            awakeSensitivity = flags.awakeSensitivity,
             calendars = cals,
             byCategory = CalendarCategory.entries.associateWith { category ->
                 filters.filter { it.category == category }
@@ -242,6 +249,10 @@ class SettingsViewModel(
     /** Asks for [dots] to be drawn to stop an alarm from now on, or for nothing when null. */
     fun setUnlockPattern(dots: List<Int>?) {
         applicationScope.launch { settingsRepository.setUnlockPattern(dots?.let { PatternLock.create(it) }) }
+    }
+
+    fun setAwakeSensitivity(sensitivity: AwakeSensitivity) {
+        applicationScope.launch { settingsRepository.setAwakeSensitivity(sensitivity) }
     }
 
     fun setSkipButtons(enabled: Boolean) {

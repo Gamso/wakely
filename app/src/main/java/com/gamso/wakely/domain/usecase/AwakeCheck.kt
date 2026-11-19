@@ -23,9 +23,6 @@ object AwakeCheck {
     /** The steps are counted over this time before the ring. */
     val WINDOW: Duration = Duration.ofMinutes(30)
 
-    /** Steps in the window from which the user is considered up. */
-    const val MIN_STEPS = 25L
-
     private val CLOCK_MARGIN: Duration = Duration.ofMinutes(5)
 
     /** Whether the option covers the ring of [alarm] on [ringDate]; [daysOff] are holidays and leave days. */
@@ -36,8 +33,9 @@ object AwakeCheck {
             SkipIfAwake.DAYS_OFF_ONLY -> daysOff[ringDate]?.covers(alarm.time) == true
         }
 
-    fun shouldSkip(baseline: StepBaseline?, current: Long?, ringAt: LocalDateTime): Boolean =
-        stepsSince(baseline, current, ringAt)?.let { it >= MIN_STEPS } == true
+    /** Whether the user walked at least [minSteps] since [baseline], a valid reference for the ring at [ringAt]. */
+    fun shouldSkip(baseline: StepBaseline?, current: Long?, ringAt: LocalDateTime, minSteps: Long): Boolean =
+        stepsSince(baseline, current, ringAt)?.let { it >= minSteps } == true
 
     /** Steps taken since [baseline], or null when it is not a valid reference for the ring at [ringAt]. */
     fun stepsSince(baseline: StepBaseline?, current: Long?, ringAt: LocalDateTime): Long? {

@@ -56,6 +56,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.gamso.wakely.R
 import com.gamso.wakely.domain.holiday.HolidayRegion
+import com.gamso.wakely.domain.model.AwakeSensitivity
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.DeviceCalendar
 import com.gamso.wakely.domain.model.HolidayItem
@@ -356,8 +357,14 @@ private fun NotificationCard(summary: SummarySettings, onEnabled: (Boolean) -> U
     }
 }
 
-/** What it takes to stop a ringing alarm: a pattern of the app, chosen here. */
+/**
+ * What it takes to stop a ringing alarm: a pattern of the app, chosen here. And how many steps tell
+ * that the user is already up, for the alarms that are skipped then.
+ */
 private fun LazyListScope.ringItems(state: SettingsUiState, viewModel: SettingsViewModel) {
+    item(key = "awake-sensitivity") {
+        AwakeSensitivityCard(state.awakeSensitivity, viewModel::setAwakeSensitivity)
+    }
     item(key = "unlock-to-stop") {
         var setup by rememberSaveable { mutableStateOf(false) }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -490,6 +497,51 @@ private fun LeaveRow(item: LeaveItem, counted: Boolean) {
             style = MaterialTheme.typography.labelSmall,
             color = if (counted) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+@Composable
+private fun AwakeSensitivityCard(selected: AwakeSensitivity, onSelect: (AwakeSensitivity) -> Unit) {
+    Card(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp)) {
+            Text(stringResource(R.string.awake_sensitivity_title), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.awake_sensitivity_description), style = MaterialTheme.typography.bodySmall)
+            AwakeSensitivity.entries.forEach { level ->
+                val (name, detail) = when (level) {
+                    AwakeSensitivity.SENSITIVE ->
+                        R.plurals.awake_sensitivity_sensitive to
+                            R.string.awake_sensitivity_sensitive_desc
+
+                    AwakeSensitivity.NORMAL ->
+                        R.plurals.awake_sensitivity_normal to
+                            R.string.awake_sensitivity_normal_desc
+
+                    AwakeSensitivity.STRICT ->
+                        R.plurals.awake_sensitivity_strict to
+                            R.string.awake_sensitivity_strict_desc
+                }
+                Row(
+                    Modifier.fillMaxWidth()
+                        .selectable(level == selected, onClick = { onSelect(level) }, role = Role.RadioButton)
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    RadioButton(selected = level == selected, onClick = null)
+                    Column(Modifier.padding(start = 12.dp)) {
+                        val steps = level.minSteps.toInt()
+                        Text(
+                            pluralStringResource(name, steps, steps),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Text(
+                            stringResource(detail),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 

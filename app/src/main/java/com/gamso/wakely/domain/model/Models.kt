@@ -17,6 +17,18 @@ enum class DayOffMode {
     IGNORE,
 }
 
+/** How many steps in the window before the ring tell that the user is up; shared by every alarm. */
+enum class AwakeSensitivity(val minSteps: Long) {
+    /** A few steps are enough: a short walk at night may skip the alarm. */
+    SENSITIVE(25),
+
+    /** Enough to leave out a trip to the bathroom. The default. */
+    NORMAL(100),
+
+    /** Only clearly being up and about. */
+    STRICT(250),
+}
+
 /** When an alarm may be skipped because the user is already up. */
 enum class SkipIfAwake {
     OFF,

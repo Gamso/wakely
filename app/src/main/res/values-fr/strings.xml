@@ -42,6 +42,23 @@
     <string name="ring_settings_title">Arrêt des alarmes</string>
     <string name="menu_unlock_off">Arrêt en un appui</string>
     <string name="menu_unlock_on">Schéma demandé</string>
+    <string name="awake_sensitivity_title">Détection du réveil</string>
+    <string name="awake_sensitivity_description">Pour les réveils ignorés quand vous êtes déjà levé : combien de pas dans la demi-heure qui précède montrent que vous êtes levé.</string>
+    <plurals name="awake_sensitivity_sensitive">
+        <item quantity="one">Sensible · %1$d pas</item>
+        <item quantity="other">Sensible · %1$d pas</item>
+    </plurals>
+    <string name="awake_sensitivity_sensitive_desc">Quelques pas suffisent. Un petit trajet la nuit peut faire sauter le réveil.</string>
+    <plurals name="awake_sensitivity_normal">
+        <item quantity="one">Normale · %1$d pas</item>
+        <item quantity="other">Normale · %1$d pas</item>
+    </plurals>
+    <string name="awake_sensitivity_normal_desc">Un passage aux toilettes ne compte pas.</string>
+    <plurals name="awake_sensitivity_strict">
+        <item quantity="one">Stricte · %1$d pas</item>
+        <item quantity="other">Stricte · %1$d pas</item>
+    </plurals>
+    <string name="awake_sensitivity_strict_desc">Seulement quand vous êtes vraiment debout et en mouvement.</string>
     <string name="unlock_to_stop_title">Schéma pour arrêter</string>
     <string name="unlock_to_stop_description">Pour arrêter ou reporter une alarme qui sonne, dessinez d\'abord votre schéma. C\'est un schéma propre à Wakely, pas celui de votre téléphone. L\'alarme continue de sonner tant que vous ne l\'avez pas fait. Les boutons de la notification de l\'alarme sont masqués.</string>
     <string name="pattern_draw">Dessinez un schéma</string>
@@ -94,7 +111,7 @@
     <string name="mode_ignore">Sonner normalement (ignorer l\'agenda)</string>
     <string name="ringtone">Sonnerie</string>
     <string name="skip_awake_title">Ignorer si je suis déjà levé</string>
-    <string name="skip_awake_desc">Si vous avez déjà marché quelques dizaines de pas dans la demi-heure qui précède, le réveil ne sonne pas ce jour-là.</string>
+    <string name="skip_awake_desc">Si vous avez déjà marché dans la demi-heure qui précède, le réveil ne sonne pas ce jour-là. Le nombre de pas se règle dans les Paramètres, sous Arrêt des alarmes.</string>
     <string name="skip_awake_all">Toutes les sonneries</string>
     <string name="skip_awake_days_off">Seulement les jours fériés et congés</string>
     <string name="skip_awake_scope_note">Le réveil de %1$s sonne toujours les jours ordinaires. Seule la sonnerie d\'un jour férié ou de congé peut être ignorée.</string>
