@@ -95,6 +95,7 @@ class LateRingTest {
             FakeStore(),
             skips,
             settings,
+            FakeAwakeSkipNotifier(),
         )
         assertEquals("Second", handle(ruleKey)?.label)
         // No event left after the second one.

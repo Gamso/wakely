@@ -246,6 +246,13 @@
     <string name="notif_channel_missed_desc">Prévient quand un réveil s\'est arrêté seul, sans être arrêté ni répété</string>
     <string name="notif_missed_title">Réveil manqué · %1$s</string>
     <string name="notif_missed_text">%1$s a sonné sans réponse et s\'est arrêté seul</string>
+    <string name="notif_channel_awake_skip">Réveils ignorés car vous étiez levé</string>
+    <string name="notif_channel_awake_skip_desc">Prévient quand un réveil n\'a pas sonné parce que le compteur de pas a vu que vous étiez déjà levé</string>
+    <string name="notif_awake_skip_title">Réveil non sonné · %1$s</string>
+    <plurals name="notif_awake_skip_text">
+        <item quantity="one">%1$s ignoré : vous étiez déjà levé (%2$d pas)</item>
+        <item quantity="other">%1$s ignoré : vous étiez déjà levé (%2$d pas)</item>
+    </plurals>
     <string name="summary_notif_title">Demain, %1$s</string>
     <string name="summary_none">Aucun réveil prévu</string>
     <string name="summary_none_ring">Aucun réveil ne sonnera</string>

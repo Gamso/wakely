@@ -9,6 +9,7 @@ object Notifications {
     const val CHANNEL_ALARM = "alarm"
     const val CHANNEL_SUMMARY = "summary"
     const val CHANNEL_MISSED = "missed"
+    const val CHANNEL_AWAKE_SKIP = "awake_skip"
 
     fun createChannels(context: Context) {
         val alarm = NotificationChannel(
@@ -34,7 +35,14 @@ object Notifications {
         ).apply {
             description = context.getString(R.string.notif_channel_missed_desc)
         }
+        val awakeSkip = NotificationChannel(
+            CHANNEL_AWAKE_SKIP,
+            context.getString(R.string.notif_channel_awake_skip),
+            NotificationManager.IMPORTANCE_LOW,
+        ).apply {
+            description = context.getString(R.string.notif_channel_awake_skip_desc)
+        }
         context.getSystemService(NotificationManager::class.java)
-            .createNotificationChannels(listOf(alarm, summary, missed))
+            .createNotificationChannels(listOf(alarm, summary, missed, awakeSkip))
     }
 }

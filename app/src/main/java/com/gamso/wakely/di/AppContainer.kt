@@ -59,6 +59,7 @@ import com.gamso.wakely.domain.usecase.UndoSkipUseCase
 import com.gamso.wakely.domain.usecase.UpdateCalendarFiltersUseCase
 import com.gamso.wakely.domain.usecase.UpdateHolidaySettingsUseCase
 import com.gamso.wakely.domain.usecase.UpdateSummarySettingsUseCase
+import com.gamso.wakely.framework.AwakeSkipNotifierImpl
 import com.gamso.wakely.framework.MediaSoundPreviewer
 import com.gamso.wakely.framework.RingingStateHolder
 import java.time.LocalDateTime
@@ -139,6 +140,7 @@ class AppContainer(context: Context) {
         stepBaselines,
         skippedOccurrences,
         settingsRepository,
+        AwakeSkipNotifierImpl(appContext),
     )
     val recordStepBaseline = RecordStepBaselineUseCase(alarmRepository, stepSensor, stepBaselines, timeProvider)
     val getDayPlan = GetDayPlanUseCase(

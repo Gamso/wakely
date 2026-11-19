@@ -39,6 +39,12 @@ interface EventAlarmRepository {
     suspend fun delete(id: Long)
 }
 
+/** Tells the user an alarm did not ring because the step counter showed they were already up. */
+fun interface AwakeSkipNotifier {
+    /** [label] may be blank; [steps] were counted in the window before the ring at [ringAt]. */
+    fun notifySkipped(label: String, ringAt: LocalDateTime, steps: Long)
+}
+
 interface SettingsRepository {
     fun observeCalendarFilters(): Flow<List<CalendarFilter>>
     suspend fun getCalendarFilters(): List<CalendarFilter>
