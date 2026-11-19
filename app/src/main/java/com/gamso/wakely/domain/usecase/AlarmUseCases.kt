@@ -14,6 +14,7 @@ import com.gamso.wakely.domain.model.SkippedRing
 import com.gamso.wakely.domain.model.SummarySettings
 import com.gamso.wakely.domain.repository.AlarmRepository
 import com.gamso.wakely.domain.repository.AlarmScheduler
+import com.gamso.wakely.domain.repository.AwakeSkipNotifier
 import com.gamso.wakely.domain.repository.EventAlarmRepository
 import com.gamso.wakely.domain.repository.SettingsRepository
 import com.gamso.wakely.domain.repository.SkippedOccurrences
@@ -271,6 +272,7 @@ class HandleRingFiredUseCase(
     private val stepBaselines: StepBaselineStore,
     private val skips: SkippedOccurrences,
     private val settingsRepository: SettingsRepository,
+    private val awakeSkipNotifier: AwakeSkipNotifier,
 ) {
     suspend operator fun invoke(key: RingKey): RingInfo? {
         val now = time.now()
@@ -287,7 +289,9 @@ class HandleRingFiredUseCase(
                 if (alarm != null && expected != null && isDue(now, expected.at)) {
                     expectedAt = expected.at
                     if (!alarm.isRepeating) alarmRepository.save(alarm.copy(enabled = false))
-                    if (alreadyUp(alarm, key, expected.at, daysOff)) {
+                    val stepsIfUp = stepsIfUp(alarm, key, expected.at, daysOff)
+                    if (stepsIfUp != null) {
+                        awakeSkipNotifier.notifySkipped(alarm.label, expected.at, stepsIfUp)
                         null
                     } else {
                         RingInfo(
@@ -333,22 +337,25 @@ class HandleRingFiredUseCase(
         return info
     }
 
-    /** True when the option covers this ring and the user walked enough since the step check. */
-    private suspend fun alreadyUp(
+    /**
+     * The steps taken since the step check when the option covers this ring and the user walked enough,
+     * or null when the alarm must ring.
+     */
+    private suspend fun stepsIfUp(
         alarm: Alarm,
         key: RingKey,
         ringAt: LocalDateTime,
         daysOff: Map<LocalDate, DayOff>,
-    ): Boolean {
+    ): Long? {
         val baseline = stepBaselines.get(key)
         stepBaselines.clear(key)
-        if (!AwakeCheck.appliesTo(alarm, ringAt.toLocalDate(), daysOff)) return false
+        if (!AwakeCheck.appliesTo(alarm, ringAt.toLocalDate(), daysOff)) return null
         val current = if (baseline != null && stepSensor.hasPermission()) {
             runCatching { stepSensor.readSteps() }.getOrNull()
         } else {
             null
         }
-        return AwakeCheck.shouldSkip(baseline, current, ringAt)
+        return AwakeCheck.stepsSince(baseline, current, ringAt)?.takeIf { it >= AwakeCheck.MIN_STEPS }
     }
 
     /** A ring is due a little early, or late up to [LATE_TOLERANCE]. */

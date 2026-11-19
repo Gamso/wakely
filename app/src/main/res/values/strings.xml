@@ -261,6 +261,13 @@
     <string name="notif_channel_missed_desc">Tells when an alarm stopped by itself without being stopped or snoozed</string>
     <string name="notif_missed_title">Missed alarm · %1$s</string>
     <string name="notif_missed_text">%1$s rang without an answer and stopped by itself</string>
+    <string name="notif_channel_awake_skip">Alarms skipped because you were up</string>
+    <string name="notif_channel_awake_skip_desc">Tells when an alarm did not ring because the step counter showed you were already up</string>
+    <string name="notif_awake_skip_title">Alarm not rung · %1$s</string>
+    <plurals name="notif_awake_skip_text">
+        <item quantity="one">%1$s skipped: you were already up (%2$d step)</item>
+        <item quantity="other">%1$s skipped: you were already up (%2$d steps)</item>
+    </plurals>
     <string name="summary_notif_title">Tomorrow, %1$s</string>
     <string name="summary_none">No alarm planned</string>
     <string name="summary_none_ring">No alarm will ring</string>

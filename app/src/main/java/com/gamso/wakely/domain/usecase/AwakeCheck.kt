@@ -36,15 +36,19 @@ object AwakeCheck {
             SkipIfAwake.DAYS_OFF_ONLY -> daysOff[ringDate]?.covers(alarm.time) == true
         }
 
-    fun shouldSkip(baseline: StepBaseline?, current: Long?, ringAt: LocalDateTime): Boolean {
-        if (baseline == null || current == null) return false
+    fun shouldSkip(baseline: StepBaseline?, current: Long?, ringAt: LocalDateTime): Boolean =
+        stepsSince(baseline, current, ringAt)?.let { it >= MIN_STEPS } == true
+
+    /** Steps taken since [baseline], or null when it is not a valid reference for the ring at [ringAt]. */
+    fun stepsSince(baseline: StepBaseline?, current: Long?, ringAt: LocalDateTime): Long? {
+        if (baseline == null || current == null) return null
         // The baseline must have been taken in the window before this ring, not for another day.
         if (baseline.takenAt.isBefore(ringAt.minus(WINDOW).minus(CLOCK_MARGIN)) || baseline.takenAt.isAfter(ringAt)) {
-            return false
+            return null
         }
         // A smaller counter means the phone rebooted since: the baseline is meaningless.
-        if (current < baseline.steps) return false
-        return current - baseline.steps >= MIN_STEPS
+        if (current < baseline.steps) return null
+        return current - baseline.steps
     }
 }
 

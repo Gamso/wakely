@@ -18,6 +18,7 @@ import com.gamso.wakely.domain.model.StepBaseline
 import com.gamso.wakely.domain.model.SummarySettings
 import com.gamso.wakely.domain.repository.AlarmRepository
 import com.gamso.wakely.domain.repository.AlarmScheduler
+import com.gamso.wakely.domain.repository.AwakeSkipNotifier
 import com.gamso.wakely.domain.repository.CalendarRepository
 import com.gamso.wakely.domain.repository.DeviceRegion
 import com.gamso.wakely.domain.repository.EventAlarmRepository
@@ -163,6 +164,16 @@ internal class FakeSensor(var permission: Boolean = true, var steps: Long? = 0) 
     override suspend fun readSteps() = steps
 }
 
+/** Keeps the alarms skipped because the user was up, to check what is notified. */
+internal class FakeAwakeSkipNotifier : AwakeSkipNotifier {
+    data class Skip(val label: String, val ringAt: LocalDateTime, val steps: Long)
+
+    val skips = mutableListOf<Skip>()
+    override fun notifySkipped(label: String, ringAt: LocalDateTime, steps: Long) {
+        skips += Skip(label, ringAt, steps)
+    }
+}
+
 internal class FakeStore : StepBaselineStore {
     val map = mutableMapOf<RingKey, StepBaseline>()
     override fun save(key: RingKey, baseline: StepBaseline) {
@@ -180,6 +191,7 @@ internal class Graph(alarm: Alarm, now: LocalDateTime, leaveDay: LocalDate? = nu
     val scheduler = FakeScheduler()
     val sensor = FakeSensor()
     val store = FakeStore()
+    val awakeSkips = FakeAwakeSkipNotifier()
     val skips = FakeSkips()
     val pendingSnoozes = FakePendingSnoozes()
     val snoozes = Snoozes(pendingSnoozes, scheduler)
@@ -217,6 +229,7 @@ internal class Graph(alarm: Alarm, now: LocalDateTime, leaveDay: LocalDate? = nu
         store,
         skips,
         settings,
+        awakeSkips,
     )
     val record = RecordStepBaselineUseCase(alarms, sensor, store, time)
     val skipNext =

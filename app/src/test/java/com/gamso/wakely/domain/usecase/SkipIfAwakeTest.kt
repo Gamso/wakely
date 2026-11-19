@@ -139,7 +139,28 @@ class SkipIfAwakeTest {
 
     @Test
     fun `rings when the user did not walk`() {
-        assertNotNull(ring(Graph(alarm, ringAt), 1_000, 1_005))
+        val g = Graph(alarm, ringAt)
+        assertNotNull(ring(g, 1_000, 1_005))
+        assertTrue(g.awakeSkips.skips.isEmpty())
+    }
+
+    @Test
+    fun `a ring skipped because the user walked is notified with its steps`() {
+        val g = Graph(alarm.copy(label = "Work"), ringAt)
+        assertNull(ring(g, 1_000, 1_042))
+        assertEquals(listOf(FakeAwakeSkipNotifier.Skip("Work", ringAt, 42)), g.awakeSkips.skips)
+    }
+
+    @Test
+    fun `a ring that does not sound for another reason is not notified`() {
+        // Option off: the alarm rings, nothing to notify.
+        val off = Graph(alarm.copy(skipIfAwake = SkipIfAwake.OFF), ringAt)
+        ring(off, 1_000, 9_000)
+        assertTrue(off.awakeSkips.skips.isEmpty())
+        // Disabled alarm: nothing rings, but not because the user was up.
+        val disabled = Graph(alarm.copy(enabled = false), ringAt)
+        assertNull(ring(disabled, 1_000, 9_000))
+        assertTrue(disabled.awakeSkips.skips.isEmpty())
     }
 
     @Test
