@@ -2,6 +2,7 @@ package com.gamso.wakely.domain.usecase
 
 import com.gamso.wakely.domain.holiday.HolidayRegion
 import com.gamso.wakely.domain.model.Alarm
+import com.gamso.wakely.domain.model.AwakeSensitivity
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.CalendarEvent
 import com.gamso.wakely.domain.model.CalendarFilter
@@ -50,31 +51,41 @@ class SkipIfAwakeTest {
 
     // ---- pure decision
 
+    private val minSteps = AwakeSensitivity.NORMAL.minSteps
+
     @Test
     fun `skips when enough steps were taken since the baseline`() {
-        assertTrue(AwakeCheck.shouldSkip(baseline(), 1_000 + AwakeCheck.MIN_STEPS, ringAt))
+        assertTrue(AwakeCheck.shouldSkip(baseline(), 1_000 + minSteps, ringAt, minSteps))
     }
 
     @Test
     fun `rings when too few steps`() {
-        assertFalse(AwakeCheck.shouldSkip(baseline(), 1_000 + AwakeCheck.MIN_STEPS - 1, ringAt))
+        assertFalse(AwakeCheck.shouldSkip(baseline(), 1_000 + minSteps - 1, ringAt, minSteps))
+    }
+
+    @Test
+    fun `each level has its own threshold, normal by default`() {
+        assertEquals(25L, AwakeSensitivity.SENSITIVE.minSteps)
+        assertEquals(100L, AwakeSensitivity.NORMAL.minSteps)
+        assertEquals(250L, AwakeSensitivity.STRICT.minSteps)
+        assertEquals(AwakeSensitivity.NORMAL, runBlocking { FakeSettings().getAwakeSensitivity() })
     }
 
     @Test
     fun `rings without a baseline or without a reading`() {
-        assertFalse(AwakeCheck.shouldSkip(null, 5_000, ringAt))
-        assertFalse(AwakeCheck.shouldSkip(baseline(), null, ringAt))
+        assertFalse(AwakeCheck.shouldSkip(null, 5_000, ringAt, minSteps))
+        assertFalse(AwakeCheck.shouldSkip(baseline(), null, ringAt, minSteps))
     }
 
     @Test
     fun `rings when the counter went down, after a reboot`() {
-        assertFalse(AwakeCheck.shouldSkip(baseline(steps = 90_000), 400, ringAt))
+        assertFalse(AwakeCheck.shouldSkip(baseline(steps = 90_000), 400, ringAt, minSteps))
     }
 
     @Test
     fun `rings when the baseline is from another day or after the ring`() {
-        assertFalse(AwakeCheck.shouldSkip(StepBaseline(0, ringAt.minusDays(1)), 5_000, ringAt))
-        assertFalse(AwakeCheck.shouldSkip(StepBaseline(0, ringAt.plusMinutes(1)), 5_000, ringAt))
+        assertFalse(AwakeCheck.shouldSkip(StepBaseline(0, ringAt.minusDays(1)), 5_000, ringAt, minSteps))
+        assertFalse(AwakeCheck.shouldSkip(StepBaseline(0, ringAt.plusMinutes(1)), 5_000, ringAt, minSteps))
     }
 
     private val alarm = Alarm(id = 1, time = LocalTime.of(7, 0), skipIfAwake = SkipIfAwake.ALWAYS)
@@ -147,8 +158,8 @@ class SkipIfAwakeTest {
     @Test
     fun `a ring skipped because the user walked is notified with its steps`() {
         val g = Graph(alarm.copy(label = "Work"), ringAt)
-        assertNull(ring(g, 1_000, 1_042))
-        assertEquals(listOf(FakeAwakeSkipNotifier.Skip("Work", ringAt, 42)), g.awakeSkips.skips)
+        assertNull(ring(g, 1_000, 1_142))
+        assertEquals(listOf(FakeAwakeSkipNotifier.Skip("Work", ringAt, 142)), g.awakeSkips.skips)
     }
 
     @Test
@@ -169,6 +180,21 @@ class SkipIfAwakeTest {
         val noPermission = Graph(alarm, ringAt).also { it.sensor.permission = false }
         assertNotNull(ring(noPermission, 1_000, 5_000))
         assertNotNull(ring(Graph(alarm, ringAt), 1_000, null))
+    }
+
+    @Test
+    fun `the chosen level decides how many steps skip the ring`() {
+        // 40 steps: enough when sensitive, not by default.
+        assertNull(ring(graphAt(AwakeSensitivity.SENSITIVE), 1_000, 1_040))
+        assertNotNull(ring(Graph(alarm, ringAt), 1_000, 1_040))
+        // 200 steps: enough by default, not when strict; 250 are.
+        assertNull(ring(Graph(alarm, ringAt), 1_000, 1_200))
+        assertNotNull(ring(graphAt(AwakeSensitivity.STRICT), 1_000, 1_200))
+        assertNull(ring(graphAt(AwakeSensitivity.STRICT), 1_000, 1_250))
+    }
+
+    private fun graphAt(sensitivity: AwakeSensitivity) = Graph(alarm, ringAt).also {
+        runBlocking { it.settings.setAwakeSensitivity(sensitivity) }
     }
 
     @Test

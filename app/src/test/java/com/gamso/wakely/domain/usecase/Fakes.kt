@@ -2,6 +2,7 @@ package com.gamso.wakely.domain.usecase
 
 import com.gamso.wakely.domain.holiday.HolidayRegion
 import com.gamso.wakely.domain.model.Alarm
+import com.gamso.wakely.domain.model.AwakeSensitivity
 import com.gamso.wakely.domain.model.CalendarCategory
 import com.gamso.wakely.domain.model.CalendarEvent
 import com.gamso.wakely.domain.model.CalendarFilter
@@ -92,6 +93,13 @@ internal class FakeSettings(initial: List<CalendarFilter> = emptyList()) : Setti
     override fun observeSkipButtons(): Flow<Boolean> = flowOf(true)
     override suspend fun getSkipButtons() = true
     override suspend fun setSkipButtons(enabled: Boolean) = Unit
+    private val awakeSensitivity = MutableStateFlow(AwakeSensitivity.NORMAL)
+    override fun observeAwakeSensitivity(): Flow<AwakeSensitivity> = awakeSensitivity
+    override suspend fun getAwakeSensitivity() = awakeSensitivity.value
+    override suspend fun setAwakeSensitivity(sensitivity: AwakeSensitivity) {
+        awakeSensitivity.value = sensitivity
+    }
+
     override fun observeHolidaySettings(): Flow<HolidaySettings> = flowOf(HolidaySettings())
     override suspend fun getHolidaySettings() = HolidaySettings()
     override suspend fun setHolidaySettings(settings: HolidaySettings) = Unit

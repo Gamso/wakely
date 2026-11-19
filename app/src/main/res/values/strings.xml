@@ -56,6 +56,23 @@
     <string name="ring_settings_title">Stopping alarms</string>
     <string name="menu_unlock_off">Stop with one tap</string>
     <string name="menu_unlock_on">Pattern needed</string>
+    <string name="awake_sensitivity_title">Wake-up detection</string>
+    <string name="awake_sensitivity_description">For the alarms skipped when you are already up: how many steps in the half hour before the alarm tell that you are up.</string>
+    <plurals name="awake_sensitivity_sensitive">
+        <item quantity="one">Sensitive · %1$d step</item>
+        <item quantity="other">Sensitive · %1$d steps</item>
+    </plurals>
+    <string name="awake_sensitivity_sensitive_desc">A few steps are enough. A short walk at night may skip the alarm.</string>
+    <plurals name="awake_sensitivity_normal">
+        <item quantity="one">Normal · %1$d step</item>
+        <item quantity="other">Normal · %1$d steps</item>
+    </plurals>
+    <string name="awake_sensitivity_normal_desc">A trip to the bathroom does not count.</string>
+    <plurals name="awake_sensitivity_strict">
+        <item quantity="one">Strict · %1$d step</item>
+        <item quantity="other">Strict · %1$d steps</item>
+    </plurals>
+    <string name="awake_sensitivity_strict_desc">Only when you are clearly up and about.</string>
     <string name="unlock_to_stop_title">Pattern to stop alarms</string>
     <string name="unlock_to_stop_description">To stop or snooze a ringing alarm, draw your pattern first. It is a pattern of Wakely, not the one of your phone. The alarm keeps ringing until you do. The buttons of the alarm notification are hidden.</string>
     <string name="pattern_draw">Draw a pattern</string>
@@ -108,7 +125,7 @@
     <string name="mode_ignore">Ring normally (ignore the calendar)</string>
     <string name="ringtone">Ringtone</string>
     <string name="skip_awake_title">Skip if I\'m already up</string>
-    <string name="skip_awake_desc">If you have already walked a few dozen steps in the half hour before the alarm, it does not ring that day.</string>
+    <string name="skip_awake_desc">If you have already walked in the half hour before the alarm, it does not ring that day. How many steps it takes is set in Settings, under Stopping alarms.</string>
     <string name="skip_awake_all">Every ring</string>
     <string name="skip_awake_days_off">Only on holidays and days off</string>
     <string name="skip_awake_scope_note">The %1$s alarm always rings on ordinary days. Only the ring of a public holiday or a leave day can be skipped.</string>

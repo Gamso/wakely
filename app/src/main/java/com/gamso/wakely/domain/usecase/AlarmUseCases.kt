@@ -355,7 +355,8 @@ class HandleRingFiredUseCase(
         } else {
             null
         }
-        return AwakeCheck.stepsSince(baseline, current, ringAt)?.takeIf { it >= AwakeCheck.MIN_STEPS }
+        val minSteps = settingsRepository.getAwakeSensitivity().minSteps
+        return AwakeCheck.stepsSince(baseline, current, ringAt)?.takeIf { it >= minSteps }
     }
 
     /** A ring is due a little early, or late up to [LATE_TOLERANCE]. */
