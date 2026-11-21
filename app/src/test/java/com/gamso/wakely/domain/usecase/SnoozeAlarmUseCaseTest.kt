@@ -19,7 +19,7 @@ class SnoozeAlarmUseCaseTest {
         }
         override fun cancel(key: RingKey) = Unit
         override fun cancelSnooze(key: RingKey) = Unit
-        override fun schedulePreCheck(key: RingKey, at: LocalDateTime) = Unit
+        override fun schedulePreCheck(key: RingKey, at: LocalDateTime, ringAt: LocalDateTime) = Unit
         override fun cancelPreCheck(key: RingKey) = Unit
         override fun scheduleSummary(at: LocalDateTime?) = Unit
         override fun canScheduleExactAlarms() = true

@@ -125,6 +125,7 @@ internal class FakeCalendar(private val events: List<CalendarEvent> = emptyList(
 internal class FakeScheduler : AlarmScheduler {
     val rings = mutableMapOf<RingKey, LocalDateTime>()
     val preChecks = mutableMapOf<RingKey, LocalDateTime>()
+    val preCheckRings = mutableMapOf<RingKey, LocalDateTime>()
     val snoozes = mutableMapOf<RingKey, LocalDateTime>()
     override fun schedule(key: RingKey, at: LocalDateTime) {
         rings[key] = at
@@ -142,8 +143,9 @@ internal class FakeScheduler : AlarmScheduler {
         snoozes.remove(key)
     }
 
-    override fun schedulePreCheck(key: RingKey, at: LocalDateTime) {
+    override fun schedulePreCheck(key: RingKey, at: LocalDateTime, ringAt: LocalDateTime) {
         preChecks[key] = at
+        preCheckRings[key] = ringAt
     }
 
     override fun cancelPreCheck(key: RingKey) {
@@ -239,7 +241,8 @@ internal class Graph(alarm: Alarm, now: LocalDateTime, leaveDay: LocalDate? = nu
         settings,
         awakeSkips,
     )
-    val record = RecordStepBaselineUseCase(alarms, sensor, store, time)
+    val stepCheck =
+        StepCheckUseCase(alarms, sensor, store, time, skips, getDaysOff, settings, reschedule, scheduler, awakeSkips)
     val skipNext =
         SkipNextRingUseCase(alarms, NoEvents, getDaysOff, getRuleEvents, compute, skips, reschedule, time, settings)
     val undoSkip = UndoSkipUseCase(skips, reschedule, time)

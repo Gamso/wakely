@@ -13,6 +13,7 @@ import com.gamso.wakely.domain.model.HolidaySettings
 import com.gamso.wakely.domain.model.RingKey
 import com.gamso.wakely.domain.model.RingKind
 import com.gamso.wakely.domain.model.SkipIfAwake
+import com.gamso.wakely.domain.model.SkippedOccurrence
 import com.gamso.wakely.domain.model.StepBaseline
 import com.gamso.wakely.domain.model.SummarySettings
 import com.gamso.wakely.domain.repository.AlarmRepository
@@ -108,25 +109,121 @@ class SkipIfAwakeTest {
     }
 
     @Test
-    fun `no step check when it would already be in the past`() = runBlocking {
-        val g = Graph(alarm, ringAt.minusMinutes(10))
+    fun `no step check when the last one is already past`() = runBlocking {
+        val g = Graph(alarm, ringAt.minusMinutes(4))
         g.reschedule()
         assertNull(g.scheduler.preChecks[key])
         assertNotNull(g.scheduler.rings[key])
     }
 
+    @Test
+    fun `the checks go on from the next one of the grid in the middle of the window`() = runBlocking {
+        val g = Graph(alarm, ringAt.minusMinutes(12))
+        g.reschedule()
+        assertEquals(ringAt.minusMinutes(10), g.scheduler.preChecks[key])
+        assertEquals(ringAt, g.scheduler.preCheckRings[key])
+    }
+
+    @Test
+    fun `the checks are every 5 minutes, the last one 5 minutes before the ring`() {
+        fun next(minutesBefore: Long) = AwakeCheck.nextCheck(ringAt, ringAt.minusMinutes(minutesBefore))
+        assertEquals(ringAt.minusMinutes(30), next(120))
+        assertEquals(ringAt.minusMinutes(25), next(30))
+        assertEquals(ringAt.minusMinutes(5), next(6))
+        assertNull(next(5))
+        assertNull(next(0))
+    }
+
     // ---- the step check
 
     @Test
-    fun `the step check records the count, or nothing without permission`() = runBlocking {
+    fun `the first step check records the count, or nothing without permission`() = runBlocking {
         val g = Graph(alarm, ringAt.minusMinutes(30))
         g.sensor.steps = 1_000
-        g.record(key)
+        g.stepCheck(key, ringAt)
         assertEquals(StepBaseline(1_000, ringAt.minusMinutes(30)), g.store.map[key])
+        assertEquals(ringAt.minusMinutes(25), g.scheduler.preChecks[key])
 
         g.sensor.permission = false
-        g.record(key)
+        g.stepCheck(key, ringAt)
         assertNull(g.store.map[key])
+    }
+
+    private fun check(g: Graph, baselineSteps: Long, currentSteps: Long?, minutesBefore: Long = 15) = runBlocking {
+        g.store.save(key, StepBaseline(baselineSteps, ringAt.minusMinutes(30)))
+        g.sensor.steps = currentSteps
+        g.now = ringAt.minusMinutes(minutesBefore)
+        g.stepCheck(key, ringAt)
+    }
+
+    @Test
+    fun `a check that sees enough steps skips the ring and notifies at once`() {
+        val g = Graph(alarm.copy(label = "Work"), ringAt.minusMinutes(30))
+        check(g, 1_000, 1_100)
+        assertEquals(listOf(FakeAwakeSkipNotifier.Skip("Work", ringAt, 100)), g.awakeSkips.skips)
+        assertEquals(ringAt.plusDays(1), g.scheduler.rings[key])
+        assertNull(g.store.map[key])
+        assertTrue(g.alarms.alarms.single().enabled)
+        // The ring time comes: nothing rings, and nothing is notified a second time.
+        g.now = ringAt
+        assertNull(runBlocking { g.handle(key) })
+        assertEquals(1, g.awakeSkips.skips.size)
+    }
+
+    @Test
+    fun `a check that sees too few steps keeps the reference and plans the next check`() {
+        val g = Graph(alarm, ringAt.minusMinutes(30))
+        check(g, 1_000, 1_050)
+        assertTrue(g.awakeSkips.skips.isEmpty())
+        assertTrue(runBlocking { g.skips.get() }.isEmpty())
+        assertNotNull(g.store.map[key])
+        assertEquals(ringAt.minusMinutes(10), g.scheduler.preChecks[key])
+    }
+
+    @Test
+    fun `a check never skips without a valid reading or after a reboot`() {
+        val noReading = Graph(alarm, ringAt)
+        check(noReading, 1_000, null)
+        val rebooted = Graph(alarm, ringAt)
+        check(rebooted, 90_000, 400)
+        listOf(noReading, rebooted).forEach {
+            assertTrue(it.awakeSkips.skips.isEmpty())
+            assertTrue(runBlocking { it.skips.get() }.isEmpty())
+        }
+        // After the reboot, the count taken then is the new reference.
+        assertEquals(400L, rebooted.store.map[key]?.steps)
+    }
+
+    @Test
+    fun `a one-shot alarm skipped by a check is turned off`() {
+        val g = Graph(alarm.copy(days = emptySet()), ringAt)
+        check(g, 1_000, 1_200)
+        assertFalse(g.alarms.alarms.single().enabled)
+        assertEquals(1, g.awakeSkips.skips.size)
+    }
+
+    @Test
+    fun `a check does nothing for an alarm turned off, edited or already skipped`() {
+        val off = Graph(alarm.copy(skipIfAwake = SkipIfAwake.OFF), ringAt)
+        check(off, 1_000, 5_000)
+        val disabled = Graph(alarm.copy(enabled = false), ringAt)
+        check(disabled, 1_000, 5_000)
+        val handSkipped = Graph(alarm, ringAt)
+        runBlocking { handSkipped.skips.add(SkippedOccurrence(key, ringAt)) }
+        check(handSkipped, 1_000, 5_000)
+        listOf(off, disabled, handSkipped).forEach {
+            assertTrue(it.awakeSkips.skips.isEmpty())
+            assertNull(it.store.map[key])
+        }
+    }
+
+    @Test
+    fun `a check uses the level chosen in the settings`() {
+        val strict = graphAt(AwakeSensitivity.STRICT)
+        check(strict, 1_000, 1_100)
+        assertTrue(strict.awakeSkips.skips.isEmpty())
+        check(strict, 1_000, 1_250)
+        assertEquals(1, strict.awakeSkips.skips.size)
     }
 
     // ---- the ring
@@ -213,7 +310,7 @@ class SkipIfAwakeTest {
     fun `event alarms are never concerned`() = runBlocking {
         val g = Graph(alarm, ringAt)
         g.sensor.steps = 5_000
-        g.record(RingKey(RingKind.EVENT, 1))
+        g.stepCheck(RingKey(RingKind.EVENT, 1), ringAt)
         assertTrue(g.store.map.isEmpty())
     }
 
