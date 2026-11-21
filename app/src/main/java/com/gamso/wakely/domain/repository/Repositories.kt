@@ -136,8 +136,8 @@ interface AlarmScheduler {
     fun cancel(key: RingKey)
     fun cancelSnooze(key: RingKey)
 
-    /** Schedules the step check that precedes a ring of an alarm that can be skipped. */
-    fun schedulePreCheck(key: RingKey, at: LocalDateTime)
+    /** Schedules a step check at [at], before the ring at [ringAt] of an alarm that can be skipped. */
+    fun schedulePreCheck(key: RingKey, at: LocalDateTime, ringAt: LocalDateTime)
     fun cancelPreCheck(key: RingKey)
 
     /** Schedules the evening summary; null cancels it. */

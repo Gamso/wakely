@@ -58,10 +58,11 @@ class RescheduleAlarmsUseCase(
                 null
             }
             if (next != null) scheduler.schedule(key, next.at) else scheduler.cancel(key)
-            val checkAt = next?.takeIf { AwakeCheck.appliesTo(alarm, it.at.toLocalDate(), daysOff) }
-                ?.at?.minus(AwakeCheck.WINDOW)
-            if (checkAt != null && checkAt.isAfter(now)) {
-                scheduler.schedulePreCheck(key, checkAt)
+            val ringAt = next?.at?.takeIf { AwakeCheck.appliesTo(alarm, it.toLocalDate(), daysOff) }
+            // In the middle of the window, the checks go on from the next one of the grid.
+            val checkAt = ringAt?.let { AwakeCheck.nextCheck(it, now) }
+            if (ringAt != null && checkAt != null) {
+                scheduler.schedulePreCheck(key, checkAt, ringAt)
             } else {
                 scheduler.cancelPreCheck(key)
             }

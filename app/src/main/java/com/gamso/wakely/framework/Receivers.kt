@@ -49,9 +49,7 @@ class AlarmReceiver : BroadcastReceiver() {
             .getOrDefault(RingKind.ALARM)
         val key = RingKey(kind, id)
         if (intent.action == ACTION_SKIP) {
-            val at = intent.getLongExtra(EXTRA_SCHEDULED_AT, -1L).takeIf { it > 0 }?.let {
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
-            }
+            val at = scheduledAt(intent)
             launchAsync {
                 container.skipNextRing(key, at)
                 // Post the plan again, without the ring that was just skipped.
@@ -61,16 +59,15 @@ class AlarmReceiver : BroadcastReceiver() {
             return
         }
         if (intent.action == ACTION_PRECHECK) {
-            launchAsync { container.recordStepBaseline(key) }
+            // An old check without its ring is dropped: the next reschedule plans a new one.
+            scheduledAt(intent)?.let { ringAt -> launchAsync { container.stepCheck(key, ringAt) } }
             return
         }
         launchAsync {
             val info = when (intent.action) {
                 ACTION_SNOOZE_FIRED -> container.handleSnoozeFired(
                     key,
-                    intent.getLongExtra(EXTRA_SCHEDULED_AT, -1L).takeIf { it > 0 }?.let {
-                        LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
-                    },
+                    scheduledAt(intent),
                 )
 
                 else -> container.handleRingFired(key)
@@ -80,6 +77,11 @@ class AlarmReceiver : BroadcastReceiver() {
             }
         }
     }
+
+    private fun scheduledAt(intent: Intent): LocalDateTime? =
+        intent.getLongExtra(EXTRA_SCHEDULED_AT, -1L).takeIf { it > 0 }?.let {
+            LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
+        }
 
     companion object {
         const val ACTION_FIRED = "com.gamso.wakely.action.ALARM_FIRED"

@@ -44,7 +44,6 @@ import com.gamso.wakely.domain.usecase.GetUpcomingHolidaysUseCase
 import com.gamso.wakely.domain.usecase.HandleRingFiredUseCase
 import com.gamso.wakely.domain.usecase.HandleSnoozeFiredUseCase
 import com.gamso.wakely.domain.usecase.MigrateEventCalendarsUseCase
-import com.gamso.wakely.domain.usecase.RecordStepBaselineUseCase
 import com.gamso.wakely.domain.usecase.RescheduleAlarmsUseCase
 import com.gamso.wakely.domain.usecase.RestoreSnoozesUseCase
 import com.gamso.wakely.domain.usecase.SaveAlarmUseCase
@@ -55,6 +54,7 @@ import com.gamso.wakely.domain.usecase.SetPauseUseCase
 import com.gamso.wakely.domain.usecase.SkipNextRingUseCase
 import com.gamso.wakely.domain.usecase.SnoozeAlarmUseCase
 import com.gamso.wakely.domain.usecase.Snoozes
+import com.gamso.wakely.domain.usecase.StepCheckUseCase
 import com.gamso.wakely.domain.usecase.UndoSkipUseCase
 import com.gamso.wakely.domain.usecase.UpdateCalendarFiltersUseCase
 import com.gamso.wakely.domain.usecase.UpdateHolidaySettingsUseCase
@@ -128,6 +128,7 @@ class AppContainer(context: Context) {
     val getRingInfo = GetRingInfoUseCase(alarmRepository, eventAlarmRepository)
     val handleSnoozeFired = HandleSnoozeFiredUseCase(getRingInfo, timeProvider, snoozes)
     val restoreSnoozes = RestoreSnoozesUseCase(snoozes, alarmRepository, eventAlarmRepository, timeProvider)
+    val awakeSkipNotifier = AwakeSkipNotifierImpl(appContext)
     val handleRingFired = HandleRingFiredUseCase(
         alarmRepository,
         eventAlarmRepository,
@@ -140,9 +141,20 @@ class AppContainer(context: Context) {
         stepBaselines,
         skippedOccurrences,
         settingsRepository,
-        AwakeSkipNotifierImpl(appContext),
+        awakeSkipNotifier,
     )
-    val recordStepBaseline = RecordStepBaselineUseCase(alarmRepository, stepSensor, stepBaselines, timeProvider)
+    val stepCheck = StepCheckUseCase(
+        alarmRepository,
+        stepSensor,
+        stepBaselines,
+        timeProvider,
+        skippedOccurrences,
+        getDaysOff,
+        settingsRepository,
+        rescheduleAlarms,
+        alarmScheduler,
+        awakeSkipNotifier,
+    )
     val getDayPlan = GetDayPlanUseCase(
         alarmRepository,
         eventAlarmRepository,

@@ -32,8 +32,8 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
         alarmManager.cancel(firePendingIntent(key, snooze = true))
     }
 
-    override fun schedulePreCheck(key: RingKey, at: LocalDateTime) {
-        val operation = preCheckPendingIntent(key)
+    override fun schedulePreCheck(key: RingKey, at: LocalDateTime, ringAt: LocalDateTime) {
+        val operation = preCheckPendingIntent(key, ringAt.toEpochMs())
         val triggerMs = at.toEpochMs()
         try {
             if (canScheduleExactAlarms()) {
@@ -98,11 +98,13 @@ class AndroidAlarmScheduler(private val context: Context) : AlarmScheduler {
 
     private fun LocalDateTime.toEpochMs(): Long = atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
-    private fun preCheckPendingIntent(key: RingKey): PendingIntent {
+    // Extras do not tell intents apart: one pending check per key, whatever its ring.
+    private fun preCheckPendingIntent(key: RingKey, ringAt: Long = -1L): PendingIntent {
         val intent = Intent(context, AlarmReceiver::class.java)
             .setAction(AlarmReceiver.ACTION_PRECHECK)
             .putExtra(AlarmReceiver.EXTRA_KIND, key.kind.name)
             .putExtra(AlarmReceiver.EXTRA_ID, key.id)
+            .putExtra(AlarmReceiver.EXTRA_SCHEDULED_AT, ringAt)
         // Negative codes never meet the ring and snooze ones.
         val kindOffset = if (key.kind == RingKind.ALARM) 0 else 1
         return PendingIntent.getBroadcast(
